@@ -38,8 +38,19 @@
         .input-wrapper { position: relative; display: flex; align-items: center; }
         .input-wrapper i { position: absolute; left: 15px; color: #94a3b8; font-size: 16px; }
         .input-wrapper input, .input-wrapper select { width: 100%; padding: 14px 15px 14px 45px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 15px; outline: none; background-color: #f8fafc; }
-        .input-wrapper select { appearance: none; color: #94a3b8; }
-        .input-wrapper input:focus, .input-wrapper select:focus { border-color: #1e88e5; background-color: #fff; }
+        .input-wrapper select { appearance: none; color: #0f172a; }
+        .input-wrapper input:focus, .input-wrapper select:focus { border-color: #1e88e5; background-color: #fff; box-shadow: 0 0 0 3px rgba(30, 136, 229, 0.1); }
+        
+        /* ড্রপডাউন এরো (তীর চিহ্ন) */
+        .select-wrapper::after {
+            content: '\f107'; /* FontAwesome down arrow */
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            position: absolute;
+            right: 15px;
+            color: #64748b;
+            pointer-events: none;
+        }
 
         /* আপলোড বক্স */
         .upload-grid { display: flex; flex-direction: column; gap: 15px; }
@@ -55,8 +66,9 @@
 
         /* সাবমিট বাটন */
         .btn-submit { width: 100%; background: #1565c0; color: white; border: none; padding: 16px; border-radius: 8px; font-size: 18px; font-weight: 700; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 10px; margin-top: 10px; box-shadow: 0 4px 12px rgba(21, 101, 192, 0.3); }
+        .btn-submit:hover { background: #0d47a1; }
         
-        /* ফ্লোটিং মেনু বাটন (বাম দিকের নিচের দিকে) */
+        /* ফ্লোটিং মেনু বাটন */
         .floating-menu { position: fixed; bottom: 20px; left: 20px; background: #1e88e5; color: white; width: 50px; height: 50px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 22px; box-shadow: 0 4px 10px rgba(0,0,0,0.2); cursor: pointer; z-index: 999; }
     </style>
 </head>
@@ -87,7 +99,7 @@
         </div>
 
         <form>
-            <!-- ১. ব্যক্তিগত তথ্য (স্ক্রিনশট ১) -->
+            <!-- ১. ব্যক্তিগত তথ্য -->
             <div class="section-card">
                 <div class="section-header">
                     <i class="fa-solid fa-user"></i> ব্যক্তিগত তথ্য
@@ -97,7 +109,7 @@
                     <label>আপনার নাম <span>*</span></label>
                     <div class="input-wrapper">
                         <i class="fa-solid fa-user"></i>
-                        <input type="text" placeholder="">
+                        <input type="text" placeholder="আপনার নাম লিখুন" required>
                     </div>
                 </div>
 
@@ -105,7 +117,7 @@
                     <label>পিতার নাম <span>*</span></label>
                     <div class="input-wrapper">
                         <i class="fa-solid fa-person"></i>
-                        <input type="text" placeholder="">
+                        <input type="text" placeholder="পিতার নাম লিখুন" required>
                     </div>
                 </div>
 
@@ -113,7 +125,7 @@
                     <label>মাতার নাম <span>*</span></label>
                     <div class="input-wrapper">
                         <i class="fa-solid fa-person-dress"></i>
-                        <input type="text" placeholder="">
+                        <input type="text" placeholder="মাতার নাম লিখুন" required>
                     </div>
                 </div>
 
@@ -121,32 +133,38 @@
                     <label>এনআইটি নম্বর <span>*</span></label>
                     <div class="input-wrapper">
                         <i class="fa-regular fa-id-card"></i>
-                        <input type="text" placeholder="">
+                        <input type="text" placeholder="এনআইটি নম্বর লিখুন" required>
                     </div>
                 </div>
 
+                <!-- রক্তের গ্রুপ (আপডেট করা) -->
                 <div class="input-group">
                     <label>রক্তের গ্রুপ <span>*</span></label>
-                    <div class="input-wrapper">
+                    <div class="input-wrapper select-wrapper">
                         <i class="fa-solid fa-droplet"></i>
-                        <select>
+                        <select required>
                             <option value="" disabled selected>নির্বাচন করুন</option>
                             <option value="A+">A+</option>
+                            <option value="A-">A-</option>
                             <option value="B+">B+</option>
+                            <option value="B-">B-</option>
                             <option value="O+">O+</option>
+                            <option value="O-">O-</option>
                             <option value="AB+">AB+</option>
+                            <option value="AB-">AB-</option>
+                            <option value="জানা নেই">জানা নেই</option>
                         </select>
                     </div>
                 </div>
             </div>
 
-            <!-- ২. ঠিকানা ও পেশা (স্ক্রিনশট ২) -->
+            <!-- ২. ঠিকানা ও পেশা -->
             <div class="section-card">
                 <div class="input-group">
                     <label>বর্তমান ঠিকানা <span>*</span></label>
                     <div class="input-wrapper">
                         <i class="fa-solid fa-house"></i>
-                        <input type="text" placeholder="">
+                        <input type="text" placeholder="বর্তমান ঠিকানা লিখুন" required>
                     </div>
                 </div>
 
@@ -154,7 +172,7 @@
                     <label>স্থায়ী ঠিকানা <span>*</span></label>
                     <div class="input-wrapper">
                         <i class="fa-solid fa-location-dot"></i>
-                        <input type="text" placeholder="">
+                        <input type="text" placeholder="স্থায়ী ঠিকানা লিখুন" required>
                     </div>
                 </div>
 
@@ -162,12 +180,12 @@
                     <label>আপনার পেশা <span>*</span></label>
                     <div class="input-wrapper">
                         <i class="fa-solid fa-briefcase"></i>
-                        <input type="text" placeholder="">
+                        <input type="text" placeholder="আপনার পেশা লিখুন" required>
                     </div>
                 </div>
             </div>
 
-            <!-- ৩. এটাচমেন্ট (স্ক্রিনশট ২, ৩, ৪) -->
+            <!-- ৩. এটাচমেন্ট -->
             <div class="section-card">
                 <div class="section-header">
                     <i class="fa-solid fa-paperclip"></i> এটাচমেন্ট বা কাগজপত্রসমূহ
@@ -200,7 +218,7 @@
                 </div>
             </div>
 
-            <!-- ৪. স্বাক্ষর (স্ক্রিনশট ৪) -->
+            <!-- ৪. স্বাক্ষর -->
             <div class="section-card">
                 <div class="section-header">
                     <i class="fa-solid fa-signature"></i> স্বাক্ষর
