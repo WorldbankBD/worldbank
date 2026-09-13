@@ -3,11 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>বিশ্বব্যাংক - নতুন একাউন্ট</title>
+    <title>নতুন অ্যাকাউন্ট - বিশ্বব্যাংক</title>
     <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* আগের CSS এখানে থাকবে */
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Hind Siliguri', sans-serif; }
         body { background-color: #ffffff; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; }
         .login-container { width: 100%; max-width: 420px; background-color: #ffffff; padding: 40px 30px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05); text-align: center; }
@@ -17,10 +16,10 @@
         .logo-section h1 { font-size: 28px; color: #0f172a; font-weight: 700; margin-bottom: 8px; }
         .logo-section p { font-size: 14px; color: #64748b; }
         .input-group { text-align: left; margin-bottom: 15px; }
-        .input-group label { display: block; font-size: 15px; font-weight: 600; color: #0f172a; margin-bottom: 8px; }
+        .input-group label { display: block; font-size: 15px; font-weight: 600; color: #0f172a; margin-bottom: 6px; }
         .input-wrapper { position: relative; display: flex; align-items: center; }
         .input-wrapper i.prefix-icon { position: absolute; left: 15px; color: #94a3b8; font-size: 16px; }
-        .input-wrapper input { width: 100%; padding: 14px 15px 14px 45px; border: 1px solid #cbd5e1; border-radius: 10px; font-size: 15px; outline: none; background-color: #f8fafc; transition: all 0.3s ease; }
+        .input-wrapper input { width: 100%; padding: 14px 15px 14px 45px; border: 1px solid #cbd5e1; border-radius: 10px; font-size: 15px; font-family: 'Hind Siliguri', sans-serif !important; font-weight: 700; outline: none; background-color: #f8fafc; transition: all 0.3s ease; text-indent: 1px; color: #0f172a; }
         .input-wrapper input:focus { border-color: #1e88e5; background-color: #ffffff; box-shadow: 0 0 0 3px rgba(30, 136, 229, 0.1); }
         .input-wrapper i.suffix-icon { position: absolute; right: 15px; color: #94a3b8; cursor: pointer; }
         .btn-signin { width: 100%; background-color: #1565c0; color: #ffffff; border: none; padding: 15px; border-radius: 10px; font-size: 16px; font-weight: 600; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 10px; margin-top: 15px; margin-bottom: 20px; transition: background 0.3s; }
@@ -40,7 +39,6 @@
             <p>নতুন অ্যাকাউন্ট তৈরি করুন</p>
         </div>
 
-        <!-- ফর্মে আইডি যুক্ত করা হয়েছে যাতে JS দিয়ে চেক করা যায় -->
         <form id="registerForm">
             <div class="input-group">
                 <label for="fullname">পুরো নাম</label>
@@ -82,43 +80,30 @@
         <a href="index.html" class="btn-create"><i class="fa-solid fa-arrow-right-to-bracket"></i> সাইন ইন করুন</a>
     </div>
 
-    <!-- ভ্যালিডেশনের জন্য JavaScript -->
     <script>
         document.getElementById('registerForm').addEventListener('submit', function(event) {
-            event.preventDefault(); // পেজ রিফ্রেশ হওয়া আটকায়
+            event.preventDefault();
 
-            // ভ্যালুগুলো নেওয়া
             const fullname = document.getElementById('fullname').value.trim();
             const phone = document.getElementById('phone').value.trim();
             const password = document.getElementById('password').value;
             const confirmPassword = document.getElementById('confirm-password').value;
 
-            // ১. নাম চেক
-            if (fullname === "") {
-                alert("দয়া করে আপনার পুরো নাম লিখুন।");
-                return;
-            }
+            if (fullname === "") { alert("দয়া করে আপনার পুরো নাম লিখুন।"); return; }
+            if (phone.length !== 11 || isNaN(phone)) { alert("দয়া করে ১১ ডিজিটের সঠিক ফোন নম্বর লিখুন।"); return; }
+            if (password.length < 6 || password.length > 8) { alert("পাসওয়ার্ড অবশ্যই ৬ থেকে ৮ অক্ষরের মধ্যে হতে হবে।"); return; }
+            if (password !== confirmPassword) { alert("আপনার দেওয়া দুটি পাসওয়ার্ড মিলছে না।"); return; }
 
-            // ২. ফোন নম্বর চেক (ঠিক ১১ ডিজিট হতে হবে)
-            if (phone.length !== 11 || isNaN(phone)) {
-                alert("দয়া করে ১১ ডিজিটের সঠিক ফোন নম্বর লিখুন।");
-                return;
-            }
+            // LocalStorage-এ ইউজারের তথ্য সেভ করা
+            const userData = {
+                fullname: fullname,
+                phone: phone,
+                password: password
+            };
+            localStorage.setItem('worldbank_user', JSON.stringify(userData));
 
-            // ৩. পাসওয়ার্ড চেক (৬ থেকে ৮ ডিজিট হতে হবে)
-            if (password.length < 6 || password.length > 8) {
-                alert("পাসওয়ার্ড অবশ্যই ৬ থেকে ৮ অক্ষরের মধ্যে হতে হবে।");
-                return;
-            }
-
-            // ৪. পাসওয়ার্ড মিল চেক
-            if (password !== confirmPassword) {
-                alert("আপনার দেওয়া দুটি পাসওয়ার্ড মিলছে না।");
-                return;
-            }
-
-            // সব ঠিক থাকলে পরের পেজে (application.html) নিয়ে যাবে
-            window.location.href = "application.html";
+            alert("আপনার অ্যাকাউন্ট সফলভাবে তৈরি হয়েছে! এখন লগইন করুন।");
+            window.location.href = "index.html";
         });
     </script>
 
