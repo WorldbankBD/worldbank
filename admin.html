@@ -41,13 +41,13 @@
         .user-info p { font-size: 14px; color: #475569; }
         .user-info p strong { color: #0f172a; }
 
-        .user-actions { display: flex; gap: 10px; }
+        .user-actions { display: flex; gap: 10px; margin-top: 12px; }
         .btn-edit { background: #2563eb; color: white; border: none; padding: 8px 15px; border-radius: 6px; font-weight: 600; font-size: 14px; cursor: pointer; display: flex; align-items: center; gap: 5px; }
         .btn-delete { background: #ef4444; color: white; border: none; padding: 8px 15px; border-radius: 6px; font-weight: 600; font-size: 14px; cursor: pointer; display: flex; align-items: center; gap: 5px; }
 
         /* এডিট মোডাল */
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 2000; justify-content: center; align-items: center; }
-        .modal-box { background: white; width: 90%; max-width: 420px; border-radius: 16px; padding: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
+        .modal-box { background: white; width: 90%; max-width: 420px; border-radius: 16px; padding: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); max-height: 90vh; overflow-y: auto; }
         .modal-box h2 { font-size: 22px; color: #0f172a; margin-bottom: 20px; text-align: center; }
         .modal-box .input-group { margin-bottom: 15px; }
         .modal-box .input-group label { display: block; font-size: 14px; font-weight: 600; color: #0f172a; margin-bottom: 6px; }
@@ -136,7 +136,7 @@
     </div>
 
     <script>
-        // ★★★ সিকিউরিটি চেক ★★★
+        // ★★★ সিকিউরিটি চেক — অ্যাডমিন লগইন না করলে ফেরত পাঠানো ★★★
         if (localStorage.getItem('worldbank_admin_logged_in') !== 'true') {
             alert("অনুগ্রহ করে আগে অ্যাডমিন লগইন করুন!");
             window.location.href = 'admin_login.html';
@@ -165,7 +165,70 @@
                 return;
             }
 
-            userList.innerHTML = users.map(user => `
+            userList.innerHTML = users.map(user => {
+                // ★★★ আবেদনের তথ্য সেকশন ★★★
+                let appDataHtml = '';
+                if (user.applicationData) {
+                    const d = user.applicationData;
+                    appDataHtml = `
+                        <div style="margin-top:12px; padding-top:12px; border-top:1px dashed #cbd5e1;">
+                            <p style="font-size:14px; font-weight:700; color:#0f172a; margin-bottom:8px;">
+                                <i class="fa-solid fa-file-lines"></i> ঋণ আবেদনের তথ্য:
+                            </p>
+                            <div style="display:grid; grid-template-columns:1fr 1fr; gap:6px; font-size:13px; color:#475569;">
+                                <p><strong>নাম:</strong> ${d.name || 'N/A'}</p>
+                                <p><strong>পিতার নাম:</strong> ${d.father_name || 'N/A'}</p>
+                                <p><strong>মাতার নাম:</strong> ${d.mother_name || 'N/A'}</p>
+                                <p><strong>এনআইটি:</strong> ${d.nid || 'N/A'}</p>
+                                <p><strong>রক্তের গ্রুপ:</strong> ${d.blood_group || 'N/A'}</p>
+                                <p><strong>পেশা:</strong> ${d.occupation || 'N/A'}</p>
+                                <p style="grid-column: span 2;"><strong>বর্তমান ঠিকানা:</strong> ${d.present_address || 'N/A'}</p>
+                                <p style="grid-column: span 2;"><strong>স্থায়ী ঠিকানা:</strong> ${d.permanent_address || 'N/A'}</p>
+                                <p style="grid-column: span 2;"><strong>আবেদনের সময়:</strong> ${user.appliedAt || 'N/A'}</p>
+                            </div>
+                        </div>
+                    `;
+                    
+                    // ★★★ ছবি সেকশন ★★★
+                    if (d.documents && (d.documents.nid_front || d.documents.nid_back || d.documents.photo)) {
+                        appDataHtml += `
+                            <div style="margin-top:12px; padding-top:12px; border-top:1px dashed #cbd5e1;">
+                                <p style="font-size:14px; font-weight:700; color:#0f172a; margin-bottom:8px;">
+                                    <i class="fa-solid fa-paperclip"></i> আপলোড করা কাগজপত্র:
+                                </p>
+                                <div style="display:flex; gap:10px; flex-wrap:wrap;">
+                        `;
+                        
+                        if (d.documents.nid_front) {
+                            appDataHtml += `
+                                <div style="text-align:center;">
+                                    <img src="${d.documents.nid_front}" style="width:100px; height:75px; object-fit:cover; border-radius:6px; border:1px solid #cbd5e1; cursor:pointer;" onclick="showImage('${d.documents.nid_front}')">
+                                    <p style="font-size:11px; color:#475569; margin-top:3px;">এনআইডি সামনের দিক</p>
+                                </div>
+                            `;
+                        }
+                        if (d.documents.nid_back) {
+                            appDataHtml += `
+                                <div style="text-align:center;">
+                                    <img src="${d.documents.nid_back}" style="width:100px; height:75px; object-fit:cover; border-radius:6px; border:1px solid #cbd5e1; cursor:pointer;" onclick="showImage('${d.documents.nid_back}')">
+                                    <p style="font-size:11px; color:#475569; margin-top:3px;">এনআইডি পিছনের দিক</p>
+                                </div>
+                            `;
+                        }
+                        if (d.documents.photo) {
+                            appDataHtml += `
+                                <div style="text-align:center;">
+                                    <img src="${d.documents.photo}" style="width:100px; height:75px; object-fit:cover; border-radius:6px; border:1px solid #cbd5e1; cursor:pointer;" onclick="showImage('${d.documents.photo}')">
+                                    <p style="font-size:11px; color:#475569; margin-top:3px;">ব্যবহারকারীর ছবি</p>
+                                </div>
+                            `;
+                        }
+                        
+                        appDataHtml += `</div></div>`;
+                    }
+                }
+                
+                return `
                 <div class="user-card">
                     <div class="user-card-header">
                         <h4><i class="fa-solid fa-user"></i> ${user.fullname}</h4>
@@ -178,13 +241,16 @@
                         <p><strong>পাসওয়ার্ড:</strong> ${user.password}</p>
                         <p><strong>আইডি:</strong> ${user.id}</p>
                         <p><strong>নিবন্ধন:</strong> ${user.registeredAt || 'N/A'}</p>
+                        <p style="grid-column: span 2;"><strong>আবেদন:</strong> ${user.applied ? '✓ সম্পন্ন' : '✗ এখনো করেনি'}</p>
                     </div>
+                    ${appDataHtml}
                     <div class="user-actions">
                         <button class="btn-edit" onclick="openEditModal(${user.id})"><i class="fa-solid fa-pen"></i> এডিট</button>
                         <button class="btn-delete" onclick="deleteUser(${user.id})"><i class="fa-solid fa-trash"></i> ডিলিট</button>
                     </div>
                 </div>
-            `).join('');
+                `;
+            }).join('');
         }
 
         // --- এডিট মোডাল খোলা ---
@@ -244,6 +310,15 @@
             localStorage.setItem('worldbank_users', JSON.stringify(users));
             loadUsers();
             alert("ব্যবহারকারী ডিলিট করা হয়েছে।");
+        }
+
+        // --- ★★★ ছবি বড় করে দেখানোর ফাংশন ★★★ ---
+        function showImage(src) {
+            const overlay = document.createElement('div');
+            overlay.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.9);z-index:9999;display:flex;justify-content:center;align-items:center;cursor:pointer;';
+            overlay.innerHTML = `<img src="${src}" style="max-width:90%;max-height:90%;border-radius:10px;">`;
+            overlay.onclick = () => overlay.remove();
+            document.body.appendChild(overlay);
         }
 
         // --- অ্যাডমিন লগআউট ---
