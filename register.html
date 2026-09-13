@@ -7,7 +7,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* রেজিস্ট্রেশন পেজের CSS */
+        /* আগের CSS এখানে থাকবে */
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Hind Siliguri', sans-serif; }
         body { background-color: #ffffff; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; }
         .login-container { width: 100%; max-width: 420px; background-color: #ffffff; padding: 40px 30px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05); text-align: center; }
@@ -40,42 +40,37 @@
             <p>নতুন অ্যাকাউন্ট তৈরি করুন</p>
         </div>
 
-        <form action="#" method="POST">
-            <!-- পূর্ণ নাম -->
+        <!-- ফর্মে আইডি যুক্ত করা হয়েছে যাতে JS দিয়ে চেক করা যায় -->
+        <form id="registerForm">
             <div class="input-group">
                 <label for="fullname">পুরো নাম</label>
                 <div class="input-wrapper">
                     <i class="fa-solid fa-user prefix-icon"></i>
-                    <input type="text" id="fullname" placeholder="আপনার পুরো নাম লিখুন">
+                    <input type="text" id="fullname" placeholder="আপনার পুরো নাম লিখুন" required>
                 </div>
             </div>
 
-            <!-- ফোন নম্বর -->
             <div class="input-group">
                 <label for="phone">ফোন নম্বর</label>
                 <div class="input-wrapper">
                     <i class="fa-solid fa-phone prefix-icon"></i>
-                    <input type="tel" id="phone" placeholder="আপনার ফোন নম্বর লিখুন">
+                    <input type="tel" id="phone" placeholder="আপনার ফোন নম্বর লিখুন" required>
                 </div>
             </div>
 
-            <!-- পাসওয়ার্ড -->
             <div class="input-group">
                 <label for="password">পাসওয়ার্ড</label>
                 <div class="input-wrapper">
                     <i class="fa-solid fa-lock prefix-icon"></i>
-                    <input type="password" id="password" placeholder="একটি শক্তিশালী পাসওয়ার্ড তৈরি করুন">
-                    <i class="fa-regular fa-eye suffix-icon"></i>
+                    <input type="password" id="password" placeholder="একটি শক্তিশালী পাসওয়ার্ড তৈরি করুন" required>
                 </div>
             </div>
 
-            <!-- পাসওয়ার্ড নিশ্চিত করুন -->
             <div class="input-group">
                 <label for="confirm-password">পাসওয়ার্ড নিশ্চিত করুন</label>
                 <div class="input-wrapper">
                     <i class="fa-solid fa-lock prefix-icon"></i>
-                    <input type="password" id="confirm-password" placeholder="আপনার পাসওয়ার্ড আবার লিখুন">
-                    <i class="fa-regular fa-eye suffix-icon"></i>
+                    <input type="password" id="confirm-password" placeholder="আপনার পাসওয়ার্ড আবার লিখুন" required>
                 </div>
             </div>
 
@@ -84,12 +79,48 @@
         </form>
 
         <p class="divider-text">ইতিমধ্যে একটি অ্যাকাউন্ট আছে?</p>
-        
-        <!-- এখানে লিংকটি index.html এ ফেরত পাঠানো হয়েছে -->
-        <a href="index.html" class="btn-create">
-            <i class="fa-solid fa-arrow-right-to-bracket"></i> সাইন ইন করুন
-        </a>
+        <a href="index.html" class="btn-create"><i class="fa-solid fa-arrow-right-to-bracket"></i> সাইন ইন করুন</a>
     </div>
+
+    <!-- ভ্যালিডেশনের জন্য JavaScript -->
+    <script>
+        document.getElementById('registerForm').addEventListener('submit', function(event) {
+            event.preventDefault(); // পেজ রিফ্রেশ হওয়া আটকায়
+
+            // ভ্যালুগুলো নেওয়া
+            const fullname = document.getElementById('fullname').value.trim();
+            const phone = document.getElementById('phone').value.trim();
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirm-password').value;
+
+            // ১. নাম চেক
+            if (fullname === "") {
+                alert("দয়া করে আপনার পুরো নাম লিখুন।");
+                return;
+            }
+
+            // ২. ফোন নম্বর চেক (ঠিক ১১ ডিজিট হতে হবে)
+            if (phone.length !== 11 || isNaN(phone)) {
+                alert("দয়া করে ১১ ডিজিটের সঠিক ফোন নম্বর লিখুন।");
+                return;
+            }
+
+            // ৩. পাসওয়ার্ড চেক (৬ থেকে ৮ ডিজিট হতে হবে)
+            if (password.length < 6 || password.length > 8) {
+                alert("পাসওয়ার্ড অবশ্যই ৬ থেকে ৮ অক্ষরের মধ্যে হতে হবে।");
+                return;
+            }
+
+            // ৪. পাসওয়ার্ড মিল চেক
+            if (password !== confirmPassword) {
+                alert("আপনার দেওয়া দুটি পাসওয়ার্ড মিলছে না।");
+                return;
+            }
+
+            // সব ঠিক থাকলে পরের পেজে (application.html) নিয়ে যাবে
+            window.location.href = "application.html";
+        });
+    </script>
 
 </body>
 </html>
