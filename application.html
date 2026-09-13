@@ -37,8 +37,28 @@
         .input-group label span { color: #ef4444; } 
         .input-wrapper { position: relative; display: flex; align-items: center; }
         .input-wrapper i.prefix-icon { position: absolute; left: 15px; color: #94a3b8; font-size: 16px; }
-        .input-wrapper input, .input-wrapper select { width: 100%; padding: 14px 15px 14px 45px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 15px; outline: none; background-color: #f8fafc; color: #0f172a; }
+        
+        /* ★★★ ড্রপডাউনের লেখা ও প্যাডিং ঠিক করার জন্য ★★★ */
+        .input-wrapper input, .input-wrapper select { 
+            width: 100%; 
+            padding: 14px 15px 14px 45px; 
+            border: 1px solid #cbd5e1; 
+            border-radius: 8px; 
+            font-size: 15px; 
+            outline: none; 
+            background-color: #f8fafc; 
+            color: #0f172a; 
+            text-indent: 1px;
+        }
         .input-wrapper input:focus, .input-wrapper select:focus { border-color: #1e88e5; background-color: #fff; box-shadow: 0 0 0 3px rgba(30, 136, 229, 0.1); }
+        
+        /* ★★★ ড্রপডাউনের অপশনগুলোর মাঝে জায়গা বাড়ানোর জন্য ★★★ */
+        .input-wrapper select option {
+            padding: 12px 15px 12px 45px;
+            line-height: 1.8;
+            font-size: 15px;
+            min-height: 40px;
+        }
         
         /* ড্রপডাউন এরো */
         .select-wrapper::after {
@@ -63,7 +83,7 @@
         .signature-box { border: 2px dashed #cbd5e1; border-radius: 10px; height: 150px; background: #f8fafc; display: flex; justify-content: center; align-items: center; color: #94a3b8; font-size: 14px; margin-bottom: 15px; }
         .btn-delete-sig { background: #dc2626; color: white; border: none; padding: 10px 15px; border-radius: 6px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 5px; font-size: 14px; }
 
-        /* সাবমিট বাটন (লিংক হিসেবে কাজ করবে) */
+        /* সাবমিট বাটন */
         .btn-submit { width: 100%; background: #1565c0; color: white; border: none; padding: 16px; border-radius: 8px; font-size: 18px; font-weight: 700; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 10px; margin-top: 10px; box-shadow: 0 4px 12px rgba(21, 101, 192, 0.3); text-decoration: none; }
         .btn-submit:hover { background: #0d47a1; color: white; }
         
