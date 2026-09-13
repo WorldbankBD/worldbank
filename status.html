@@ -70,6 +70,51 @@
 
         /* ফ্লোটিং মেনু বাটন */
         .floating-menu { position: fixed; bottom: 20px; left: 20px; background: #1e88e5; color: white; width: 50px; height: 50px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 22px; box-shadow: 0 4px 10px rgba(0,0,0,0.2); cursor: pointer; z-index: 999; }
+
+        /* ★★★ সাইড মেনু (Side Menu) ★★★ */
+        .side-menu-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 2000;
+        }
+        .side-menu {
+            position: fixed;
+            top: 0; left: 0;
+            width: 80%;
+            max-width: 320px;
+            height: 100%;
+            background: white;
+            z-index: 2001;
+            transform: translateX(-100%);
+            transition: transform 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+            box-shadow: 5px 0 15px rgba(0,0,0,0.1);
+        }
+        .side-menu.open { transform: translateX(0); }
+        
+        .side-menu-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #e2e8f0; padding-bottom: 15px; margin-bottom: 20px; }
+        .side-menu-header h2 { font-size: 22px; color: #2563eb; font-weight: 700; }
+        .side-menu-header .close-btn { background: none; border: none; font-size: 24px; color: #64748b; cursor: pointer; }
+        
+        .side-menu-links { display: flex; gap: 15px; }
+        .menu-link {
+            flex: 1;
+            background: #e2e8f0;
+            border-radius: 10px;
+            padding: 20px 10px;
+            text-align: center;
+            text-decoration: none;
+            color: #0f172a;
+            transition: 0.3s;
+        }
+        .menu-link:hover { background: #cbd5e1; }
+        .menu-link i { font-size: 32px; color: #2563eb; margin-bottom: 10px; display: block; }
+        .menu-link span { font-size: 15px; font-weight: 600; }
     </style>
 </head>
 <body>
@@ -187,13 +232,34 @@
 
     </div>
 
+    <!-- ★★★ সাইড মেনু (Side Menu) ★★★ -->
+    <div class="side-menu-overlay" id="menuOverlay" onclick="closeMenu()">
+        <div class="side-menu" id="sideMenu" onclick="event.stopPropagation()">
+            <div class="side-menu-header">
+                <h2>মেনু</h2>
+                <button class="close-btn" onclick="closeMenu()"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="side-menu-links">
+                <a href="dashboard.html" class="menu-link">
+                    <i class="fa-solid fa-house"></i>
+                    <span>হোম</span>
+                </a>
+                <a href="application.html" class="menu-link">
+                    <i class="fa-solid fa-user"></i>
+                    <span>সম্পূর্ণ তথ্য</span>
+                </a>
+            </div>
+        </div>
+    </div>
+
     <!-- ফ্লোটিং মেনু আইকন -->
-    <div class="floating-menu">
+    <div class="floating-menu" onclick="openMenu()">
         <i class="fa-solid fa-bars"></i>
     </div>
 
-    <!-- স্লাইডার জাভাস্ক্রিপ্ট -->
+    <!-- স্লাইডার এবং মেনু জাভাস্ক্রিপ্ট -->
     <script>
+        // --- স্লাইডার ---
         let slideIndex = 0;
         const slides = document.querySelectorAll('.slide');
         const dots = document.querySelectorAll('.dot');
@@ -213,6 +279,17 @@
         setInterval(() => {
             showSlide(slideIndex + 1);
         }, 3000);
+
+        // --- ★★★ সাইড মেনু ফাংশন ★★★ ---
+        function openMenu() {
+            document.getElementById('sideMenu').classList.add('open');
+            document.getElementById('menuOverlay').style.display = 'block';
+        }
+
+        function closeMenu() {
+            document.getElementById('sideMenu').classList.remove('open');
+            document.getElementById('menuOverlay').style.display = 'none';
+        }
     </script>
 
 </body>
