@@ -29,8 +29,6 @@
         .slide-text { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; color: white; width: 100%; padding: 0 20px; text-shadow: 0 2px 5px rgba(0,0,0,0.7); }
         .slide-text h2 { font-size: 22px; margin-bottom: 5px; }
         .slide-text p { font-size: 14px; }
-        
-        /* স্লাইডার ডটস */
         .dots { position: absolute; bottom: 15px; left: 50%; transform: translateX(-50%); display: flex; gap: 8px; }
         .dot { width: 12px; height: 12px; background: rgba(255,255,255,0.5); border-radius: 50%; cursor: pointer; transition: 0.3s; }
         .dot.active { background: #ffffff; width: 30px; border-radius: 10px; }
@@ -56,12 +54,12 @@
         .input-group label i { color: #2563eb; }
         
         .input-wrapper { position: relative; display: flex; align-items: center; }
-        .input-wrapper select, .input-wrapper input { width: 100%; padding: 14px 15px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 15px; outline: none; background-color: #ffffff; color: #0f172a; appearance: none; }
-        .input-wrapper select:focus, .input-wrapper input:focus { border-color: #2563eb; box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1); }
+        .input-wrapper select { width: 100%; padding: 14px 15px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 15px; outline: none; background-color: #ffffff; color: #0f172a; appearance: none; }
+        .input-wrapper select:focus { border-color: #2563eb; box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1); }
         .select-wrapper::after { content: '\f107'; font-family: 'Font Awesome 6 Free'; font-weight: 900; position: absolute; right: 15px; color: #64748b; pointer-events: none; }
 
         /* EMI বক্স */
-        .emi-box { background: #fef3c7; border: 1px solid #fcd34d; border-radius: 10px; padding: 15px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .emi-box { background: #fef3c7; border: 1px solid #fcd34d; border-radius: 10px; padding: 15px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; transition: all 0.3s ease; }
         .emi-left { display: flex; align-items: center; gap: 10px; }
         .emi-left i { font-size: 24px; color: #d97706; }
         .emi-left p { font-size: 14px; color: #92400e; }
@@ -93,9 +91,8 @@
     <!-- মূল কন্টেইনার -->
     <div class="main-container">
 
-        <!-- ইমেজ স্লাইডার (স্ক্রিনশট ১, ২, ৩, ৪) -->
+        <!-- ইমেজ স্লাইডার -->
         <div class="slider-container">
-            <!-- স্লাইড ১ -->
             <div class="slide active">
                 <img src="https://images.unsplash.com/photo-1554224155-6726b3ff858f?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Bank">
                 <div class="slide-text">
@@ -103,7 +100,6 @@
                     <p>বিশ্বস্ত ও নিরাপদ ঋণ সেবা আপনার হাতে</p>
                 </div>
             </div>
-            <!-- স্লাইড ২ -->
             <div class="slide">
                 <img src="https://images.unsplash.com/photo-1589391886645-d51941baf7fb?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Tax">
                 <div class="slide-text">
@@ -111,7 +107,6 @@
                     <p>মাত্র ২৪ ঘন্টার মধ্যে ঋণ অনুমোদন এবং বিতরণ</p>
                 </div>
             </div>
-            <!-- স্লাইড ৩ -->
             <div class="slide">
                 <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Woman">
                 <div class="slide-text">
@@ -119,7 +114,6 @@
                     <p>আপনার সুবিধামত নামমাত্র পরিশোধ পরিকল্পনা</p>
                 </div>
             </div>
-            <!-- স্লাইড ৪ -->
             <div class="slide">
                 <img src="https://images.unsplash.com/photo-1450101499163-c8848c66ca85?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Pen">
                 <div class="slide-text">
@@ -127,8 +121,6 @@
                     <p>কোনো লুকানো খরচ নেই - সব কিছু পরিষ্কার</p>
                 </div>
             </div>
-
-            <!-- ডটস -->
             <div class="dots">
                 <div class="dot active" onclick="currentSlide(0)"></div>
                 <div class="dot" onclick="currentSlide(1)"></div>
@@ -137,7 +129,7 @@
             </div>
         </div>
 
-        <!-- ফিচার কার্ড (স্ক্রিনশট ১) -->
+        <!-- ফিচার কার্ড -->
         <div class="feature-grid">
             <div class="feature-card">
                 <div class="feature-icon"><i class="fa-solid fa-shield-halved"></i></div>
@@ -151,48 +143,91 @@
             </div>
         </div>
 
-        <!-- ড্যাশবোর্ড টাইটেল (স্ক্রিনশট ৫) -->
+        <!-- ড্যাশবোর্ড টাইটেল -->
         <div class="dashboard-title">
             <i class="fa-solid fa-chart-pie"></i>
             <h1>আপনার ঋণ<br>ড্যাশবোর্ড</h1>
         </div>
 
-        <!-- ঋণ আবেদন ফর্ম (স্ক্রিনশট ৫) -->
+        <!-- ঋণ আবেদন ফর্ম -->
         <div class="loan-form-card">
             <h2>ঋণের জন্য আবেদন করুন</h2>
             
+            <!-- ঋণের উদ্দেশ্য -->
             <div class="input-group">
                 <label><i class="fa-solid fa-bullseye"></i> ঋণের উদ্দেশ্য নির্বাচন করুন</label>
                 <div class="input-wrapper select-wrapper">
-                    <select>
-                        <option>Personal Loan (ব্যক্তিগত ঋণ)</option>
-                        <option>Home Loan (গৃহ ঋণ)</option>
-                        <option>Car Loan (গাড়ি ঋণ)</option>
-                        <option>Business Loan (ব্যবসায়িক ঋণ)</option>
+                    <select id="loanPurpose">
+                        <option value="Personal Loan">Personal Loan (ব্যক্তিগত ঋণ)</option>
+                        <option value="Home Loan">Home Loan (বাড়ি কেনা/নির্মাণ ঋণ)</option>
+                        <option value="Business Loan">Business Loan (ব্যবসা ঋণ)</option>
+                        <option value="Car Loan">Car Loan (গাড়ি ঋণ)</option>
+                        <option value="Education Loan">Education Loan (শিক্ষা ঋণ)</option>
+                        <option value="Startup Loan">Startup Loan (স্টার্টআপ/নতুন ব্যবসা ঋণ)</option>
+                        <option value="Medical Loan">Medical Loan (চিকিৎসা ঋণ)</option>
+                        <option value="Wedding Loan">Wedding Loan (বিয়ের সংক্রান্ত ঋণ)</option>
+                        <option value="Foreign Loan">Foreign Loan (প্রবাসী ঋণ)</option>
+                        <option value="Agriculture Loan">Agriculture Loan (কৃষি ঋণ)</option>
+                        <option value="SME Loan">SME Loan (ক্ষুদ্র ও মাঝারি ব্যবসা ঋণ)</option>
+                        <option value="Gold Loan">Gold Loan (সোনার বিনিময়ে ঋণ)</option>
+                        <option value="Emergency Loan">Emergency Loan (জরুরি প্রয়োজনে ঋণ)</option>
+                        <option value="Travel Loan">Travel Loan (ভ্রমণ ঋণ)</option>
+                        <option value="House Renovation Loan">House Renovation Loan (বাড়ি মেরামত/সাজানোর ঋণ)</option>
+                        <option value="Salary Loan">Salary Loan (বেতন অগ্রিম ঋণ)</option>
                     </select>
                 </div>
             </div>
 
+            <!-- ঋণের পরিমাণ -->
             <div class="input-group">
                 <label><i class="fa-solid fa-money-bill-wave"></i> ঋণের পরিমাণ (টাকায়)</label>
                 <div class="input-wrapper select-wrapper">
-                    <select>
-                        <option>৳ ৫০,০০০</option>
-                        <option>৳ ১,০০,০০০</option>
-                        <option>৳ ৫,০০,০০০</option>
-                        <option>৳ ১০,০০,০০০</option>
+                    <select id="loanAmount">
+                        <option value="5000">৳ ৫,০০০</option>
+                        <option value="10000">৳ ১০,০০০</option>
+                        <option value="15000">৳ ১৫,০০০</option>
+                        <option value="20000">৳ ২০,০০০</option>
+                        <option value="25000">৳ ২৫,০০০</option>
+                        <option value="30000">৳ ৩০,০০০</option>
+                        <option value="40000">৳ ৪০,০০০</option>
+                        <option value="50000" selected>৳ ৫০,০০০</option>
+                        <option value="60000">৳ ৬০,০০০</option>
+                        <option value="70000">৳ ৭০,০০০</option>
+                        <option value="80000">৳ ৮০,০০০</option>
+                        <option value="90000">৳ ৯০,০০০</option>
+                        <option value="100000">৳ ১,০০,০০০</option>
+                        <option value="150000">৳ ১,৫০,০০০</option>
+                        <option value="200000">৳ ২,০০,০০০</option>
+                        <option value="300000">৳ ৩,০০,০০০</option>
+                        <option value="400000">৳ ৪,০০,০০০</option>
+                        <option value="500000">৳ ৫,০০,০০০</option>
+                        <option value="600000">৳ ৬,০০,০০০</option>
+                        <option value="700000">৳ ৭,০০,০০০</option>
+                        <option value="800000">৳ ৮,০০,০০০</option>
+                        <option value="900000">৳ ৯,০০,০০০</option>
+                        <option value="1000000">৳ ১০,০০,০০০</option>
+                        <option value="1200000">৳ ১২,০০,০০০</option>
+                        <option value="1500000">৳ ১৫,০০,০০০</option>
+                        <option value="1800000">৳ ১৮,০০,০০০</option>
+                        <option value="2000000">৳ ২০,০০,০০০</option>
+                        <option value="2500000">৳ ২৫,০০,০০০</option>
+                        <option value="3000000">৳ ৩০,০০,০০০</option>
+                        <option value="4000000">৳ ৪০,০০,০০০</option>
+                        <option value="5000000">৳ ৫০,০০,০০০</option>
                     </select>
                 </div>
             </div>
 
+            <!-- পরিশোধের মেয়াদ -->
             <div class="input-group">
                 <label><i class="fa-solid fa-calendar-days"></i> পরিশোধের মেয়াদ (মাসে)</label>
                 <div class="input-wrapper select-wrapper">
-                    <select>
-                        <option>১২ মাস</option>
-                        <option>২৪ মাস</option>
-                        <option>৩৬ মাস</option>
-                        <option>৪৮ মাস</option>
+                    <select id="loanTenure">
+                        <option value="12">১২ মাস</option>
+                        <option value="24" selected>২৪ মাস</option>
+                        <option value="36">৩৬ মাস</option>
+                        <option value="48">৪৮ মাস</option>
+                        <option value="60">৬০ মাস</option>
                     </select>
                 </div>
             </div>
@@ -204,7 +239,7 @@
                     <p>মাসিক কিস্তি</p>
                 </div>
                 <div>
-                    <h3>৳ ১১৪১.৬৭</h3>
+                    <h3 id="emiAmount">৳ ২১৮৩.৩৩</h3>
                     <p class="emi-note">৫% সুদে সহজ পরিশোধ</p>
                 </div>
             </div>
@@ -221,8 +256,9 @@
         <i class="fa-solid fa-bars"></i>
     </div>
 
-    <!-- স্লাইডার জাভাস্ক্রিপ্ট -->
+    <!-- স্লাইডার এবং EMI ক্যালকুলেটর জাভাস্ক্রিপ্ট -->
     <script>
+        // --- স্লাইডার ---
         let slideIndex = 0;
         const slides = document.querySelectorAll('.slide');
         const dots = document.querySelectorAll('.dot');
@@ -230,9 +266,7 @@
         function showSlide(n) {
             slides.forEach(slide => slide.classList.remove('active'));
             dots.forEach(dot => dot.classList.remove('active'));
-            
             slideIndex = (n + slides.length) % slides.length;
-            
             slides[slideIndex].classList.add('active');
             dots[slideIndex].classList.add('active');
         }
@@ -241,10 +275,39 @@
             showSlide(n);
         }
 
-        // অটো স্লাইড (প্রতি ৩ সেকেন্ডে পরিবর্তন হবে)
         setInterval(() => {
             showSlide(slideIndex + 1);
         }, 3000);
+
+        // --- EMI ক্যালকুলেটর ---
+        const loanAmountSelect = document.getElementById('loanAmount');
+        const loanTenureSelect = document.getElementById('loanTenure');
+        const emiAmountDisplay = document.getElementById('emiAmount');
+
+        function calculateEMI() {
+            const principal = parseFloat(loanAmountSelect.value);
+            const tenure = parseInt(loanTenureSelect.value);
+            const interestRate = 0.05; // ৫% সুদ
+
+            // মোট সুদ = মূলধন * ৫%
+            const totalInterest = principal * interestRate;
+            const totalPayable = principal + totalInterest;
+            
+            // মাসিক কিস্তি = মোট পরিশোধ / মেয়াদ (মাস)
+            const emi = totalPayable / tenure;
+
+            // সংখ্যাটিকে বাংলা সংখ্যায় রূপান্তর (দশমিকের পর ২ ঘর পর্যন্ত)
+            const formattedEMI = emi.toLocaleString('bn-BD', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+            
+            emiAmountDisplay.innerText = '৳ ' + formattedEMI;
+        }
+
+        // যখনই ড্রপডাউন পরিবর্তন হবে, EMI আপডেট হবে
+        loanAmountSelect.addEventListener('change', calculateEMI);
+        loanTenureSelect.addEventListener('change', calculateEMI);
+
+        // পেজ লোড হওয়ার সময় প্রথমবার হিসাব করে নিন
+        calculateEMI();
     </script>
 
 </body>
