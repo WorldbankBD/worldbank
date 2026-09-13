@@ -136,7 +136,7 @@
     </div>
 
     <script>
-        // ★★★ সিকিউরিটি চেক — অ্যাডমিন লগইন না করলে ফেরত পাঠানো ★★★
+        // ★★★ সিকিউরিটি চেক ★★★
         if (localStorage.getItem('worldbank_admin_logged_in') !== 'true') {
             alert("অনুগ্রহ করে আগে অ্যাডমিন লগইন করুন!");
             window.location.href = 'admin_login.html';
@@ -150,14 +150,12 @@
             const activeUsers = document.getElementById('activeUsers');
             const todayUsers = document.getElementById('todayUsers');
 
-            // স্ট্যাটস আপডেট
             totalUsers.innerText = users.length.toLocaleString('bn-BD');
             activeUsers.innerText = users.filter(u => u.status === 'active').length.toLocaleString('bn-BD');
             
             const today = new Date().toLocaleDateString('bn-BD');
             todayUsers.innerText = users.filter(u => u.registeredAt && u.registeredAt.includes(today)).length.toLocaleString('bn-BD');
 
-            // ইউজার লিস্ট
             if (users.length === 0) {
                 userList.innerHTML = `
                     <div class="empty-state">
