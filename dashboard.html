@@ -398,15 +398,14 @@
         // পেজ লোড হওয়ার সময় প্রথমবার হিসাব করে নিন (১২ মাস ডিফল্ট)
         calculateEMI();
 
-        // --- ★★★ সফলতার পপ-আপ ফাংশন ★★★ ---
+        // --- ★★★ সফলতার পপ-আপ ফাংশন (আপডেট করা) ★★★ ---
         function showSuccessPopup() {
             document.getElementById('successPopup').style.display = 'flex';
         }
 
         function closeSuccessPopup() {
             document.getElementById('successPopup').style.display = 'none';
-            // চাইলে এখানে পেজ রিডাইরেক্ট করতে পারেন, যেমন:
-            // window.location.href = 'index.html';
+            window.location.href = 'status.html'; // ★ এই লাইনটি যোগ করা হয়েছে, তাই "ঠিক আছে" ক্লিক করলে status.html এ যাবে
         }
     </script>
 
