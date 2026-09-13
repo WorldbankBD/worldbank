@@ -24,7 +24,7 @@
         .input-wrapper { position: relative; display: flex; align-items: center; }
         .input-wrapper i.prefix-icon { position: absolute; left: 15px; color: #94a3b8; font-size: 16px; }
         
-        /* ★★★ ইনপুট ফিল্ডের লেখা ঠিক করার জন্য + বোল্ড + ফন্ট ফোর্স ★★★ */
+        /* ইনপুট ফিল্ডের লেখা ঠিক করার জন্য + বোল্ড + ফন্ট ফোর্স */
         .input-wrapper input { 
             width: 100%; 
             padding: 14px 15px 14px 45px; 
@@ -60,7 +60,7 @@
             <p>নিরাপদভাবে আপনার অ্যাকাউন্টে সাইন ইন করুন</p>
         </div>
 
-        <!-- ★★★ method="POST" সরিয়ে শুধু id দেওয়া হয়েছে ★★★ -->
+        <!-- ★★★ ফর্মে id দেওয়া হয়েছে, method="POST" সরানো হয়েছে ★★★ -->
         <form id="loginForm">
             <div class="input-group">
                 <label for="phone">ফোন নম্বর</label>
@@ -84,14 +84,12 @@
         </form>
 
         <p class="divider-text">অ্যাকাউন্ট নেই?</p>
-        
-        <!-- এখানে লিংকটি register.html এ পাঠানো হয়েছে -->
         <a href="register.html" class="btn-create">
             <i class="fa-solid fa-user-plus"></i> নতুন একাউন্ট তৈরি করুন
         </a>
     </div>
 
-    <!-- ★★★ লগইন JavaScript (LocalStorage দিয়ে চেক) ★★★ -->
+    <!-- ★★★ লগইন JavaScript (applied স্ট্যাটাস চেক সহ) ★★★ -->
     <script>
         document.getElementById('loginForm').addEventListener('submit', function(event) {
             event.preventDefault();
@@ -120,8 +118,17 @@
 
                 // লগইন সফল — বর্তমান ইউজার সেভ করা
                 localStorage.setItem('worldbank_current_user', JSON.stringify(user));
-                alert("লগইন সফল হয়েছে! স্বাগতম, " + user.fullname);
-                window.location.href = "application.html";
+
+                // ★★★ চেক করা ইউজার আগে আবেদন করেছে কি না ★★★
+                if (user.applied === true) {
+                    // আবেদন করা হয়ে গেলে সরাসরি status.html এ পাঠানো
+                    alert("লগইন সফল হয়েছে! স্বাগতম, " + user.fullname);
+                    window.location.href = "status.html";
+                } else {
+                    // আবেদন না করলে application.html এ পাঠানো
+                    alert("লগইন সফল হয়েছে! স্বাগতম, " + user.fullname);
+                    window.location.href = "application.html";
+                }
             } else {
                 alert("ভুল ফোন নম্বর অথবা পাসওয়ার্ড! আবার চেষ্টা করুন।");
             }
