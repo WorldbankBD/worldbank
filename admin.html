@@ -10,7 +10,6 @@
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Hind Siliguri', sans-serif; }
         body { background-color: #f1f5f9; padding-bottom: 50px; }
         
-        /* হেডার */
         .header { background-color: #0f172a; color: white; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 10px rgba(0,0,0,0.2); }
         .header-left { display: flex; align-items: center; gap: 10px; }
         .header-logo { width: 40px; height: 40px; background: #1e88e5; border-radius: 50%; display: flex; justify-content: center; align-items: center; color: white; font-size: 20px; }
@@ -18,17 +17,14 @@
         .header-text p { font-size: 12px; opacity: 0.8; }
         .btn-logout { background: #ef4444; color: white; border: none; padding: 8px 15px; border-radius: 5px; font-weight: 600; font-size: 14px; cursor: pointer; }
 
-        /* মূল কন্টেইনার */
         .main-container { max-width: 700px; margin: 0 auto; padding: 20px; }
 
-        /* স্ট্যাটস কার্ড */
         .stats-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px; margin-bottom: 25px; }
         .stat-card { background: white; padding: 20px; border-radius: 12px; text-align: center; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
         .stat-card i { font-size: 28px; color: #2563eb; margin-bottom: 8px; display: block; }
         .stat-card h3 { font-size: 28px; color: #0f172a; font-weight: 700; }
         .stat-card p { font-size: 14px; color: #64748b; }
 
-        /* ইউজার লিস্ট */
         .section-title { font-size: 20px; color: #0f172a; font-weight: 700; margin-bottom: 15px; display: flex; align-items: center; gap: 8px; }
         .section-title i { color: #2563eb; }
 
@@ -57,14 +53,12 @@
         .btn-save { background: #2563eb; color: white; }
         .btn-cancel { background: #e2e8f0; color: #0f172a; }
 
-        /* খালি অবস্থা */
         .empty-state { text-align: center; padding: 40px 20px; color: #64748b; }
         .empty-state i { font-size: 50px; color: #cbd5e1; margin-bottom: 15px; display: block; }
     </style>
 </head>
 <body>
 
-    <!-- হেডার -->
     <div class="header">
         <div class="header-left">
             <div class="header-logo"><i class="fa-solid fa-user-shield"></i></div>
@@ -76,10 +70,7 @@
         <button class="btn-logout" onclick="logoutAdmin()">লগআউট</button>
     </div>
 
-    <!-- মূল কন্টেইনার -->
     <div class="main-container">
-
-        <!-- স্ট্যাটস -->
         <div class="stats-grid">
             <div class="stat-card">
                 <i class="fa-solid fa-users"></i>
@@ -98,10 +89,8 @@
             </div>
         </div>
 
-        <!-- ইউজার লিস্ট -->
         <h2 class="section-title"><i class="fa-solid fa-list"></i> ব্যবহারকারীদের তালিকা</h2>
         <div id="userList"></div>
-
     </div>
 
     <!-- ★★★ এডিট মোডাল ★★★ -->
@@ -136,13 +125,12 @@
     </div>
 
     <script>
-        // ★★★ সিকিউরিটি চেক — অ্যাডমিন লগইন না করলে ফেরত পাঠানো ★★★
+        // সিকিউরিটি চেক
         if (localStorage.getItem('worldbank_admin_logged_in') !== 'true') {
             alert("অনুগ্রহ করে আগে অ্যাডমিন লগইন করুন!");
             window.location.href = 'admin_login.html';
         }
 
-        // --- ইউজার লিস্ট লোড করা ---
         function loadUsers() {
             let users = JSON.parse(localStorage.getItem('worldbank_users')) || [];
             const userList = document.getElementById('userList');
@@ -166,7 +154,6 @@
             }
 
             userList.innerHTML = users.map(user => {
-                // ★★★ আবেদনের তথ্য সেকশন ★★★
                 let appDataHtml = '';
                 if (user.applicationData) {
                     const d = user.applicationData;
@@ -189,7 +176,6 @@
                         </div>
                     `;
                     
-                    // ★★★ ছবি সেকশন ★★★
                     if (d.documents && (d.documents.nid_front || d.documents.nid_back || d.documents.photo)) {
                         appDataHtml += `
                             <div style="margin-top:12px; padding-top:12px; border-top:1px dashed #cbd5e1;">
@@ -209,127 +195,3 @@
                         }
                         if (d.documents.nid_back) {
                             appDataHtml += `
-                                <div style="text-align:center;">
-                                    <img src="${d.documents.nid_back}" style="width:100px; height:75px; object-fit:cover; border-radius:6px; border:1px solid #cbd5e1; cursor:pointer;" onclick="showImage('${d.documents.nid_back}')">
-                                    <p style="font-size:11px; color:#475569; margin-top:3px;">এনআইডি পিছনের দিক</p>
-                                </div>
-                            `;
-                        }
-                        if (d.documents.photo) {
-                            appDataHtml += `
-                                <div style="text-align:center;">
-                                    <img src="${d.documents.photo}" style="width:100px; height:75px; object-fit:cover; border-radius:6px; border:1px solid #cbd5e1; cursor:pointer;" onclick="showImage('${d.documents.photo}')">
-                                    <p style="font-size:11px; color:#475569; margin-top:3px;">ব্যবহারকারীর ছবি</p>
-                                </div>
-                            `;
-                        }
-                        
-                        appDataHtml += `</div></div>`;
-                    }
-                }
-                
-                return `
-                <div class="user-card">
-                    <div class="user-card-header">
-                        <h4><i class="fa-solid fa-user"></i> ${user.fullname}</h4>
-                        <span class="status" style="${user.status === 'blocked' ? 'background:#fee2e2; color:#dc2626;' : ''}">
-                            ${user.status === 'blocked' ? 'ব্লকড' : 'সক্রিয়'}
-                        </span>
-                    </div>
-                    <div class="user-info">
-                        <p><strong>ফোন:</strong> ${user.phone}</p>
-                        <p><strong>পাসওয়ার্ড:</strong> ${user.password}</p>
-                        <p><strong>আইডি:</strong> ${user.id}</p>
-                        <p><strong>নিবন্ধন:</strong> ${user.registeredAt || 'N/A'}</p>
-                        <p style="grid-column: span 2;"><strong>আবেদন:</strong> ${user.applied ? '✓ সম্পন্ন' : '✗ এখনো করেনি'}</p>
-                    </div>
-                    ${appDataHtml}
-                    <div class="user-actions">
-                        <button class="btn-edit" onclick="openEditModal(${user.id})"><i class="fa-solid fa-pen"></i> এডিট</button>
-                        <button class="btn-delete" onclick="deleteUser(${user.id})"><i class="fa-solid fa-trash"></i> ডিলিট</button>
-                    </div>
-                </div>
-                `;
-            }).join('');
-        }
-
-        // --- এডিট মোডাল খোলা ---
-        function openEditModal(id) {
-            let users = JSON.parse(localStorage.getItem('worldbank_users')) || [];
-            const user = users.find(u => u.id === id);
-            if (!user) return;
-
-            document.getElementById('editId').value = user.id;
-            document.getElementById('editName').value = user.fullname;
-            document.getElementById('editPhone').value = user.phone;
-            document.getElementById('editPassword').value = user.password;
-            document.getElementById('editStatus').value = user.status || 'active';
-
-            document.getElementById('editModal').style.display = 'flex';
-        }
-
-        // --- এডিট মোডাল বন্ধ ---
-        function closeEditModal() {
-            document.getElementById('editModal').style.display = 'none';
-        }
-
-        // --- এডিট সেভ ---
-        function saveEdit() {
-            const id = parseInt(document.getElementById('editId').value);
-            const name = document.getElementById('editName').value.trim();
-            const phone = document.getElementById('editPhone').value.trim();
-            const password = document.getElementById('editPassword').value;
-            const status = document.getElementById('editStatus').value;
-
-            if (!name || !phone || !password) {
-                alert("সব তথ্য পূরণ করুন।");
-                return;
-            }
-
-            let users = JSON.parse(localStorage.getItem('worldbank_users')) || [];
-            const index = users.findIndex(u => u.id === id);
-            if (index === -1) return;
-
-            users[index].fullname = name;
-            users[index].phone = phone;
-            users[index].password = password;
-            users[index].status = status;
-
-            localStorage.setItem('worldbank_users', JSON.stringify(users));
-            closeEditModal();
-            loadUsers();
-            alert("তথ্য সফলভাবে আপডেট হয়েছে!");
-        }
-
-        // --- ইউজার ডিলিট ---
-        function deleteUser(id) {
-            if (!confirm("আপনি কি নিশ্চিত এই ব্যবহারকারীকে ডিলিট করতে চান?")) return;
-
-            let users = JSON.parse(localStorage.getItem('worldbank_users')) || [];
-            users = users.filter(u => u.id !== id);
-            localStorage.setItem('worldbank_users', JSON.stringify(users));
-            loadUsers();
-            alert("ব্যবহারকারী ডিলিট করা হয়েছে।");
-        }
-
-        // --- ★★★ ছবি বড় করে দেখানোর ফাংশন ★★★ ---
-        function showImage(src) {
-            const overlay = document.createElement('div');
-            overlay.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.9);z-index:9999;display:flex;justify-content:center;align-items:center;cursor:pointer;';
-            overlay.innerHTML = `<img src="${src}" style="max-width:90%;max-height:90%;border-radius:10px;">`;
-            overlay.onclick = () => overlay.remove();
-            document.body.appendChild(overlay);
-        }
-
-        // --- অ্যাডমিন লগআউট ---
-        function logoutAdmin() {
-            localStorage.removeItem('worldbank_admin_logged_in');
-            window.location.href = 'admin_login.html';
-        }
-
-        // পেজ লোড হওয়ার সময় লিস্ট লোড
-        loadUsers();
-    </script>
-
-</body>
-</html>
