@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>বিশ্বব্যাংক - লগইন</title>
+    
+    <!-- গুগল ফন্ট (বাংলা লেখার জন্য) -->
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- আইকনের জন্য ফন্টঅসাম (FontAwesome) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        /* বেসিক রিসেট */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Hind Siliguri', sans-serif;
+        }
+
+        body {
+            background-color: #ffffff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        /* মূল কন্টেইনার */
+        .login-container {
+            width: 100%;
+            max-width: 420px;
+            background-color: #ffffff;
+            padding: 40px 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05); /* হালকা শ্যাডো */
+            text-align: center;
+        }
+
+        /* লোগো সেকশন */
+        .logo-section {
+            margin-bottom: 25px;
+        }
+
+        .logo-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #1e88e5, #1565c0);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0 auto 15px auto;
+            box-shadow: 0 8px 15px rgba(30, 136, 229, 0.3);
+        }
+
+        .logo-icon i {
+            font-size: 40px;
+            color: #ffffff;
+        }
+
+        .logo-section h1 {
+            font-size: 28px;
+            color: #0f172a;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .logo-section p {
+            font-size: 14px;
+            color: #64748b;
+        }
+
+        /* ইনপুট ফিল্ড সেকশন */
+        .input-group {
+            text-align: left;
+            margin-bottom: 20px;
+        }
+
+        .input-group label {
+            display: block;
+            font-size: 15px;
+            font-weight: 600;
+            color: #0f172a;
+            margin-bottom: 8px;
+        }
+
+        .input-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .input-wrapper i.prefix-icon {
+            position: absolute;
+            left: 15px;
+            color: #94a3b8;
+            font-size: 16px;
+        }
+
+        .input-wrapper input {
+            width: 100%;
+            padding: 14px 15px 14px 45px; /* আইকনের জন্য বাড়তি প্যাডিং */
+            border: 1px solid #cbd5e1;
+            border-radius: 10px;
+            font-size: 15px;
+            outline: none;
+            background-color: #f8fafc;
+            transition: all 0.3s ease;
+        }
+
+        .input-wrapper input:focus {
+            border-color: #1e88e5;
+            background-color: #ffffff;
+            box-shadow: 0 0 0 3px rgba(30, 136, 229, 0.1);
+        }
+
+        .input-wrapper input::placeholder {
+            color: #94a3b8;
+        }
+
+        /* পাসওয়ার্ড চোখের আইকন */
+        .input-wrapper i.suffix-icon {
+            position: absolute;
+            right: 15px;
+            color: #94a3b8;
+            cursor: pointer;
+        }
+
+        /* সাইন ইন বাটন */
+        .btn-signin {
+            width: 100%;
+            background-color: #1565c0;
+            color: #ffffff;
+            border: none;
+            padding: 15px;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            margin-top: 10px;
+            margin-bottom: 20px;
+            transition: background 0.3s;
+        }
+
+        .btn-signin:hover {
+            background-color: #0d47a1;
+        }
+
+        /* টেক্সট এবং নিচের অংশ */
+        .security-note {
+            font-size: 13px;
+            color: #64748b;
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .divider-text {
+            font-size: 15px;
+            color: #475569;
+            margin-bottom: 15px;
+        }
+
+        /* নতুন একাউন্ট বাটন */
+        .btn-create {
+            width: 100%;
+            background-color: transparent;
+            color: #1565c0;
+            border: 2px solid #1565c0;
+            padding: 12px;
+            border-radius: 30px; /* গোলাকার বর্ডার */
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s;
+        }
+
+        .btn-create:hover {
+            background-color: #f0f7ff;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="login-container">
+        <!-- লোগো এবং হেডিং -->
+        <div class="logo-section">
+            <div class="logo-icon">
+                <i class="fa-solid fa-shield-halved"></i> <!-- গ্লোব/সিকিউরিটি আইকন -->
+            </div>
+            <h1>বিশ্বব্যাংক</h1>
+            <p>নিরাপদভাবে আপনার অ্যাকাউন্টে সাইন ইন করুন</p>
+        </div>
+
+        <!-- ফর্ম শুরু -->
+        <form action="#" method="POST">
+            
+            <!-- ফোন নম্বর ইনপুট -->
+            <div class="input-group">
+                <label for="phone">ফোন নম্বর</label>
+                <div class="input-wrapper">
+                    <i class="fa-solid fa-phone prefix-icon"></i>
+                    <input type="tel" id="phone" placeholder="আপনার ফোন নম্বর লিখুন">
+                </div>
+            </div>
+
+            <!-- পাসওয়ার্ড ইনপুট -->
+            <div class="input-group">
+                <label for="password">পাসওয়ার্ড</label>
+                <div class="input-wrapper">
+                    <i class="fa-solid fa-lock prefix-icon"></i>
+                    <input type="password" id="password" placeholder="আপনার পাসওয়ার্ড লিখুন">
+                    <i class="fa-regular fa-eye suffix-icon"></i> <!-- চোখের আইকন -->
+                </div>
+            </div>
+
+            <!-- সাইন ইন বাটন -->
+            <button type="submit" class="btn-signin">
+                <i class="fa-solid fa-arrow-right-to-bracket"></i> সাইন ইন করুন
+            </button>
+
+            <!-- সিকিউরিটি নোটিশ -->
+            <div class="security-note">
+                <i class="fa-solid fa-lock"></i> আপনার তথ্য সুরক্ষিতভাবে এনক্রিপ্ট করা হয়
+            </div>
+
+        </form>
+
+        <!-- ডিভাইডার টেক্সট -->
+        <p class="divider-text">জাকাউন্ট নেই?</p>
+
+        <!-- নতুন একাউন্ট তৈরি বাটন -->
+        <button type="button" class="btn-create">
+            <i class="fa-solid fa-user-plus"></i> নতুন একাউন্ট তৈরি করুন
+        </button>
+
+    </div>
+
+</body>
+</html>
