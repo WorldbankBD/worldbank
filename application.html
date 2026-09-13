@@ -34,16 +34,15 @@
         /* ইনপুট ফিল্ড */
         .input-group { margin-bottom: 18px; }
         .input-group label { display: block; font-size: 15px; font-weight: 600; color: #0f172a; margin-bottom: 6px; }
-        .input-group label span { color: #ef4444; } /* লাল তারকা */
+        .input-group label span { color: #ef4444; } 
         .input-wrapper { position: relative; display: flex; align-items: center; }
-        .input-wrapper i { position: absolute; left: 15px; color: #94a3b8; font-size: 16px; }
-        .input-wrapper input, .input-wrapper select { width: 100%; padding: 14px 15px 14px 45px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 15px; outline: none; background-color: #f8fafc; }
-        .input-wrapper select { appearance: none; color: #0f172a; }
+        .input-wrapper i.prefix-icon { position: absolute; left: 15px; color: #94a3b8; font-size: 16px; }
+        .input-wrapper input, .input-wrapper select { width: 100%; padding: 14px 15px 14px 45px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 15px; outline: none; background-color: #f8fafc; color: #0f172a; }
         .input-wrapper input:focus, .input-wrapper select:focus { border-color: #1e88e5; background-color: #fff; box-shadow: 0 0 0 3px rgba(30, 136, 229, 0.1); }
         
-        /* ড্রপডাউন এরো (তীর চিহ্ন) */
+        /* ড্রপডাউন এরো */
         .select-wrapper::after {
-            content: '\f107'; /* FontAwesome down arrow */
+            content: '\f107'; 
             font-family: 'Font Awesome 6 Free';
             font-weight: 900;
             position: absolute;
@@ -64,9 +63,9 @@
         .signature-box { border: 2px dashed #cbd5e1; border-radius: 10px; height: 150px; background: #f8fafc; display: flex; justify-content: center; align-items: center; color: #94a3b8; font-size: 14px; margin-bottom: 15px; }
         .btn-delete-sig { background: #dc2626; color: white; border: none; padding: 10px 15px; border-radius: 6px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 5px; font-size: 14px; }
 
-        /* সাবমিট বাটন */
-        .btn-submit { width: 100%; background: #1565c0; color: white; border: none; padding: 16px; border-radius: 8px; font-size: 18px; font-weight: 700; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 10px; margin-top: 10px; box-shadow: 0 4px 12px rgba(21, 101, 192, 0.3); }
-        .btn-submit:hover { background: #0d47a1; }
+        /* সাবমিট বাটন (লিংক হিসেবে কাজ করবে) */
+        .btn-submit { width: 100%; background: #1565c0; color: white; border: none; padding: 16px; border-radius: 8px; font-size: 18px; font-weight: 700; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 10px; margin-top: 10px; box-shadow: 0 4px 12px rgba(21, 101, 192, 0.3); text-decoration: none; }
+        .btn-submit:hover { background: #0d47a1; color: white; }
         
         /* ফ্লোটিং মেনু বাটন */
         .floating-menu { position: fixed; bottom: 20px; left: 20px; background: #1e88e5; color: white; width: 50px; height: 50px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 22px; box-shadow: 0 4px 10px rgba(0,0,0,0.2); cursor: pointer; z-index: 999; }
@@ -98,7 +97,7 @@
             </div>
         </div>
 
-        <form>
+        <form action="nominee.html">
             <!-- ১. ব্যক্তিগত তথ্য -->
             <div class="section-card">
                 <div class="section-header">
@@ -108,7 +107,7 @@
                 <div class="input-group">
                     <label>আপনার নাম <span>*</span></label>
                     <div class="input-wrapper">
-                        <i class="fa-solid fa-user"></i>
+                        <i class="fa-solid fa-user prefix-icon"></i>
                         <input type="text" placeholder="আপনার নাম লিখুন" required>
                     </div>
                 </div>
@@ -116,7 +115,7 @@
                 <div class="input-group">
                     <label>পিতার নাম <span>*</span></label>
                     <div class="input-wrapper">
-                        <i class="fa-solid fa-person"></i>
+                        <i class="fa-solid fa-person prefix-icon"></i>
                         <input type="text" placeholder="পিতার নাম লিখুন" required>
                     </div>
                 </div>
@@ -124,7 +123,7 @@
                 <div class="input-group">
                     <label>মাতার নাম <span>*</span></label>
                     <div class="input-wrapper">
-                        <i class="fa-solid fa-person-dress"></i>
+                        <i class="fa-solid fa-person-dress prefix-icon"></i>
                         <input type="text" placeholder="মাতার নাম লিখুন" required>
                     </div>
                 </div>
@@ -132,16 +131,16 @@
                 <div class="input-group">
                     <label>এনআইটি নম্বর <span>*</span></label>
                     <div class="input-wrapper">
-                        <i class="fa-regular fa-id-card"></i>
-                        <input type="text" placeholder="এনআইটি নম্বর লিখুন" required>
+                        <i class="fa-regular fa-id-card prefix-icon"></i>
+                        <input type="text" placeholder="১০, ১৩ বা ১৭ ডিজিট" required>
                     </div>
                 </div>
 
-                <!-- রক্তের গ্রুপ (আপডেট করা) -->
+                <!-- রক্তের গ্রুপ -->
                 <div class="input-group">
                     <label>রক্তের গ্রুপ <span>*</span></label>
                     <div class="input-wrapper select-wrapper">
-                        <i class="fa-solid fa-droplet"></i>
+                        <i class="fa-solid fa-droplet prefix-icon"></i>
                         <select required>
                             <option value="" disabled selected>নির্বাচন করুন</option>
                             <option value="A+">A+</option>
@@ -163,7 +162,7 @@
                 <div class="input-group">
                     <label>বর্তমান ঠিকানা <span>*</span></label>
                     <div class="input-wrapper">
-                        <i class="fa-solid fa-house"></i>
+                        <i class="fa-solid fa-house prefix-icon"></i>
                         <input type="text" placeholder="বর্তমান ঠিকানা লিখুন" required>
                     </div>
                 </div>
@@ -171,7 +170,7 @@
                 <div class="input-group">
                     <label>স্থায়ী ঠিকানা <span>*</span></label>
                     <div class="input-wrapper">
-                        <i class="fa-solid fa-location-dot"></i>
+                        <i class="fa-solid fa-location-dot prefix-icon"></i>
                         <input type="text" placeholder="স্থায়ী ঠিকানা লিখুন" required>
                     </div>
                 </div>
@@ -179,7 +178,7 @@
                 <div class="input-group">
                     <label>আপনার পেশা <span>*</span></label>
                     <div class="input-wrapper">
-                        <i class="fa-solid fa-briefcase"></i>
+                        <i class="fa-solid fa-briefcase prefix-icon"></i>
                         <input type="text" placeholder="আপনার পেশা লিখুন" required>
                     </div>
                 </div>
@@ -234,7 +233,7 @@
                 </div>
             </div>
 
-            <!-- সাবমিট বাটন -->
+            <!-- সাবমিট বাটন (এটি ক্লিক করলে nominee.html এ যাবে) -->
             <button type="submit" class="btn-submit">
                 <i class="fa-solid fa-paper-plane"></i> আবেদন জমা দিন
             </button>
