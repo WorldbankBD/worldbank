@@ -1,299 +1,146 @@
-<!DOCTYPE html>
-<html lang="bn">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ঋণ আবেদন ফর্ম - WorldBank Bangladesh</title>
-    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Hind Siliguri', sans-serif; }
-        body { background-color: #f1f5f9; padding-bottom: 80px; }
-        
-        /* হেডার */
-        .header { background-color: #1e88e5; color: white; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
-        .header-left { display: flex; align-items: center; gap: 10px; }
-        .header-logo { width: 40px; height: 40px; background: white; border-radius: 50%; display: flex; justify-content: center; align-items: center; color: #1e88e5; font-size: 20px; }
-        .header-text h2 { font-size: 18px; font-weight: 700; margin-bottom: -3px;}
-        .header-text p { font-size: 12px; opacity: 0.9; }
-        .btn-logout { background: white; color: #1e88e5; border: none; padding: 8px 15px; border-radius: 5px; font-weight: 600; font-size: 14px; cursor: pointer; }
-
-        /* মূল কন্টেইনার */
-        .main-container { max-width: 500px; margin: 0 auto; padding: 15px; }
-        
-        /* টাইটেল */
-        .form-title { display: flex; gap: 12px; align-items: flex-start; margin-bottom: 20px; margin-top: 10px; }
-        .form-title .icon-box { width: 45px; height: 45px; background: #1565c0; color: white; border-radius: 8px; display: flex; justify-content: center; align-items: center; font-size: 22px; }
-        .form-title h1 { font-size: 22px; color: #0f172a; font-weight: 700; }
-        .form-title p { font-size: 14px; color: #64748b; }
-
-        /* সেকশন কার্ড */
-        .section-card { background: white; border-radius: 12px; padding: 20px; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
-        .section-header { display: flex; align-items: center; gap: 8px; font-size: 18px; font-weight: 700; color: #1565c0; border-bottom: 1px solid #e2e8f0; padding-bottom: 10px; margin-bottom: 20px; }
-        
-        /* ইনপুট ফিল্ড */
-        .input-group { margin-bottom: 18px; }
-        .input-group label { display: block; font-size: 15px; font-weight: 600; color: #0f172a; margin-bottom: 6px; }
-        .input-group label span { color: #ef4444; } 
-        .input-wrapper { position: relative; display: flex; align-items: center; }
-        .input-wrapper i.prefix-icon { position: absolute; left: 15px; color: #94a3b8; font-size: 16px; }
-        
-        /* ★★★ ড্রপডাউনের লেখা ও প্যাডিং ঠিক করার জন্য + বোল্ড + ফন্ট ফোর্স ★★★ */
-        .input-wrapper input, .input-wrapper select { 
-            width: 100%; 
-            padding: 14px 15px 14px 45px; 
-            border: 1px solid #cbd5e1; 
-            border-radius: 8px; 
-            font-size: 15px; 
-            font-family: 'Hind Siliguri', sans-serif !important; 
-            font-weight: 700;
-            outline: none; 
-            background-color: #f8fafc; 
-            color: #0f172a; 
-            text-indent: 1px;
-        }
-        .input-wrapper input:focus, .input-wrapper select:focus { border-color: #1e88e5; background-color: #fff; box-shadow: 0 0 0 3px rgba(30, 136, 229, 0.1); }
-        
-        /* ★★★ ড্রপডাউনের অপশনগুলোর মাঝে জায়গা বাড়ানোর জন্য + বোল্ড + ফন্ট ফোর্স ★★★ */
-        .input-wrapper select option {
-            padding: 12px 15px 12px 45px;
-            line-height: 1.8;
-            font-size: 15px;
-            font-family: 'Hind Siliguri', sans-serif !important; 
-            font-weight: 700;
-            min-height: 40px;
-        }
-        
-        /* ড্রপডাউন এরো */
-        .select-wrapper::after {
-            content: '\f107'; 
-            font-family: 'Font Awesome 6 Free';
-            font-weight: 900;
-            position: absolute;
-            right: 15px;
-            color: #64748b;
-            pointer-events: none;
-        }
-
-        /* আপলোড বক্স */
-        .upload-grid { display: flex; flex-direction: column; gap: 15px; }
-        .upload-box { border: 2px dashed #cbd5e1; border-radius: 10px; padding: 25px 15px; text-align: center; background: #f8fafc; position: relative; cursor: pointer; }
-        .upload-box i.upload-icon { font-size: 35px; color: #1565c0; margin-bottom: 10px; display: block; }
-        .upload-box h4 { font-size: 16px; color: #0f172a; margin-bottom: 5px; }
-        .upload-box p { font-size: 13px; color: #64748b; }
-        .close-btn { position: absolute; top: -10px; right: -10px; background: #ef4444; color: white; border: none; width: 25px; height: 25px; border-radius: 50%; display: flex; justify-content: center; align-items: center; cursor: pointer; font-size: 12px; display: none; }
-
-        /* স্বাক্ষর সেকশন */
-        .signature-box { border: 2px dashed #cbd5e1; border-radius: 10px; height: 150px; background: #f8fafc; display: flex; justify-content: center; align-items: center; color: #94a3b8; font-size: 14px; margin-bottom: 15px; }
-        .btn-delete-sig { background: #dc2626; color: white; border: none; padding: 10px 15px; border-radius: 6px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 5px; font-size: 14px; }
-
-        /* সাবমিট বাটন */
-        .btn-submit { width: 100%; background: #1565c0; color: white; border: none; padding: 16px; border-radius: 8px; font-size: 18px; font-weight: 700; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 10px; margin-top: 10px; box-shadow: 0 4px 12px rgba(21, 101, 192, 0.3); text-decoration: none; }
-        .btn-submit:hover { background: #0d47a1; color: white; }
-        
-        /* ফ্লোটিং মেনু বাটন */
-        .floating-menu { position: fixed; bottom: 20px; left: 20px; background: #1e88e5; color: white; width: 50px; height: 50px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 22px; box-shadow: 0 4px 10px rgba(0,0,0,0.2); cursor: pointer; z-index: 999; }
-    </style>
-</head>
-<body>
-
-    <!-- হেডার -->
-    <div class="header">
-        <div class="header-left">
-            <div class="header-logo"><i class="fa-solid fa-globe"></i></div>
-            <div class="header-text">
-                <h2>WorldBank</h2>
-                <p>Bangladesh</p>
-            </div>
-        </div>
-        <button class="btn-logout" onclick="window.location.href='index.html'">লগআউট</button>
-    </div>
-
-    <!-- মূল কন্টেইনার -->
-    <div class="main-container">
-        
-        <!-- টাইটেল -->
-        <div class="form-title">
-            <div class="icon-box"><i class="fa-regular fa-file-lines"></i></div>
-            <div>
-                <h1>ঋণ আবেদন ফর্ম</h1>
-                <p>আপনার প্রয়োজনীয় ঋণের জন্য আবেদন করুন</p>
-            </div>
-        </div>
-
-        <!-- ★★★ ফর্মে id যোগ করা হয়েছে ★★★ -->
-        <form id="applicationForm" action="nominee.html">
-            <!-- ১. ব্যক্তিগত তথ্য -->
-            <div class="section-card">
-                <div class="section-header">
-                    <i class="fa-solid fa-user"></i> ব্যক্তিগত তথ্য
-                </div>
-                
-                <div class="input-group">
-                    <label>আপনার নাম <span>*</span></label>
-                    <div class="input-wrapper">
-                        <i class="fa-solid fa-user prefix-icon"></i>
-                        <input type="text" placeholder="আপনার নাম লিখুন" required>
-                    </div>
-                </div>
-
-                <div class="input-group">
-                    <label>পিতার নাম <span>*</span></label>
-                    <div class="input-wrapper">
-                        <i class="fa-solid fa-person prefix-icon"></i>
-                        <input type="text" placeholder="পিতার নাম লিখুন" required>
-                    </div>
-                </div>
-
-                <div class="input-group">
-                    <label>মাতার নাম <span>*</span></label>
-                    <div class="input-wrapper">
-                        <i class="fa-solid fa-person-dress prefix-icon"></i>
-                        <input type="text" placeholder="মাতার নাম লিখুন" required>
-                    </div>
-                </div>
-
-                <div class="input-group">
-                    <label>এনআইটি নম্বর <span>*</span></label>
-                    <div class="input-wrapper">
-                        <i class="fa-regular fa-id-card prefix-icon"></i>
-                        <input type="text" placeholder="১০, ১৩ বা ১৭ ডিজিট" required>
-                    </div>
-                </div>
-
-                <!-- রক্তের গ্রুপ -->
-                <div class="input-group">
-                    <label>রক্তের গ্রুপ <span>*</span></label>
-                    <div class="input-wrapper select-wrapper">
-                        <i class="fa-solid fa-droplet prefix-icon"></i>
-                        <select required>
-                            <option value="" disabled selected>নির্বাচন করুন</option>
-                            <option value="A+">A+</option>
-                            <option value="A-">A-</option>
-                            <option value="B+">B+</option>
-                            <option value="B-">B-</option>
-                            <option value="O+">O+</option>
-                            <option value="O-">O-</option>
-                            <option value="AB+">AB+</option>
-                            <option value="AB-">AB-</option>
-                            <option value="জানা নেই">জানা নেই</option>
-                        </select>
-                    </div>
-                </div>
-            </div>
-
-            <!-- ২. ঠিকানা ও পেশা -->
-            <div class="section-card">
-                <div class="input-group">
-                    <label>বর্তমান ঠিকানা <span>*</span></label>
-                    <div class="input-wrapper">
-                        <i class="fa-solid fa-house prefix-icon"></i>
-                        <input type="text" placeholder="বর্তমান ঠিকানা লিখুন" required>
-                    </div>
-                </div>
-
-                <div class="input-group">
-                    <label>স্থায়ী ঠিকানা <span>*</span></label>
-                    <div class="input-wrapper">
-                        <i class="fa-solid fa-location-dot prefix-icon"></i>
-                        <input type="text" placeholder="স্থায়ী ঠিকানা লিখুন" required>
-                    </div>
-                </div>
-
-                <div class="input-group">
-                    <label>আপনার পেশা <span>*</span></label>
-                    <div class="input-wrapper">
-                        <i class="fa-solid fa-briefcase prefix-icon"></i>
-                        <input type="text" placeholder="আপনার পেশা লিখুন" required>
-                    </div>
-                </div>
-            </div>
-
-            <!-- ৩. এটাচমেন্ট -->
-            <div class="section-card">
-                <div class="section-header">
-                    <i class="fa-solid fa-paperclip"></i> এটাচমেন্ট বা কাগজপত্রসমূহ
-                </div>
-
-                <div class="upload-grid">
-                    <!-- এনআইডি সামনের দিক -->
-                    <div class="upload-box">
-                        <button class="close-btn"><i class="fa-solid fa-xmark"></i></button>
-                        <i class="fa-regular fa-id-card upload-icon"></i>
-                        <h4>এনআইডি কার্ডের সামনের দিক</h4>
-                        <p>JPG, PNG (ক্লিক করে আপলোড করুন)</p>
-                    </div>
-
-                    <!-- এনআইডি পিছনের দিক -->
-                    <div class="upload-box">
-                        <button class="close-btn"><i class="fa-solid fa-xmark"></i></button>
-                        <i class="fa-regular fa-id-card upload-icon"></i>
-                        <h4>এনআইডি কার্ডের পিছনের দিক</h4>
-                        <p>JPG, PNG (ক্লিক করে আপলোড করুন)</p>
-                    </div>
-
-                    <!-- ছবি -->
-                    <div class="upload-box">
-                        <button class="close-btn"><i class="fa-solid fa-xmark"></i></button>
-                        <i class="fa-solid fa-camera upload-icon"></i>
-                        <h4>আপনার ছবি দিন</h4>
-                        <p>JPG, PNG (ক্লিক করে আপলোড করুন)</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- ৪. স্বাক্ষর -->
-            <div class="section-card">
-                <div class="section-header">
-                    <i class="fa-solid fa-signature"></i> স্বাক্ষর
-                </div>
-                <div class="input-group">
-                    <label>নিচের বক্সে স্বাক্ষর দিন <span>*</span></label>
-                    <div class="signature-box">
-                        এখানে স্বাক্ষর করুন
-                    </div>
-                    <button type="button" class="btn-delete-sig">
-                        <i class="fa-solid fa-trash"></i> স্বাক্ষর মুছুন
-                    </button>
-                </div>
-            </div>
-
-            <!-- সাবমিট বাটন (এটি ক্লিক করলে nominee.html এ যাবে) -->
-            <button type="submit" class="btn-submit">
-                <i class="fa-solid fa-paper-plane"></i> আবেদন জমা দিন
-            </button>
-
-        </form>
-    </div>
-
-    <!-- ফ্লোটিং মেনু আইকন -->
-    <div class="floating-menu">
-        <i class="fa-solid fa-bars"></i>
-    </div>
-
-    <!-- ★★★ নতুন JavaScript — applied স্ট্যাটাস সেভ করার জন্য ★★★ -->
     <script>
-        document.getElementById('applicationForm').addEventListener('submit', function() {
-            // LocalStorage থেকে বর্তমান ইউজার নেওয়া
+        // ★★★ প্রতিটি ইনপুট ফিল্ডে আইডি যোগ করা (JavaScript দিয়ে) ★★★
+        // যাতে পরে সহজে ডেটা নেওয়া যায়
+        const inputFields = document.querySelectorAll('.input-wrapper input, .input-wrapper select');
+        const fieldNames = ['name', 'father_name', 'mother_name', 'nid', 'blood_group', 'present_address', 'permanent_address', 'occupation'];
+        
+        // প্রতিটি ইনপুট ফিল্ডে ডেটা-নাম অ্যাট্রিবিউট যোগ করা
+        inputFields.forEach((field, index) => {
+            if (fieldNames[index]) {
+                field.setAttribute('data-field', fieldNames[index]);
+            }
+        });
+
+        // ★★★ ছবি আপলোড সিস্টেম ★★★
+        const uploadBoxes = document.querySelectorAll('.upload-box');
+        const imageKeys = ['nid_front', 'nid_back', 'photo'];
+        
+        uploadBoxes.forEach((box, index) => {
+            const fileInput = document.createElement('input');
+            fileInput.type = 'file';
+            fileInput.accept = 'image/*';
+            fileInput.style.display = 'none';
+            box.appendChild(fileInput);
+            
+            box.addEventListener('click', function(e) {
+                if (e.target.classList.contains('close-btn') || e.target.closest('.close-btn')) return;
+                fileInput.click();
+            });
+            
+            fileInput.addEventListener('change', function() {
+                const file = this.files[0];
+                if (!file) return;
+                
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const base64Image = e.target.result;
+                    
+                    const img = box.querySelector('img');
+                    const icon = box.querySelector('.upload-icon');
+                    const title = box.querySelector('h4');
+                    const desc = box.querySelector('p');
+                    
+                    if (img) img.remove();
+                    
+                    const newImg = document.createElement('img');
+                    newImg.src = base64Image;
+                    newImg.style.maxWidth = '100%';
+                    newImg.style.maxHeight = '120px';
+                    newImg.style.borderRadius = '8px';
+                    newImg.style.margin = '0 auto 10px auto';
+                    newImg.style.display = 'block';
+                    
+                    box.insertBefore(newImg, icon);
+                    icon.style.display = 'none';
+                    title.innerText = 'ছবি আপলোড হয়েছে ✓';
+                    desc.innerText = 'পরিবর্তন করতে আবার ক্লিক করুন';
+                    
+                    const closeBtn = box.querySelector('.close-btn');
+                    if (closeBtn) closeBtn.style.display = 'flex';
+                    
+                    // ছবি সাময়িকভাবে সেভ করা (ফর্ম সাবমিটের আগে)
+                    if (!window.uploadedImages) window.uploadedImages = {};
+                    window.uploadedImages[imageKeys[index]] = base64Image;
+                };
+                reader.readAsDataURL(file);
+            });
+            
+            const closeBtn = box.querySelector('.close-btn');
+            if (closeBtn) {
+                closeBtn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    const img = box.querySelector('img');
+                    if (img) img.remove();
+                    
+                    const icon = box.querySelector('.upload-icon');
+                    const title = box.querySelector('h4');
+                    const desc = box.querySelector('p');
+                    
+                    icon.style.display = 'block';
+                    title.innerText = title.getAttribute('data-original') || title.innerText;
+                    desc.innerText = 'JPG, PNG (ক্লিক করে আপলোড করুন)';
+                    closeBtn.style.display = 'none';
+                    
+                    if (window.uploadedImages) {
+                        delete window.uploadedImages[imageKeys[index]];
+                    }
+                });
+            }
+        });
+
+        // ★★★ ফর্ম সাবমিট হলে সব তথ্য সেভ করা ★★★
+        document.getElementById('applicationForm').addEventListener('submit', function(event) {
+            event.preventDefault(); // ফর্ম সাবমিট আটকানো
+
+            // বর্তমান ইউজার নেওয়া
             let currentUser = JSON.parse(localStorage.getItem('worldbank_current_user'));
-            if (!currentUser) return;
+            if (!currentUser) {
+                alert("আপনি লগইন করেননি! দয়া করে লগইন করুন।");
+                window.location.href = 'index.html';
+                return;
+            }
 
-            // সব ইউজারের তালিকা থেকে বর্তমান ইউজার খুঁজে বের করা
+            // ★★★ সব ইনপুট ফিল্ডের ডেটা সংগ্রহ ★★★
+            const formData = {};
+            inputFields.forEach(field => {
+                const fieldName = field.getAttribute('data-field');
+                if (fieldName) {
+                    formData[fieldName] = field.value.trim();
+                }
+            });
+
+            // ★★★ ছবিগুলো সংগ্রহ ★★★
+            formData.documents = window.uploadedImages || {};
+
+            // ★★★ স্বাক্ষরের তথ্য (স্বাক্ষর বক্সে ক্লিক করলে সেভ হবে — আপাতত ডেমো) ★★★
+            formData.signature = 'signed'; // আপাতত ডেমো
+
+            // ★★★ ভ্যালিডেশন — সব ফিল্ড পূরণ হয়েছে কি না ★★★
+            if (!formData.name || !formData.father_name || !formData.mother_name || !formData.nid || !formData.blood_group || !formData.present_address || !formData.permanent_address || !formData.occupation) {
+                alert("দয়া করে সব তথ্য পূরণ করুন।");
+                return;
+            }
+
+            // ★★★ LocalStorage-এ সেভ করা ★★★
             let users = JSON.parse(localStorage.getItem('worldbank_users')) || [];
-            const index = users.findIndex(u => u.id === currentUser.id);
-            if (index === -1) return;
+            const userIndex = users.findIndex(u => u.id === currentUser.id);
+            if (userIndex === -1) return;
 
-            // applied স্ট্যাটাস true করে সেভ করা
-            users[index].applied = true;
-            users[index].appliedAt = new Date().toLocaleString('bn-BD');
+            // ইউজারের তথ্য আপডেট করা
+            users[userIndex].applied = true;
+            users[userIndex].appliedAt = new Date().toLocaleString('bn-BD');
+            users[userIndex].applicationData = formData;
+            
             localStorage.setItem('worldbank_users', JSON.stringify(users));
 
-            // বর্তমান ইউজারেও applied স্ট্যাটাস সেভ করা
+            // বর্তমান ইউজারেও সেভ করা
             currentUser.applied = true;
             currentUser.appliedAt = new Date().toLocaleString('bn-BD');
+            currentUser.applicationData = formData;
             localStorage.setItem('worldbank_current_user', JSON.stringify(currentUser));
+
+            // ★★★ nominee.html এ পাঠানো ★★★
+            alert("আপনার তথ্য সফলভাবে সেভ হয়েছে! এখন নমিনীর তথ্য দিন।");
+            window.location.href = "nominee.html";
         });
     </script>
-
-</body>
-</html>
