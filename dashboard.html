@@ -55,7 +55,6 @@
         
         .input-wrapper { position: relative; display: flex; align-items: center; }
         
-        /* ড্রপডাউনের লেখা ঠিক করার জন্য (প্যাডিং ২৫ + ফন্ট ফোর্স + বোল্ড) */
         .input-wrapper select { 
             width: 100%; 
             padding: 14px 15px 14px 25px; 
@@ -72,7 +71,6 @@
         }
         .input-wrapper select:focus { border-color: #2563eb; box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1); }
         
-        /* ড্রপডাউনের অপশনগুলোর মাঝে জায়গা + ফন্ট ফোর্স + বোল্ড */
         .input-wrapper select option {
             padding: 12px 15px 12px 25px;
             line-height: 1.8;
@@ -99,9 +97,9 @@
         /* ফ্লোটিং মেনু বাটন */
         .floating-menu { position: fixed; bottom: 20px; left: 20px; background: #1e88e5; color: white; width: 50px; height: 50px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 22px; box-shadow: 0 4px 10px rgba(0,0,0,0.2); cursor: pointer; z-index: 999; }
 
-        /* ★★★ সফলতার পপ-আপ (Success Popup) ★★★ */
+        /* সফলতার পপ-আপ */
         .popup-overlay {
-            display: none; /* ডিফল্টভাবে লুকানো */
+            display: none;
             position: fixed;
             top: 0; left: 0;
             width: 100%; height: 100%;
@@ -186,7 +184,7 @@
             <div class="slide active">
                 <img src="https://images.unsplash.com/photo-1554224155-6726b3ff858f?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Bank">
                 <div class="slide-text">
-                    <h2>স্বাগতম, করিম বন্ধু!</h2>
+                    <h2 id="welcomeText">স্বাগতম!</h2>
                     <p>বিশ্বস্ত ও নিরাপদ ঋণ সেবা আপনার হাতে</p>
                 </div>
             </div>
@@ -299,7 +297,7 @@
                 </div>
             </div>
 
-            <!-- পরিশোধের মেয়াদ (ডিফল্ট ১২ মাস) -->
+            <!-- পরিশোধের মেয়াদ -->
             <div class="input-group">
                 <label><i class="fa-solid fa-calendar-days"></i> পরিশোধের মেয়াদ (মাসে)</label>
                 <div class="input-wrapper select-wrapper">
@@ -325,15 +323,15 @@
                 </div>
             </div>
 
-            <!-- সাবমিট বাটন (এটি ক্লিক করলে পপ-আপ আসবে) -->
-            <button type="button" class="btn-submit-loan" onclick="showSuccessPopup()">
+            <!-- সাবমিট বাটন -->
+            <button type="button" class="btn-submit-loan" onclick="saveLoanAndShowPopup()">
                 <i class="fa-solid fa-paper-plane"></i> আবেদন জমা দিন
             </button>
         </div>
 
     </div>
 
-    <!-- ★★★ সফলতার পপ-আপ (Success Popup) ★★★ -->
+    <!-- সফলতার পপ-আপ -->
     <div class="popup-overlay" id="successPopup">
         <div class="popup-box">
             <div class="popup-icon">
@@ -350,8 +348,13 @@
         <i class="fa-solid fa-bars"></i>
     </div>
 
-    <!-- স্লাইডার, EMI ক্যালকুলেটর এবং পপ-আপ জাভাস্ক্রিপ্ট -->
     <script>
+        // ★★★ ইউজারের নাম দেখানো ★★★
+        let currentUser = JSON.parse(localStorage.getItem('worldbank_current_user'));
+        if (currentUser) {
+            document.getElementById('welcomeText').innerText = 'স্বাগতম, ' + currentUser.fullname + '!';
+        }
+
         // --- স্লাইডার ---
         let slideIndex = 0;
         const slides = document.querySelectorAll('.slide');
@@ -373,39 +376,71 @@
             showSlide(slideIndex + 1);
         }, 3000);
 
-        // --- EMI ক্যালকুলেটর (আপনার দেওয়া সূত্র অনুযায়ী) ---
+        // --- EMI ক্যালকুলেটর ---
         const loanAmountSelect = document.getElementById('loanAmount');
         const loanTenureSelect = document.getElementById('loanTenure');
         const emiAmountDisplay = document.getElementById('emiAmount');
 
         function calculateEMI() {
-            const principal = parseFloat(loanAmountSelect.value); // ঋণের পরিমাণ
-            const tenure = parseInt(loanTenureSelect.value); // মেয়াদ (মাস)
-            
-            // আপনার দেওয়া সূত্র: (মূল ঋণ / মেয়াদ) + ১০০
+            const principal = parseFloat(loanAmountSelect.value);
+            const tenure = parseInt(loanTenureSelect.value);
             const emi = (principal / tenure) + 100;
-
-            // সংখ্যাটিকে বাংলা সংখ্যায় রূপান্তর (দশমিকের পর ২ ঘর পর্যন্ত)
             const formattedEMI = emi.toLocaleString('bn-BD', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-            
             emiAmountDisplay.innerText = '৳ ' + formattedEMI;
         }
 
-        // যখনই ড্রপডাউন পরিবর্তন হবে, EMI আপডেট হবে
         loanAmountSelect.addEventListener('change', calculateEMI);
         loanTenureSelect.addEventListener('change', calculateEMI);
-
-        // পেজ লোড হওয়ার সময় প্রথমবার হিসাব করে নিন (১২ মাস ডিফল্ট)
         calculateEMI();
 
-        // --- ★★★ সফলতার পপ-আপ ফাংশন (আপডেট করা) ★★★ ---
+        // ★★★ ঋণের তথ্য সেভ করার ফাংশন ★★★
+        function saveLoanAndShowPopup() {
+            let currentUser = JSON.parse(localStorage.getItem('worldbank_current_user'));
+            if (!currentUser) {
+                alert("আপনি লগইন করেননি!");
+                window.location.href = 'index.html';
+                return;
+            }
+
+            const loanPurpose = document.getElementById('loanPurpose').value;
+            const loanAmount = document.getElementById('loanAmount').value;
+            const loanTenure = document.getElementById('loanTenure').value;
+
+            const loanData = {
+                loan_purpose: loanPurpose,
+                loan_amount: loanAmount,
+                loan_tenure: loanTenure,
+                applied_loan_at: new Date().toLocaleString('bn-BD')
+            };
+
+            let users = JSON.parse(localStorage.getItem('worldbank_users')) || [];
+            const index = users.findIndex(u => u.id === currentUser.id);
+            if (index === -1) return;
+
+            // ঋণের তথ্য সেভ করা এবং অ্যাপ্রুভ স্ট্যাটাস রিসেট করা
+            users[index].loanData = loanData;
+            users[index].approved = false;
+            users[index].applied = true;
+            users[index].appliedAt = new Date().toLocaleString('bn-BD');
+            localStorage.setItem('worldbank_users', JSON.stringify(users));
+
+            currentUser.loanData = loanData;
+            currentUser.approved = false;
+            currentUser.applied = true;
+            currentUser.appliedAt = new Date().toLocaleString('bn-BD');
+            localStorage.setItem('worldbank_current_user', JSON.stringify(currentUser));
+
+            showSuccessPopup();
+        }
+
+        // ★★★ পপ-আপ ফাংশন ★★★
         function showSuccessPopup() {
             document.getElementById('successPopup').style.display = 'flex';
         }
 
         function closeSuccessPopup() {
             document.getElementById('successPopup').style.display = 'none';
-            window.location.href = 'status.html'; // ★ এই লাইনটি যোগ করা হয়েছে, তাই "ঠিক আছে" ক্লিক করলে status.html এ যাবে
+            window.location.href = 'status.html';
         }
     </script>
 
