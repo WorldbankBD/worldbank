@@ -43,7 +43,7 @@
 
         /* এডিট মোডাল */
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 2000; justify-content: center; align-items: center; }
-        .modal-box { background: white; width: 90%; max-width: 420px; border-radius: 16px; padding: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); max-height: 90vh; overflow-y: auto; }
+        .modal-box { background: white; width: 90%; max-width: 480px; border-radius: 16px; padding: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); max-height: 90vh; overflow-y: auto; }
         .modal-box h2 { font-size: 22px; color: #0f172a; margin-bottom: 20px; text-align: center; }
         .modal-box .input-group { margin-bottom: 15px; }
         .modal-box .input-group label { display: block; font-size: 14px; font-weight: 600; color: #0f172a; margin-bottom: 6px; }
@@ -93,11 +93,13 @@
         <div id="userList"></div>
     </div>
 
-    <!-- ★★★ এডিট মোডাল ★★★ -->
+    <!-- ★★★ এডিট মোডাল (সব তথ্য এডিট করার জন্য) ★★★ -->
     <div class="modal-overlay" id="editModal">
         <div class="modal-box">
             <h2><i class="fa-solid fa-user-pen"></i> ইউজার এডিট</h2>
             <input type="hidden" id="editId">
+            
+            <p style="font-size:15px; font-weight:700; color:#2563eb; margin-bottom:10px; border-bottom:1px solid #e2e8f0; padding-bottom:5px;">অ্যাকাউন্ট তথ্য</p>
             <div class="input-group">
                 <label>নাম</label>
                 <input type="text" id="editName">
@@ -117,6 +119,51 @@
                     <option value="blocked">ব্লকড</option>
                 </select>
             </div>
+
+            <p style="font-size:15px; font-weight:700; color:#2563eb; margin:20px 0 10px 0; border-bottom:1px solid #e2e8f0; padding-bottom:5px;">ঋণ আবেদনের তথ্য</p>
+            <div class="input-group">
+                <label>আবেদনকারীর নাম</label>
+                <input type="text" id="editAppName">
+            </div>
+            <div class="input-group">
+                <label>পিতার নাম</label>
+                <input type="text" id="editFatherName">
+            </div>
+            <div class="input-group">
+                <label>মাতার নাম</label>
+                <input type="text" id="editMotherName">
+            </div>
+            <div class="input-group">
+                <label>এনআইটি নম্বর</label>
+                <input type="text" id="editNid">
+            </div>
+            <div class="input-group">
+                <label>রক্তের গ্রুপ</label>
+                <select id="editBloodGroup">
+                    <option value="A+">A+</option>
+                    <option value="A-">A-</option>
+                    <option value="B+">B+</option>
+                    <option value="B-">B-</option>
+                    <option value="O+">O+</option>
+                    <option value="O-">O-</option>
+                    <option value="AB+">AB+</option>
+                    <option value="AB-">AB-</option>
+                    <option value="জানা নেই">জানা নেই</option>
+                </select>
+            </div>
+            <div class="input-group">
+                <label>বর্তমান ঠিকানা</label>
+                <input type="text" id="editPresentAddress">
+            </div>
+            <div class="input-group">
+                <label>স্থায়ী ঠিকানা</label>
+                <input type="text" id="editPermanentAddress">
+            </div>
+            <div class="input-group">
+                <label>পেশা</label>
+                <input type="text" id="editOccupation">
+            </div>
+
             <div class="modal-buttons">
                 <button class="btn-save" onclick="saveEdit()"><i class="fa-solid fa-floppy-disk"></i> সেভ করুন</button>
                 <button class="btn-cancel" onclick="closeEditModal()">বাতিল</button>
@@ -195,3 +242,149 @@
                         }
                         if (d.documents.nid_back) {
                             appDataHtml += `
+                                <div style="text-align:center;">
+                                    <img src="${d.documents.nid_back}" style="width:100px; height:75px; object-fit:cover; border-radius:6px; border:1px solid #cbd5e1; cursor:pointer;" onclick="showImage('${d.documents.nid_back}')">
+                                    <p style="font-size:11px; color:#475569; margin-top:3px;">এনআইডি পিছনের দিক</p>
+                                </div>
+                            `;
+                        }
+                        if (d.documents.photo) {
+                            appDataHtml += `
+                                <div style="text-align:center;">
+                                    <img src="${d.documents.photo}" style="width:100px; height:75px; object-fit:cover; border-radius:6px; border:1px solid #cbd5e1; cursor:pointer;" onclick="showImage('${d.documents.photo}')">
+                                    <p style="font-size:11px; color:#475569; margin-top:3px;">ব্যবহারকারীর ছবি</p>
+                                </div>
+                            `;
+                        }
+                        
+                        appDataHtml += `</div></div>`;
+                    }
+                }
+                
+                return `
+                <div class="user-card">
+                    <div class="user-card-header">
+                        <h4><i class="fa-solid fa-user"></i> ${user.fullname}</h4>
+                        <span class="status" style="${user.status === 'blocked' ? 'background:#fee2e2; color:#dc2626;' : ''}">
+                            ${user.status === 'blocked' ? 'ব্লকড' : 'সক্রিয়'}
+                        </span>
+                    </div>
+                    <div class="user-info">
+                        <p><strong>ফোন:</strong> ${user.phone}</p>
+                        <p><strong>পাসওয়ার্ড:</strong> ${user.password}</p>
+                        <p><strong>আইডি:</strong> ${user.id}</p>
+                        <p><strong>নিবন্ধন:</strong> ${user.registeredAt || 'N/A'}</p>
+                        <p style="grid-column: span 2;"><strong>আবেদন:</strong> ${user.applied ? '✓ সম্পন্ন' : '✗ এখনো করেনি'}</p>
+                    </div>
+                    ${appDataHtml}
+                    <div class="user-actions">
+                        <button class="btn-edit" onclick="openEditModal(${user.id})"><i class="fa-solid fa-pen"></i> এডিট</button>
+                        <button class="btn-delete" onclick="deleteUser(${user.id})"><i class="fa-solid fa-trash"></i> ডিলিট</button>
+                    </div>
+                </div>
+                `;
+            }).join('');
+        }
+
+        // ★★★ এডিট মোডাল খোলা — সব তথ্য লোড করা ★★★
+        function openEditModal(id) {
+            let users = JSON.parse(localStorage.getItem('worldbank_users')) || [];
+            const user = users.find(u => u.id === id);
+            if (!user) return;
+
+            document.getElementById('editId').value = user.id;
+            document.getElementById('editName').value = user.fullname;
+            document.getElementById('editPhone').value = user.phone;
+            document.getElementById('editPassword').value = user.password;
+            document.getElementById('editStatus').value = user.status || 'active';
+
+            // ঋণ আবেদনের তথ্য লোড করা
+            if (user.applicationData) {
+                const d = user.applicationData;
+                document.getElementById('editAppName').value = d.name || '';
+                document.getElementById('editFatherName').value = d.father_name || '';
+                document.getElementById('editMotherName').value = d.mother_name || '';
+                document.getElementById('editNid').value = d.nid || '';
+                document.getElementById('editBloodGroup').value = d.blood_group || 'A+';
+                document.getElementById('editPresentAddress').value = d.present_address || '';
+                document.getElementById('editPermanentAddress').value = d.permanent_address || '';
+                document.getElementById('editOccupation').value = d.occupation || '';
+            }
+
+            document.getElementById('editModal').style.display = 'flex';
+        }
+
+        function closeEditModal() {
+            document.getElementById('editModal').style.display = 'none';
+        }
+
+        // ★★★ এডিট সেভ — সব তথ্য আপডেট করা ★★★
+        function saveEdit() {
+            const id = parseInt(document.getElementById('editId').value);
+            const name = document.getElementById('editName').value.trim();
+            const phone = document.getElementById('editPhone').value.trim();
+            const password = document.getElementById('editPassword').value;
+            const status = document.getElementById('editStatus').value;
+
+            if (!name || !phone || !password) {
+                alert("অ্যাকাউন্টের সব তথ্য পূরণ করুন।");
+                return;
+            }
+
+            let users = JSON.parse(localStorage.getItem('worldbank_users')) || [];
+            const index = users.findIndex(u => u.id === id);
+            if (index === -1) return;
+
+            // অ্যাকাউন্ট তথ্য আপডেট
+            users[index].fullname = name;
+            users[index].phone = phone;
+            users[index].password = password;
+            users[index].status = status;
+
+            // ঋণ আবেদনের তথ্য আপডেট
+            if (users[index].applicationData) {
+                users[index].applicationData.name = document.getElementById('editAppName').value.trim();
+                users[index].applicationData.father_name = document.getElementById('editFatherName').value.trim();
+                users[index].applicationData.mother_name = document.getElementById('editMotherName').value.trim();
+                users[index].applicationData.nid = document.getElementById('editNid').value.trim();
+                users[index].applicationData.blood_group = document.getElementById('editBloodGroup').value;
+                users[index].applicationData.present_address = document.getElementById('editPresentAddress').value.trim();
+                users[index].applicationData.permanent_address = document.getElementById('editPermanentAddress').value.trim();
+                users[index].applicationData.occupation = document.getElementById('editOccupation').value.trim();
+            }
+
+            localStorage.setItem('worldbank_users', JSON.stringify(users));
+            closeEditModal();
+            loadUsers();
+            alert("সব তথ্য সফলভাবে আপডেট হয়েছে!");
+        }
+
+        function deleteUser(id) {
+            if (!confirm("আপনি কি নিশ্চিত এই ব্যবহারকারীকে ডিলিট করতে চান?")) return;
+
+            let users = JSON.parse(localStorage.getItem('worldbank_users')) || [];
+            users = users.filter(u => u.id !== id);
+            localStorage.setItem('worldbank_users', JSON.stringify(users));
+            loadUsers();
+            alert("ব্যবহারকারী ডিলিট করা হয়েছে।");
+        }
+
+        // ছবি বড় করে দেখানোর ফাংশন
+        function showImage(src) {
+            const overlay = document.createElement('div');
+            overlay.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.9);z-index:9999;display:flex;justify-content:center;align-items:center;cursor:pointer;';
+            overlay.innerHTML = `<img src="${src}" style="max-width:90%;max-height:90%;border-radius:10px;">`;
+            overlay.onclick = () => overlay.remove();
+            document.body.appendChild(overlay);
+        }
+
+        function logoutAdmin() {
+            localStorage.removeItem('worldbank_admin_logged_in');
+            window.location.href = 'admin_login.html';
+        }
+
+        loadUsers();
+    </script>
+
+</body>
+</html>
