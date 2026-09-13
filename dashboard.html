@@ -55,10 +55,10 @@
         
         .input-wrapper { position: relative; display: flex; align-items: center; }
         
-        /* ড্রপডাউনের লেখা ঠিক করার জন্য */
+        /* ★★★ ড্রপডাউনের লেখা ঠিক করার জন্য (প্যাডিং ২২ পিক্সেল) ★★★ */
         .input-wrapper select { 
             width: 100%; 
-            padding: 14px 15px 14px 18px; 
+            padding: 14px 15px 14px 22px; 
             border: 1px solid #cbd5e1; 
             border-radius: 8px; 
             font-size: 15px; 
@@ -70,9 +70,9 @@
         }
         .input-wrapper select:focus { border-color: #2563eb; box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1); }
         
-        /* ড্রপডাউনের অপশনগুলোর মাঝে জায়গা বাড়ানোর জন্য */
+        /* ★★★ ড্রপডাউনের অপশনগুলোর মাঝে জায়গা বাড়ানোর জন্য ★★★ */
         .input-wrapper select option {
-            padding: 12px 15px 12px 18px;
+            padding: 12px 15px 12px 22px;
             line-height: 1.8;
             font-size: 15px;
             min-height: 40px;
@@ -231,7 +231,7 @@
                 </div>
             </div>
 
-            <!-- পরিশোধের মেয়াদ (ডিফল্ট ১২ মাস) -->
+            <!-- পরিশোধের মেয়াদ (ডিফল্ট ১২ মাস, বাংলা সংখ্যায়) -->
             <div class="input-group">
                 <label><i class="fa-solid fa-calendar-days"></i> পরিশোধের মেয়াদ (মাসে)</label>
                 <div class="input-wrapper select-wrapper">
@@ -292,7 +292,7 @@
             showSlide(slideIndex + 1);
         }, 3000);
 
-        // --- EMI ক্যালকুলেটর (আপনার দেওয়া সূত্র অনুযায়ী) ---
+        // --- EMI ক্যালকুলেটর (আপনার দেওয়া সূত্র অনুযায়ী) ---
         const loanAmountSelect = document.getElementById('loanAmount');
         const loanTenureSelect = document.getElementById('loanTenure');
         const emiAmountDisplay = document.getElementById('emiAmount');
@@ -301,7 +301,7 @@
             const principal = parseFloat(loanAmountSelect.value); // ঋণের পরিমাণ
             const tenure = parseInt(loanTenureSelect.value); // মেয়াদ (মাস)
             
-            // আপনার দেওয়া সূত্র: (মূল ঋণ / মেয়াদ) + ১০০
+            // আপনার দেওয়া সূত্র: (মূল ঋণ / মেয়াদ) + ১০০
             const emi = (principal / tenure) + 100;
 
             // সংখ্যাটিকে বাংলা সংখ্যায় রূপান্তর (দশমিকের পর ২ ঘর পর্যন্ত)
