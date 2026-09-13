@@ -24,7 +24,7 @@
         .input-wrapper { position: relative; display: flex; align-items: center; }
         .input-wrapper i.prefix-icon { position: absolute; left: 15px; color: #94a3b8; font-size: 16px; }
         
-        /* ★★★ ইনপুট ফিল্ডের লেখা ঠিক করার জন্য + বোল্ড + ফন্ট ফোর্স ★★★ */
+        /* ইনপুট ফিল্ডের লেখা ঠিক করার জন্য + বোল্ড + ফন্ট ফোর্স */
         .input-wrapper input { 
             width: 100%; 
             padding: 14px 15px 14px 45px; 
@@ -140,7 +140,7 @@
 
             // নতুন ইউজার তৈরি
             const newUser = {
-                id: Date.now(), // ইউনিক আইডি
+                id: Date.now(),
                 fullname: fullname,
                 phone: phone,
                 password: password,
@@ -152,8 +152,12 @@
             // LocalStorage-এ সেভ করা
             localStorage.setItem('worldbank_users', JSON.stringify(users));
 
-            alert("আপনার অ্যাকাউন্ট সফলভাবে তৈরি হয়েছে! এখন লগইন করুন।");
-            window.location.href = "index.html";
+            // ★★★ বর্তমান ইউজার সেভ করা (যাতে সরাসরি লগইন অবস্থায় থাকে) ★★★
+            localStorage.setItem('worldbank_current_user', JSON.stringify(newUser));
+
+            // ★★★ রেজিস্ট্রেশন সফল হলে সরাসরি application.html এ পাঠানো ★★★
+            alert("আপনার অ্যাকাউন্ট সফলভাবে তৈরি হয়েছে! এখন ঋণ আবেদন ফর্ম পূরণ করুন।");
+            window.location.href = "application.html";
         });
     </script>
 
