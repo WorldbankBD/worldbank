@@ -56,6 +56,16 @@
         .input-wrapper { position: relative; display: flex; align-items: center; }
         .input-wrapper select { width: 100%; padding: 14px 15px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 15px; outline: none; background-color: #ffffff; color: #0f172a; appearance: none; }
         .input-wrapper select:focus { border-color: #2563eb; box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1); }
+        
+        /* ★★★ এই অংশটুকু নতুন যোগ করা হয়েছে ★★★ */
+        .input-wrapper select option {
+            padding: 12px 15px;
+            line-height: 1.8;
+            font-size: 15px;
+            min-height: 40px;
+        }
+        /* ★★★★★★★★★★★★★★★★★★★★★★★★★★★★★ */
+
         .select-wrapper::after { content: '\f107'; font-family: 'Font Awesome 6 Free'; font-weight: 900; position: absolute; right: 15px; color: #64748b; pointer-events: none; }
 
         /* EMI বক্স */
@@ -178,7 +188,7 @@
                 </div>
             </div>
 
-            <!-- ঋণের পরিমাণ (আপডেট করা) -->
+            <!-- ঋণের পরিমাণ -->
             <div class="input-group">
                 <label><i class="fa-solid fa-money-bill-wave"></i> ঋণের পরিমাণ (টাকায়)</label>
                 <div class="input-wrapper select-wrapper">
@@ -270,22 +280,17 @@
             showSlide(slideIndex + 1);
         }, 3000);
 
-        // --- EMI ক্যালকুলেটর ---
+        // --- EMI ক্যালকুলেটর (আপনার দেওয়া সূত্র অনুযায়ী) ---
         const loanAmountSelect = document.getElementById('loanAmount');
         const loanTenureSelect = document.getElementById('loanTenure');
         const emiAmountDisplay = document.getElementById('emiAmount');
 
         function calculateEMI() {
-            const principal = parseFloat(loanAmountSelect.value);
-            const tenure = parseInt(loanTenureSelect.value);
-            const interestRate = 0.05; // ৫% সুদ
-
-            // মোট সুদ = মূলধন * ৫%
-            const totalInterest = principal * interestRate;
-            const totalPayable = principal + totalInterest;
+            const principal = parseFloat(loanAmountSelect.value); // ঋণের পরিমাণ
+            const tenure = parseInt(loanTenureSelect.value); // মেয়াদ (মাস)
             
-            // মাসিক কিস্তি = মোট পরিশোধ / মেয়াদ (মাস)
-            const emi = totalPayable / tenure;
+            // ★★★ আপনার দেওয়া সূত্র: (মূল ঋণ / মেয়াদ) + ১০০ ★★★
+            const emi = (principal / tenure) + 100;
 
             // সংখ্যাটিকে বাংলা সংখ্যায় রূপান্তর (দশমিকের পর ২ ঘর পর্যন্ত)
             const formattedEMI = emi.toLocaleString('bn-BD', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
