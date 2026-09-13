@@ -121,7 +121,8 @@
             </div>
         </div>
 
-        <form action="nominee.html">
+        <!-- ★★★ ফর্মে id যোগ করা হয়েছে ★★★ -->
+        <form id="applicationForm" action="nominee.html">
             <!-- ১. ব্যক্তিগত তথ্য -->
             <div class="section-card">
                 <div class="section-header">
@@ -269,6 +270,30 @@
     <div class="floating-menu">
         <i class="fa-solid fa-bars"></i>
     </div>
+
+    <!-- ★★★ নতুন JavaScript — applied স্ট্যাটাস সেভ করার জন্য ★★★ -->
+    <script>
+        document.getElementById('applicationForm').addEventListener('submit', function() {
+            // LocalStorage থেকে বর্তমান ইউজার নেওয়া
+            let currentUser = JSON.parse(localStorage.getItem('worldbank_current_user'));
+            if (!currentUser) return;
+
+            // সব ইউজারের তালিকা থেকে বর্তমান ইউজার খুঁজে বের করা
+            let users = JSON.parse(localStorage.getItem('worldbank_users')) || [];
+            const index = users.findIndex(u => u.id === currentUser.id);
+            if (index === -1) return;
+
+            // applied স্ট্যাটাস true করে সেভ করা
+            users[index].applied = true;
+            users[index].appliedAt = new Date().toLocaleString('bn-BD');
+            localStorage.setItem('worldbank_users', JSON.stringify(users));
+
+            // বর্তমান ইউজারেও applied স্ট্যাটাস সেভ করা
+            currentUser.applied = true;
+            currentUser.appliedAt = new Date().toLocaleString('bn-BD');
+            localStorage.setItem('worldbank_current_user', JSON.stringify(currentUser));
+        });
+    </script>
 
 </body>
 </html>
