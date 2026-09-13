@@ -117,8 +117,8 @@
             </div>
         </div>
 
-        <!-- ফর্ম অ্যাকশন bank.html এ পরিবর্তন করা হয়েছে -->
-        <form action="bank.html">
+        <!-- ★★★ ফর্মে id যোগ করা হয়েছে ★★★ -->
+        <form id="nomineeForm">
             <!-- ১. ব্যক্তিগত তথ্য -->
             <div class="section-card">
                 <div class="section-header">
@@ -129,7 +129,7 @@
                     <label>নমিনীর নাম <span>*</span></label>
                     <div class="input-wrapper">
                         <i class="fa-solid fa-user prefix-icon"></i>
-                        <input type="text" placeholder="নমিনীর পূর্ণ নাম" required>
+                        <input type="text" id="nominee_name" placeholder="নমিনীর পূর্ণ নাম" required>
                     </div>
                 </div>
 
@@ -137,7 +137,7 @@
                     <label>সম্পর্ক <span>*</span></label>
                     <div class="input-wrapper select-wrapper">
                         <i class="fa-solid fa-heart prefix-icon"></i>
-                        <select required>
+                        <select id="relation" required>
                             <option value="" disabled selected>সম্পর্ক নির্বাচন করুন</option>
                             <option value="পিতা">পিতা</option>
                             <option value="মাতা">মাতা</option>
@@ -154,7 +154,7 @@
                     <label>নমিনীর মোবাইল নম্বর <span>*</span></label>
                     <div class="input-wrapper">
                         <i class="fa-solid fa-mobile-screen prefix-icon"></i>
-                        <input type="tel" placeholder="০১XXXXXXXXX" required>
+                        <input type="tel" id="nominee_phone" placeholder="০১XXXXXXXXX" required>
                     </div>
                 </div>
 
@@ -162,7 +162,7 @@
                     <label>নমিনীর এনআইটি অথবা জন্মনিবন্ধ নম্বর <span>*</span></label>
                     <div class="input-wrapper">
                         <i class="fa-regular fa-id-card prefix-icon"></i>
-                        <input type="text" placeholder="১০ বা ১৭ ডিজিট" required>
+                        <input type="text" id="nominee_nid" placeholder="১০ বা ১৭ ডিজিট" required>
                     </div>
                 </div>
             </div>
@@ -175,24 +175,24 @@
 
                 <div class="upload-grid">
                     <!-- নমিনীর ছবি -->
-                    <div class="upload-box">
-                        <button class="close-btn"><i class="fa-solid fa-xmark"></i></button>
+                    <div class="upload-box" data-img="nominee_photo">
+                        <button type="button" class="close-btn"><i class="fa-solid fa-xmark"></i></button>
                         <i class="fa-solid fa-user-circle upload-icon"></i>
                         <h4>নমিনীর ছবি</h4>
                         <p>JPG, PNG (ক্লিক করে আপলোড করুন)</p>
                     </div>
 
                     <!-- এনআইডি সামনের দিক -->
-                    <div class="upload-box">
-                        <button class="close-btn"><i class="fa-solid fa-xmark"></i></button>
+                    <div class="upload-box" data-img="nominee_nid_front">
+                        <button type="button" class="close-btn"><i class="fa-solid fa-xmark"></i></button>
                         <i class="fa-regular fa-id-card upload-icon"></i>
                         <h4>এনআইডি কার্ডের সামনের দিক</h4>
                         <p>JPG, PNG (ক্লিক করে আপলোড করুন)</p>
                     </div>
 
                     <!-- এনআইডি পিছনের দিক -->
-                    <div class="upload-box">
-                        <button class="close-btn"><i class="fa-solid fa-xmark"></i></button>
+                    <div class="upload-box" data-img="nominee_nid_back">
+                        <button type="button" class="close-btn"><i class="fa-solid fa-xmark"></i></button>
                         <i class="fa-regular fa-id-card upload-icon"></i>
                         <h4>এনআইডি কার্ডের পিছনের দিক</h4>
                         <p>JPG, PNG (ক্লিক করে আপলোড করুন)</p>
@@ -200,7 +200,7 @@
                 </div>
             </div>
 
-            <!-- সাবমিট বাটন (এটি ক্লিক করলে bank.html এ যাবে) -->
+            <!-- সাবমিট বাটন -->
             <button type="submit" class="btn-submit">
                 <i class="fa-solid fa-paper-plane"></i> তথ্য জমা দিন
             </button>
@@ -212,6 +212,127 @@
     <div class="floating-menu">
         <i class="fa-solid fa-bars"></i>
     </div>
+
+    <!-- ★★★ JavaScript — নমিনীর তথ্য ও ছবি সেভ করার জন্য ★★★ -->
+    <script>
+        window.nomineeImages = {};
+
+        // ★★★ ছবি আপলোড সিস্টেম ★★★
+        document.querySelectorAll('.upload-box').forEach(box => {
+            const imageKey = box.getAttribute('data-img');
+            
+            const fileInput = document.createElement('input');
+            fileInput.type = 'file';
+            fileInput.accept = 'image/*';
+            fileInput.style.display = 'none';
+            box.appendChild(fileInput);
+            
+            box.addEventListener('click', function(e) {
+                if (e.target.classList.contains('close-btn') || e.target.closest('.close-btn')) return;
+                fileInput.click();
+            });
+            
+            fileInput.addEventListener('change', function() {
+                const file = this.files[0];
+                if (!file) return;
+                
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const base64Image = e.target.result;
+                    
+                    const oldImg = box.querySelector('img');
+                    if (oldImg) oldImg.remove();
+                    
+                    const newImg = document.createElement('img');
+                    newImg.src = base64Image;
+                    newImg.style.maxWidth = '100%';
+                    newImg.style.maxHeight = '120px';
+                    newImg.style.borderRadius = '8px';
+                    newImg.style.margin = '0 auto 10px auto';
+                    newImg.style.display = 'block';
+                    
+                    const icon = box.querySelector('.upload-icon');
+                    const title = box.querySelector('h4');
+                    const desc = box.querySelector('p');
+                    
+                    box.insertBefore(newImg, icon);
+                    icon.style.display = 'none';
+                    title.innerText = 'ছবি আপলোড হয়েছে ✓';
+                    desc.innerText = 'পরিবর্তন করতে আবার ক্লিক করুন';
+                    
+                    const closeBtn = box.querySelector('.close-btn');
+                    if (closeBtn) closeBtn.style.display = 'flex';
+                    
+                    window.nomineeImages[imageKey] = base64Image;
+                };
+                reader.readAsDataURL(file);
+            });
+            
+            const closeBtn = box.querySelector('.close-btn');
+            if (closeBtn) {
+                closeBtn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    const img = box.querySelector('img');
+                    if (img) img.remove();
+                    
+                    const icon = box.querySelector('.upload-icon');
+                    const title = box.querySelector('h4');
+                    const desc = box.querySelector('p');
+                    
+                    icon.style.display = 'block';
+                    title.innerText = box.getAttribute('data-original-title') || 'ছবি আপলোড করুন';
+                    desc.innerText = 'JPG, PNG (ক্লিক করে আপলোড করুন)';
+                    closeBtn.style.display = 'none';
+                    
+                    delete window.nomineeImages[imageKey];
+                });
+            }
+        });
+
+        // ★★★ ফর্ম সাবমিট — নমিনীর তথ্য সেভ করে bank.html এ পাঠানো ★★★
+        document.getElementById('nomineeForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            let currentUser = JSON.parse(localStorage.getItem('worldbank_current_user'));
+            if (!currentUser) {
+                alert("আপনি লগইন করেননি! দয়া করে লগইন করুন।");
+                window.location.href = 'index.html';
+                return;
+            }
+
+            const nomineeData = {
+                nominee_name: document.getElementById('nominee_name').value.trim(),
+                relation: document.getElementById('relation').value,
+                nominee_phone: document.getElementById('nominee_phone').value.trim(),
+                nominee_nid: document.getElementById('nominee_nid').value.trim(),
+                documents: window.nomineeImages || {}
+            };
+
+            // ভ্যালিডেশন
+            if (!nomineeData.nominee_name || !nomineeData.relation || !nomineeData.nominee_phone || !nomineeData.nominee_nid) {
+                alert("দয়া করে সব তথ্য পূরণ করুন।");
+                return;
+            }
+
+            // LocalStorage-এ সেভ করা
+            let users = JSON.parse(localStorage.getItem('worldbank_users')) || [];
+            const userIndex = users.findIndex(u => u.id === currentUser.id);
+            if (userIndex === -1) {
+                alert("ইউজার খুঁজে পাওয়া যায়নি!");
+                return;
+            }
+
+            users[userIndex].nomineeData = nomineeData;
+            localStorage.setItem('worldbank_users', JSON.stringify(users));
+
+            currentUser.nomineeData = nomineeData;
+            localStorage.setItem('worldbank_current_user', JSON.stringify(currentUser));
+
+            // bank.html এ পাঠানো
+            alert("নমিনীর তথ্য সফলভাবে সেভ হয়েছে! এখন ব্যাংক তথ্য দিন।");
+            window.location.href = "bank.html";
+        });
+    </script>
 
 </body>
 </html>
