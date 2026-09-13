@@ -27,8 +27,8 @@
         .slide.active { display: block; }
         .slide img { width: 100%; height: 100%; object-fit: cover; }
         .slide-text { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; color: white; width: 100%; padding: 0 20px; text-shadow: 0 2px 5px rgba(0,0,0,0.7); }
-        .slide-text h2 { font-size: 22px; margin-bottom: 5px; }
-        .slide-text p { font-size: 14px; }
+        .slide-text h2 { font-size: 22px; margin-bottom: 5px; font-weight: 700; }
+        .slide-text p { font-size: 14px; font-weight: 600; } /* ★ সংখ্যা বোল্ড */
         .dots { position: absolute; bottom: 15px; left: 50%; transform: translateX(-50%); display: flex; gap: 8px; }
         .dot { width: 12px; height: 12px; background: rgba(255,255,255,0.5); border-radius: 50%; cursor: pointer; transition: 0.3s; }
         .dot.active { background: #ffffff; width: 30px; border-radius: 10px; }
@@ -37,7 +37,7 @@
         .feature-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 25px; }
         .feature-card { background: white; padding: 20px; border-radius: 12px; text-align: center; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
         .feature-icon { width: 60px; height: 60px; background: #2563eb; color: white; border-radius: 12px; display: flex; justify-content: center; align-items: center; font-size: 28px; margin: 0 auto 15px auto; }
-        .feature-card h3 { font-size: 20px; color: #0f172a; margin-bottom: 5px; }
+        .feature-card h3 { font-size: 20px; color: #0f172a; margin-bottom: 5px; font-weight: 700; } /* ★ ১০০% বোল্ড */
         .feature-card p { font-size: 14px; color: #64748b; }
 
         /* ড্যাশবোর্ড টাইটেল */
@@ -55,14 +55,15 @@
         
         .input-wrapper { position: relative; display: flex; align-items: center; }
         
-        /* ★★★ ড্রপডাউনের লেখা ঠিক করার জন্য (প্যাডিং ২৫ পিক্সেল + ফন্ট ফোর্স) ★★★ */
+        /* ★★★ ড্রপডাউনের লেখা ঠিক করার জন্য (প্যাডিং ২৫ + ফন্ট ফোর্স + বোল্ড) ★★★ */
         .input-wrapper select { 
             width: 100%; 
             padding: 14px 15px 14px 25px; 
             border: 1px solid #cbd5e1; 
             border-radius: 8px; 
             font-size: 15px; 
-            font-family: 'Hind Siliguri', sans-serif !important; /* ★ ফন্ট ফোর্স করা হলো */
+            font-family: 'Hind Siliguri', sans-serif !important; 
+            font-weight: 700; /* ★ সংখ্যা বোল্ড */
             outline: none; 
             background-color: #ffffff; 
             color: #0f172a; 
@@ -71,12 +72,13 @@
         }
         .input-wrapper select:focus { border-color: #2563eb; box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1); }
         
-        /* ★★★ ড্রপডাউনের অপশনগুলোর মাঝে জায়গা বাড়ানোর জন্য + ফন্ট ফোর্স ★★★ */
+        /* ★★★ ড্রপডাউনের অপশনগুলোর মাঝে জায়গা + ফন্ট ফোর্স + বোল্ড ★★★ */
         .input-wrapper select option {
             padding: 12px 15px 12px 25px;
             line-height: 1.8;
             font-size: 15px;
-            font-family: 'Hind Siliguri', sans-serif !important; /* ★ ফন্ট ফোর্স করা হলো */
+            font-family: 'Hind Siliguri', sans-serif !important; 
+            font-weight: 700; /* ★ সংখ্যা বোল্ড */
             min-height: 40px;
         }
 
@@ -86,9 +88,9 @@
         .emi-box { background: #fef3c7; border: 1px solid #fcd34d; border-radius: 10px; padding: 15px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; transition: all 0.3s ease; }
         .emi-left { display: flex; align-items: center; gap: 10px; }
         .emi-left i { font-size: 24px; color: #d97706; }
-        .emi-left p { font-size: 14px; color: #92400e; }
-        .emi-right h3 { font-size: 24px; color: #92400e; font-weight: 700; }
-        .emi-note { font-size: 12px; color: #b45309; text-align: right; margin-top: -5px; }
+        .emi-left p { font-size: 14px; color: #92400e; font-weight: 600; }
+        .emi-right h3 { font-size: 24px; color: #92400e; font-weight: 700; } /* ★ EMI সংখ্যা বোল্ড */
+        .emi-note { font-size: 12px; color: #b45309; text-align: right; margin-top: -5px; font-weight: 600; }
 
         /* সাবমিট বাটন */
         .btn-submit-loan { width: 100%; background: #2563eb; color: white; border: none; padding: 16px; border-radius: 8px; font-size: 18px; font-weight: 700; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 10px; box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3); transition: 0.3s; text-decoration: none;}
