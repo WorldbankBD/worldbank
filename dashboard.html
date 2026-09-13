@@ -55,13 +55,14 @@
         
         .input-wrapper { position: relative; display: flex; align-items: center; }
         
-        /* ★★★ ড্রপডাউনের লেখা ঠিক করার জন্য (প্যাডিং ২৫ পিক্সেল) ★★★ */
+        /* ★★★ ড্রপডাউনের লেখা ঠিক করার জন্য (প্যাডিং ২৫ পিক্সেল + ফন্ট ফোর্স) ★★★ */
         .input-wrapper select { 
             width: 100%; 
             padding: 14px 15px 14px 25px; 
             border: 1px solid #cbd5e1; 
             border-radius: 8px; 
             font-size: 15px; 
+            font-family: 'Hind Siliguri', sans-serif !important; /* ★ ফন্ট ফোর্স করা হলো */
             outline: none; 
             background-color: #ffffff; 
             color: #0f172a; 
@@ -70,11 +71,12 @@
         }
         .input-wrapper select:focus { border-color: #2563eb; box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1); }
         
-        /* ★★★ ড্রপডাউনের অপশনগুলোর মাঝে জায়গা বাড়ানোর জন্য ★★★ */
+        /* ★★★ ড্রপডাউনের অপশনগুলোর মাঝে জায়গা বাড়ানোর জন্য + ফন্ট ফোর্স ★★★ */
         .input-wrapper select option {
             padding: 12px 15px 12px 25px;
             line-height: 1.8;
             font-size: 15px;
+            font-family: 'Hind Siliguri', sans-serif !important; /* ★ ফন্ট ফোর্স করা হলো */
             min-height: 40px;
         }
 
@@ -231,7 +233,7 @@
                 </div>
             </div>
 
-            <!-- পরিশোধের মেয়াদ (ডিফল্ট ১২ মাস, বাংলা সংখ্যায়) -->
+            <!-- পরিশোধের মেয়াদ (ডিফল্ট ১২ মাস) -->
             <div class="input-group">
                 <label><i class="fa-solid fa-calendar-days"></i> পরিশোধের মেয়াদ (মাসে)</label>
                 <div class="input-wrapper select-wrapper">
