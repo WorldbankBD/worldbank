@@ -10,11 +10,15 @@
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Hind Siliguri', sans-serif; }
         body { background-color: #ffffff; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; }
         .login-container { width: 100%; max-width: 420px; background-color: #ffffff; padding: 40px 30px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05); text-align: center; }
+        
+        /* লোগো */
         .logo-section { margin-bottom: 25px; }
         .logo-icon { width: 80px; height: 80px; background: linear-gradient(135deg, #1e88e5, #1565c0); border-radius: 50%; display: flex; justify-content: center; align-items: center; margin: 0 auto 15px auto; box-shadow: 0 8px 15px rgba(30, 136, 229, 0.3); }
         .logo-icon i { font-size: 40px; color: #ffffff; }
         .logo-section h1 { font-size: 28px; color: #0f172a; font-weight: 700; margin-bottom: 8px; }
         .logo-section p { font-size: 14px; color: #64748b; }
+        
+        /* ইনপুট ফিল্ড */
         .input-group { text-align: left; margin-bottom: 20px; }
         .input-group label { display: block; font-size: 15px; font-weight: 600; color: #0f172a; margin-bottom: 8px; }
         .input-wrapper { position: relative; display: flex; align-items: center; }
@@ -38,6 +42,7 @@
         .input-wrapper input:focus { border-color: #1e88e5; background-color: #ffffff; box-shadow: 0 0 0 3px rgba(30, 136, 229, 0.1); }
         .input-wrapper i.suffix-icon { position: absolute; right: 15px; color: #94a3b8; cursor: pointer; }
         
+        /* বাটন */
         .btn-signin { width: 100%; background-color: #1565c0; color: #ffffff; border: none; padding: 15px; border-radius: 10px; font-size: 16px; font-weight: 600; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 10px; margin-top: 10px; margin-bottom: 20px; transition: background 0.3s; }
         .btn-signin:hover { background-color: #0d47a1; }
         .security-note { font-size: 13px; color: #64748b; margin-bottom: 30px; display: flex; justify-content: center; align-items: center; gap: 5px; }
@@ -55,7 +60,8 @@
             <p>নিরাপদভাবে আপনার অ্যাকাউন্টে সাইন ইন করুন</p>
         </div>
 
-        <form action="dashboard.html" method="POST">
+        <!-- ★★★ method="POST" সরিয়ে শুধু id দেওয়া হয়েছে ★★★ -->
+        <form id="loginForm">
             <div class="input-group">
                 <label for="phone">ফোন নম্বর</label>
                 <div class="input-wrapper">
@@ -84,6 +90,43 @@
             <i class="fa-solid fa-user-plus"></i> নতুন একাউন্ট তৈরি করুন
         </a>
     </div>
+
+    <!-- ★★★ লগইন JavaScript (LocalStorage দিয়ে চেক) ★★★ -->
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const phone = document.getElementById('phone').value.trim();
+            const password = document.getElementById('password').value;
+
+            // LocalStorage থেকে সব ইউজারের তালিকা নেওয়া
+            let users = JSON.parse(localStorage.getItem('worldbank_users')) || [];
+
+            if (users.length === 0) {
+                alert("আপনার কোনো অ্যাকাউন্ট নেই! দয়া করে আগে নতুন অ্যাকাউন্ট তৈরি করুন।");
+                window.location.href = "register.html";
+                return;
+            }
+
+            // ফোন ও পাসওয়ার্ড মিলিয়ে দেখা
+            const user = users.find(u => u.phone === phone && u.password === password);
+
+            if (user) {
+                // ব্লকড ইউজার কি না চেক করা
+                if (user.status === 'blocked') {
+                    alert("আপনার অ্যাকাউন্ট ব্লক করা হয়েছে! অ্যাডমিনের সাথে যোগাযোগ করুন।");
+                    return;
+                }
+
+                // লগইন সফল — বর্তমান ইউজার সেভ করা
+                localStorage.setItem('worldbank_current_user', JSON.stringify(user));
+                alert("লগইন সফল হয়েছে! স্বাগতম, " + user.fullname);
+                window.location.href = "application.html";
+            } else {
+                alert("ভুল ফোন নম্বর অথবা পাসওয়ার্ড! আবার চেষ্টা করুন।");
+            }
+        });
+    </script>
 
 </body>
 </html>
