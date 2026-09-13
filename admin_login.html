@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>অ্যাডমিন লগইন - WorldBank</title>
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Hind Siliguri', sans-serif; }
+        body { background-color: #0f172a; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; }
+        .login-container { width: 100%; max-width: 420px; background-color: #1e293b; padding: 40px 30px; border-radius: 12px; box-shadow: 0 4px 30px rgba(0,0,0,0.5); text-align: center; }
+        .logo-icon { width: 80px; height: 80px; background: #1e88e5; border-radius: 50%; display: flex; justify-content: center; align-items: center; margin: 0 auto 15px auto; box-shadow: 0 8px 15px rgba(30, 136, 229, 0.3); }
+        .logo-icon i { font-size: 40px; color: white; }
+        .logo-section h1 { font-size: 26px; color: white; font-weight: 700; margin-bottom: 8px; }
+        .logo-section p { font-size: 14px; color: #94a3b8; }
+        .input-group { text-align: left; margin-bottom: 18px; }
+        .input-group label { display: block; font-size: 15px; font-weight: 600; color: #e2e8f0; margin-bottom: 6px; }
+        .input-wrapper { position: relative; display: flex; align-items: center; }
+        .input-wrapper i.prefix-icon { position: absolute; left: 15px; color: #64748b; font-size: 16px; }
+        .input-wrapper input { width: 100%; padding: 14px 15px 14px 45px; border: 1px solid #334155; border-radius: 10px; font-size: 15px; font-family: 'Hind Siliguri', sans-serif !important; font-weight: 600; outline: none; background-color: #0f172a; color: white; }
+        .input-wrapper input:focus { border-color: #1e88e5; box-shadow: 0 0 0 3px rgba(30, 136, 229, 0.2); }
+        .btn-login { width: 100%; background-color: #1e88e5; color: white; border: none; padding: 15px; border-radius: 10px; font-size: 16px; font-weight: 600; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 10px; margin-top: 10px; transition: 0.3s; }
+        .btn-login:hover { background-color: #1565c0; }
+        .back-link { margin-top: 20px; }
+        .back-link a { color: #94a3b8; text-decoration: none; font-size: 14px; }
+        .back-link a:hover { color: white; }
+    </style>
+</head>
+<body>
+
+    <div class="login-container">
+        <div class="logo-section">
+            <div class="logo-icon"><i class="fa-solid fa-user-shield"></i></div>
+            <h1>অ্যাডমিন লগইন</h1>
+            <p>শুধুমাত্র অনুমোদিত ব্যক্তির জন্য</p>
+        </div>
+
+        <form id="adminLoginForm">
+            <div class="input-group">
+                <label for="adminUser">অ্যাডমিন ইউজারনেম</label>
+                <div class="input-wrapper">
+                    <i class="fa-solid fa-user prefix-icon"></i>
+                    <input type="text" id="adminUser" placeholder="অ্যাডমিন ইউজারনেম" required>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label for="adminPass">পাসওয়ার্ড</label>
+                <div class="input-wrapper">
+                    <i class="fa-solid fa-lock prefix-icon"></i>
+                    <input type="password" id="adminPass" placeholder="অ্যাডমিন পাসওয়ার্ড" required>
+                </div>
+            </div>
+
+            <button type="submit" class="btn-login"><i class="fa-solid fa-right-to-bracket"></i> লগইন করুন</button>
+        </form>
+
+        <div class="back-link">
+            <a href="index.html"><i class="fa-solid fa-arrow-left"></i> ইউজার লগইনে ফিরে যান</a>
+        </div>
+    </div>
+
+    <script>
+        // ★★★ অ্যাডমিনের ক্রেডেনশিয়াল (এখানে পরিবর্তন করুন) ★★★
+        const ADMIN_USERNAME = "admin";
+        const ADMIN_PASSWORD = "admin123";
+
+        document.getElementById('adminLoginForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const user = document.getElementById('adminUser').value.trim();
+            const pass = document.getElementById('adminPass').value;
+
+            if (user === ADMIN_USERNAME && pass === ADMIN_PASSWORD) {
+                localStorage.setItem('worldbank_admin_logged_in', 'true');
+                alert("অ্যাডমিন লগইন সফল!");
+                window.location.href = "admin.html";
+            } else {
+                alert("ভুল ইউজারনেম অথবা পাসওয়ার্ড!");
+            }
+        });
+    </script>
+
+</body>
+</html>
