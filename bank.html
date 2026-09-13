@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ব্যা্ংক একাউন্ট তথ্য - WorldBank Bangladesh</title>
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Hind Siliguri', sans-serif; }
+        body { background-color: #f1f5f9; padding-bottom: 80px; }
+        
+        /* হেডার */
+        .header { background-color: #1e88e5; color: white; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .header-left { display: flex; align-items: center; gap: 10px; }
+        .header-logo { width: 40px; height: 40px; background: white; border-radius: 50%; display: flex; justify-content: center; align-items: center; color: #1e88e5; font-size: 20px; }
+        .header-text h2 { font-size: 18px; font-weight: 700; margin-bottom: -3px;}
+        .header-text p { font-size: 12px; opacity: 0.9; }
+        .btn-logout { background: white; color: #1e88e5; border: none; padding: 8px 15px; border-radius: 5px; font-weight: 600; font-size: 14px; cursor: pointer; }
+
+        /* মূল কন্টেইনার */
+        .main-container { max-width: 500px; margin: 0 auto; padding: 15px; }
+        
+        /* ব্যানার */
+        .banner { background: #2563eb; color: white; padding: 25px 20px; border-radius: 12px; text-align: center; margin-bottom: 20px; box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3); }
+        .banner h1 { font-size: 24px; font-weight: 700; margin-bottom: 8px; }
+        .banner p { font-size: 15px; opacity: 0.9; line-height: 1.5; }
+
+        /* সেকশন কার্ড */
+        .section-card { background: white; border-radius: 12px; padding: 20px; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+        .section-header { display: flex; align-items: center; gap: 8px; font-size: 18px; font-weight: 700; color: #0f172a; border-bottom: 1px solid #e2e8f0; padding-bottom: 12px; margin-bottom: 20px; }
+        .section-header i { color: #1565c0; }
+        
+        /* ইনপুট ফিল্ড */
+        .input-group { margin-bottom: 15px; }
+        .input-wrapper { position: relative; display: flex; align-items: center; }
+        .input-wrapper i.prefix-icon { position: absolute; left: 15px; color: #94a3b8; font-size: 16px; }
+        .input-wrapper input, .input-wrapper select { width: 100%; padding: 15px 15px 15px 45px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 15px; outline: none; background-color: #f8fafc; color: #0f172a; }
+        .input-wrapper input:focus, .input-wrapper select:focus { border-color: #1e88e5; background-color: #fff; box-shadow: 0 0 0 3px rgba(30, 136, 229, 0.1); }
+        
+        /* ড্রপডাউন এরো */
+        .select-wrapper::after {
+            content: '\f107'; 
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            position: absolute;
+            right: 15px;
+            color: #64748b;
+            pointer-events: none;
+        }
+
+        /* সেভ বাটন */
+        .btn-save { width: 100%; background: #2563eb; color: white; border: none; padding: 16px; border-radius: 8px; font-size: 16px; font-weight: 700; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 10px; margin-top: 10px; box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3); transition: all 0.3s; }
+        .btn-save:hover { background: #1d4ed8; }
+
+        /* সংরক্ষিত তথ্য */
+        .saved-info { display: flex; align-items: flex-start; gap: 12px; padding: 15px 0; }
+        .saved-info i { color: #1565c0; font-size: 20px; margin-top: 3px; }
+        .saved-info p { font-size: 15px; color: #475569; line-height: 1.6; }
+        
+        /* ফ্লোটিং মেনু বাটন */
+        .floating-menu { position: fixed; bottom: 20px; left: 20px; background: #1e88e5; color: white; width: 50px; height: 50px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 22px; box-shadow: 0 4px 10px rgba(0,0,0,0.2); cursor: pointer; z-index: 999; }
+    </style>
+</head>
+<body>
+
+    <!-- হেডার -->
+    <div class="header">
+        <div class="header-left">
+            <div class="header-logo"><i class="fa-solid fa-globe"></i></div>
+            <div class="header-text">
+                <h2>WorldBank</h2>
+                <p>Bangladesh</p>
+            </div>
+        </div>
+        <button class="btn-logout" onclick="window.location.href='index.html'">লগআউট</button>
+    </div>
+
+    <!-- মূল কন্টেইনার -->
+    <div class="main-container">
+        
+        <!-- ব্যানার -->
+        <div class="banner">
+            <h1>ব্যা্ংক একাউন্ট তথ্য</h1>
+            <p>আপনার ঋণ পরিশোধ ও প্রাপ্তির জন্য<br>অ্যাকাউন্ট বিবরণী</p>
+        </div>
+
+        <form action="#">
+            <!-- ১. আপনার ব্যাংক তথ্য -->
+            <div class="section-card">
+                <div class="section-header">
+                    <i class="fa-solid fa-user"></i> আপনার ব্যাংক তথ্য
+                </div>
+                
+                <div class="input-group">
+                    <div class="input-wrapper select-wrapper">
+                        <i class="fa-solid fa-building-columns prefix-icon"></i>
+                        <select required>
+                            <option value="" disabled selected>বিকাশ</option>
+                            <option value="বিকাশ">বিকাশ</option>
+                            <option value="নগদ">নগদ</option>
+                            <option value="রকেট">রকেট</option>
+                            <option value="ব্যাংক">ব্যাংক</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <div class="input-wrapper">
+                        <i class="fa-regular fa-credit-card prefix-icon"></i>
+                        <input type="text" placeholder="আপনার একাউন্ট নম্বর লিখুন" required>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-save">
+                    <i class="fa-solid fa-floppy-disk"></i> সংরক্ষণ করুন
+                </button>
+            </div>
+        </form>
+
+        <!-- ২. সংরক্ষিত একাউন্ট তথ্য -->
+        <div class="section-card">
+            <div class="section-header">
+                <i class="fa-solid fa-bookmark"></i> সংরক্ষিত একাউন্ট তথ্য
+            </div>
+            <div class="saved-info">
+                <i class="fa-regular fa-file-lines"></i>
+                <p>আপনার কোনো সংরক্ষিত ব্যাংক তথ্য নেই।</p>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- ফ্লোটিং মেনু আইকন -->
+    <div class="floating-menu">
+        <i class="fa-solid fa-bars"></i>
+    </div>
+
+</body>
+</html>
