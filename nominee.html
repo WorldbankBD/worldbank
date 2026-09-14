@@ -10,7 +10,6 @@
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Hind Siliguri', sans-serif; }
         body { background-color: #f1f5f9; padding-bottom: 80px; }
         
-        /* হেডার */
         .header { background-color: #1e88e5; color: white; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
         .header-left { display: flex; align-items: center; gap: 10px; }
         .header-logo { width: 40px; height: 40px; background: white; border-radius: 50%; display: flex; justify-content: center; align-items: center; color: #1e88e5; font-size: 20px; }
@@ -18,27 +17,22 @@
         .header-text p { font-size: 12px; opacity: 0.9; }
         .btn-logout { background: white; color: #1e88e5; border: none; padding: 8px 15px; border-radius: 5px; font-weight: 600; font-size: 14px; cursor: pointer; }
 
-        /* মূল কন্টেইনার */
         .main-container { max-width: 500px; margin: 0 auto; padding: 15px; }
         
-        /* টাইটেল */
         .form-title { display: flex; gap: 12px; align-items: flex-start; margin-bottom: 20px; margin-top: 10px; }
         .form-title .icon-box { width: 45px; height: 45px; background: #1565c0; color: white; border-radius: 8px; display: flex; justify-content: center; align-items: center; font-size: 22px; }
         .form-title h1 { font-size: 22px; color: #0f172a; font-weight: 700; }
         .form-title p { font-size: 14px; color: #64748b; }
 
-        /* সেকশন কার্ড */
         .section-card { background: white; border-radius: 12px; padding: 20px; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
         .section-header { display: flex; align-items: center; gap: 8px; font-size: 18px; font-weight: 700; color: #1565c0; border-bottom: 1px solid #e2e8f0; padding-bottom: 10px; margin-bottom: 20px; }
         
-        /* ইনপুট ফিল্ড */
         .input-group { margin-bottom: 18px; }
         .input-group label { display: block; font-size: 15px; font-weight: 600; color: #0f172a; margin-bottom: 6px; }
         .input-group label span { color: #ef4444; } 
         .input-wrapper { position: relative; display: flex; align-items: center; }
         .input-wrapper i.prefix-icon { position: absolute; left: 15px; color: #94a3b8; font-size: 16px; }
         
-        /* ★★★ ড্রপডাউনের লেখা ও প্যাডিং ঠিক করার জন্য + বোল্ড ★★★ */
         .input-wrapper input, .input-wrapper select { 
             width: 100%; 
             padding: 14px 15px 14px 45px; 
@@ -54,28 +48,10 @@
         }
         .input-wrapper input:focus, .input-wrapper select:focus { border-color: #1e88e5; background-color: #fff; box-shadow: 0 0 0 3px rgba(30, 136, 229, 0.1); }
         
-        /* ★★★ ড্রপডাউনের অপশনগুলোর মাঝে জায়গা বাড়ানোর জন্য + বোল্ড ★★★ */
-        .input-wrapper select option {
-            padding: 12px 15px 12px 45px;
-            line-height: 1.8;
-            font-size: 15px;
-            font-family: 'Hind Siliguri', sans-serif !important; 
-            font-weight: 700;
-            min-height: 40px;
-        }
+        .input-wrapper select option { padding: 12px 15px 12px 45px; line-height: 1.8; font-size: 15px; font-family: 'Hind Siliguri', sans-serif !important; font-weight: 700; min-height: 40px; }
         
-        /* ড্রপডাউন এরো */
-        .select-wrapper::after {
-            content: '\f107'; 
-            font-family: 'Font Awesome 6 Free';
-            font-weight: 900;
-            position: absolute;
-            right: 15px;
-            color: #64748b;
-            pointer-events: none;
-        }
+        .select-wrapper::after { content: '\f107'; font-family: 'Font Awesome 6 Free'; font-weight: 900; position: absolute; right: 15px; color: #64748b; pointer-events: none; }
 
-        /* আপলোড বক্স */
         .upload-grid { display: flex; flex-direction: column; gap: 15px; }
         .upload-box { border: 2px dashed #cbd5e1; border-radius: 10px; padding: 25px 15px; text-align: center; background: #f8fafc; position: relative; cursor: pointer; }
         .upload-box i.upload-icon { font-size: 35px; color: #1565c0; margin-bottom: 10px; display: block; }
@@ -83,17 +59,20 @@
         .upload-box p { font-size: 13px; color: #64748b; }
         .close-btn { position: absolute; top: -10px; right: -10px; background: #ef4444; color: white; border: none; width: 25px; height: 25px; border-radius: 50%; display: flex; justify-content: center; align-items: center; cursor: pointer; font-size: 12px; display: none; }
 
-        /* সাবমিট বাটন */
         .btn-submit { width: 100%; background: #1565c0; color: white; border: none; padding: 16px; border-radius: 8px; font-size: 18px; font-weight: 700; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 10px; margin-top: 10px; box-shadow: 0 4px 12px rgba(21, 101, 192, 0.3); text-decoration: none;}
         .btn-submit:hover { background: #0d47a1; }
         
-        /* ফ্লোটিং মেনু বাটন */
         .floating-menu { position: fixed; bottom: 20px; left: 20px; background: #1e88e5; color: white; width: 50px; height: 50px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 22px; box-shadow: 0 4px 10px rgba(0,0,0,0.2); cursor: pointer; z-index: 999; }
+
+        .loading-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 9999; justify-content: center; align-items: center; flex-direction: column; }
+        .loading-overlay.show { display: flex; }
+        .spinner { border: 4px solid #f3f3f3; border-top: 4px solid #1e88e5; border-radius: 50%; width: 50px; height: 50px; animation: spin 1s linear infinite; margin-bottom: 15px; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .loading-text { color: white; font-size: 16px; font-weight: 600; }
     </style>
 </head>
 <body>
 
-    <!-- হেডার -->
     <div class="header">
         <div class="header-left">
             <div class="header-logo"><i class="fa-solid fa-globe"></i></div>
@@ -105,10 +84,8 @@
         <button class="btn-logout" onclick="window.location.href='index.html'">লগআউট</button>
     </div>
 
-    <!-- মূল কন্টেইনার -->
     <div class="main-container">
         
-        <!-- টাইটেল -->
         <div class="form-title">
             <div class="icon-box"><i class="fa-solid fa-users"></i></div>
             <div>
@@ -117,19 +94,15 @@
             </div>
         </div>
 
-        <!-- ★★★ ফর্মে id যোগ করা হয়েছে ★★★ -->
         <form id="nomineeForm">
-            <!-- ১. ব্যক্তিগত তথ্য -->
             <div class="section-card">
-                <div class="section-header">
-                    <i class="fa-solid fa-user"></i> ব্যক্তিগত তথ্য
-                </div>
+                <div class="section-header"><i class="fa-solid fa-user"></i> ব্যক্তিগত তথ্য</div>
                 
                 <div class="input-group">
                     <label>নমিনীর নাম <span>*</span></label>
                     <div class="input-wrapper">
                         <i class="fa-solid fa-user prefix-icon"></i>
-                        <input type="text" id="nominee_name" placeholder="নমিনীর পূর্ণ নাম" required>
+                        <input type="text" data-field="nominee_name" placeholder="নমিনীর পূর্ণ নাম" required>
                     </div>
                 </div>
 
@@ -137,7 +110,7 @@
                     <label>সম্পর্ক <span>*</span></label>
                     <div class="input-wrapper select-wrapper">
                         <i class="fa-solid fa-heart prefix-icon"></i>
-                        <select id="relation" required>
+                        <select data-field="relation" required>
                             <option value="" disabled selected>সম্পর্ক নির্বাচন করুন</option>
                             <option value="পিতা">পিতা</option>
                             <option value="মাতা">মাতা</option>
@@ -154,7 +127,7 @@
                     <label>নমিনীর মোবাইল নম্বর <span>*</span></label>
                     <div class="input-wrapper">
                         <i class="fa-solid fa-mobile-screen prefix-icon"></i>
-                        <input type="tel" id="nominee_phone" placeholder="০১XXXXXXXXX" required>
+                        <input type="tel" data-field="nominee_phone" placeholder="০১XXXXXXXXX" required>
                     </div>
                 </div>
 
@@ -162,19 +135,15 @@
                     <label>নমিনীর এনআইটি অথবা জন্মনিবন্ধ নম্বর <span>*</span></label>
                     <div class="input-wrapper">
                         <i class="fa-regular fa-id-card prefix-icon"></i>
-                        <input type="text" id="nominee_nid" placeholder="১০ বা ১৭ ডিজিট" required>
+                        <input type="text" data-field="nominee_nid" placeholder="১০ বা ১৭ ডিজিট" required>
                     </div>
                 </div>
             </div>
 
-            <!-- ২. এটাচমেন্ট -->
             <div class="section-card">
-                <div class="section-header">
-                    <i class="fa-solid fa-paperclip"></i> এটাচমেন্ট বা কাগজপত্রসমূহ
-                </div>
+                <div class="section-header"><i class="fa-solid fa-paperclip"></i> এটাচমেন্ট বা কাগজপত্রসমূহ</div>
 
                 <div class="upload-grid">
-                    <!-- নমিনীর ছবি -->
                     <div class="upload-box" data-img="nominee_photo">
                         <button type="button" class="close-btn"><i class="fa-solid fa-xmark"></i></button>
                         <i class="fa-solid fa-user-circle upload-icon"></i>
@@ -182,7 +151,6 @@
                         <p>JPG, PNG (ক্লিক করে আপলোড করুন)</p>
                     </div>
 
-                    <!-- এনআইডি সামনের দিক -->
                     <div class="upload-box" data-img="nominee_nid_front">
                         <button type="button" class="close-btn"><i class="fa-solid fa-xmark"></i></button>
                         <i class="fa-regular fa-id-card upload-icon"></i>
@@ -190,7 +158,6 @@
                         <p>JPG, PNG (ক্লিক করে আপলোড করুন)</p>
                     </div>
 
-                    <!-- এনআইডি পিছনের দিক -->
                     <div class="upload-box" data-img="nominee_nid_back">
                         <button type="button" class="close-btn"><i class="fa-solid fa-xmark"></i></button>
                         <i class="fa-regular fa-id-card upload-icon"></i>
@@ -200,27 +167,103 @@
                 </div>
             </div>
 
-            <!-- সাবমিট বাটন -->
-            <button type="submit" class="btn-submit">
+            <button type="submit" class="btn-submit" id="submitBtn">
                 <i class="fa-solid fa-paper-plane"></i> তথ্য জমা দিন
             </button>
 
         </form>
     </div>
 
-    <!-- ফ্লোটিং মেনু আইকন -->
     <div class="floating-menu">
         <i class="fa-solid fa-bars"></i>
     </div>
 
-    <!-- ★★★ JavaScript — নমিনীর তথ্য ও ছবি সেভ করার জন্য ★★★ -->
-    <script>
-        window.nomineeImages = {};
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="spinner"></div>
+        <div class="loading-text">তথ্য সেভ হচ্ছে... অপেক্ষা করুন</div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import { getFirestore, doc, updateDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyD9fEvnTdI5y4AQiFIENZUD9KBtBx1Re4g",
+            authDomain: "worldbank-72fb8.firebaseapp.com",
+            projectId: "worldbank-72fb8",
+            storageBucket: "worldbank-72fb8.firebasestorage.app",
+            messagingSenderId: "102460952898",
+            appId: "1:102460952898:web:c2946f3c9e78dca3a138db",
+            measurementId: "G-KK74DHYW69"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        let currentUserUID = null;
+        window.uploadedImages = {};
+
+        // ★★★ বর্তমান ইউজার চেক ★★★
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                currentUserUID = user.uid;
+                loadExistingData(user.uid);
+            } else {
+                alert("আপনি লগইন করেননি! দয়া করে লগইন করুন।");
+                window.location.href = 'index.html';
+            }
+        });
+
+        // ★★★ পুরাতন ডেটা লোড (যদি থাকে) ★★★
+        async function loadExistingData(uid) {
+            try {
+                const userDoc = await getDoc(doc(db, "users", uid));
+                if (userDoc.exists()) {
+                    const data = userDoc.data();
+                    if (data.nomineeData) {
+                        const nomData = data.nomineeData;
+                        document.querySelectorAll('[data-field]').forEach(field => {
+                            const fieldName = field.getAttribute('data-field');
+                            if (nomData[fieldName]) field.value = nomData[fieldName];
+                        });
+                        // ছবি লোড
+                        if (nomData.documents) {
+                            Object.keys(nomData.documents).forEach(key => {
+                                const box = document.querySelector(`.upload-box[data-img="${key}"]`);
+                                if (box) {
+                                    const base64Image = nomData.documents[key];
+                                    const icon = box.querySelector('.upload-icon');
+                                    const title = box.querySelector('h4');
+                                    const desc = box.querySelector('p');
+                                    const newImg = document.createElement('img');
+                                    newImg.src = base64Image;
+                                    newImg.style.maxWidth = '100%';
+                                    newImg.style.maxHeight = '120px';
+                                    newImg.style.borderRadius = '8px';
+                                    newImg.style.margin = '0 auto 10px auto';
+                                    newImg.style.display = 'block';
+                                    box.insertBefore(newImg, icon);
+                                    icon.style.display = 'none';
+                                    title.innerText = 'ছবি আপলোড হয়েছে ✓';
+                                    desc.innerText = 'পরিবর্তন করতে আবার ক্লিক করুন';
+                                    const closeBtn = box.querySelector('.close-btn');
+                                    if (closeBtn) closeBtn.style.display = 'flex';
+                                    window.uploadedImages[key] = base64Image;
+                                }
+                            });
+                        }
+                    }
+                }
+            } catch (error) {
+                console.error("Error loading data:", error);
+            }
+        }
 
         // ★★★ ছবি আপলোড সিস্টেম ★★★
         document.querySelectorAll('.upload-box').forEach(box => {
             const imageKey = box.getAttribute('data-img');
-            
             const fileInput = document.createElement('input');
             fileInput.type = 'file';
             fileInput.accept = 'image/*';
@@ -235,14 +278,11 @@
             fileInput.addEventListener('change', function() {
                 const file = this.files[0];
                 if (!file) return;
-                
                 const reader = new FileReader();
                 reader.onload = function(e) {
                     const base64Image = e.target.result;
-                    
                     const oldImg = box.querySelector('img');
                     if (oldImg) oldImg.remove();
-                    
                     const newImg = document.createElement('img');
                     newImg.src = base64Image;
                     newImg.style.maxWidth = '100%';
@@ -250,20 +290,16 @@
                     newImg.style.borderRadius = '8px';
                     newImg.style.margin = '0 auto 10px auto';
                     newImg.style.display = 'block';
-                    
                     const icon = box.querySelector('.upload-icon');
                     const title = box.querySelector('h4');
                     const desc = box.querySelector('p');
-                    
                     box.insertBefore(newImg, icon);
                     icon.style.display = 'none';
                     title.innerText = 'ছবি আপলোড হয়েছে ✓';
                     desc.innerText = 'পরিবর্তন করতে আবার ক্লিক করুন';
-                    
                     const closeBtn = box.querySelector('.close-btn');
                     if (closeBtn) closeBtn.style.display = 'flex';
-                    
-                    window.nomineeImages[imageKey] = base64Image;
+                    window.uploadedImages[imageKey] = base64Image;
                 };
                 reader.readAsDataURL(file);
             });
@@ -274,63 +310,57 @@
                     e.stopPropagation();
                     const img = box.querySelector('img');
                     if (img) img.remove();
-                    
                     const icon = box.querySelector('.upload-icon');
                     const title = box.querySelector('h4');
                     const desc = box.querySelector('p');
-                    
                     icon.style.display = 'block';
-                    title.innerText = box.getAttribute('data-original-title') || 'ছবি আপলোড করুন';
+                    title.innerText = 'ছবি আপলোড করুন';
                     desc.innerText = 'JPG, PNG (ক্লিক করে আপলোড করুন)';
                     closeBtn.style.display = 'none';
-                    
-                    delete window.nomineeImages[imageKey];
+                    delete window.uploadedImages[imageKey];
                 });
             }
         });
 
-        // ★★★ ফর্ম সাবমিট — নমিনীর তথ্য সেভ করে bank.html এ পাঠানো ★★★
-        document.getElementById('nomineeForm').addEventListener('submit', function(event) {
+        // ★★★ ফর্ম সাবমিট — Firestore-এ সেভ ★★★
+        document.getElementById('nomineeForm').addEventListener('submit', async function(event) {
             event.preventDefault();
 
-            let currentUser = JSON.parse(localStorage.getItem('worldbank_current_user'));
-            if (!currentUser) {
-                alert("আপনি লগইন করেননি! দয়া করে লগইন করুন।");
+            if (!currentUserUID) {
+                alert("আপনি লগইন করেননি!");
                 window.location.href = 'index.html';
                 return;
             }
 
-            const nomineeData = {
-                nominee_name: document.getElementById('nominee_name').value.trim(),
-                relation: document.getElementById('relation').value,
-                nominee_phone: document.getElementById('nominee_phone').value.trim(),
-                nominee_nid: document.getElementById('nominee_nid').value.trim(),
-                documents: window.nomineeImages || {}
-            };
+            const nomineeData = {};
+            document.querySelectorAll('[data-field]').forEach(field => {
+                nomineeData[field.getAttribute('data-field')] = field.value.trim();
+            });
 
-            // ভ্যালিডেশন
+            nomineeData.documents = window.uploadedImages || {};
+
             if (!nomineeData.nominee_name || !nomineeData.relation || !nomineeData.nominee_phone || !nomineeData.nominee_nid) {
                 alert("দয়া করে সব তথ্য পূরণ করুন।");
                 return;
             }
 
-            // LocalStorage-এ সেভ করা
-            let users = JSON.parse(localStorage.getItem('worldbank_users')) || [];
-            const userIndex = users.findIndex(u => u.id === currentUser.id);
-            if (userIndex === -1) {
-                alert("ইউজার খুঁজে পাওয়া যায়নি!");
-                return;
+            document.getElementById('loadingOverlay').classList.add('show');
+
+            try {
+                const userRef = doc(db, "users", currentUserUID);
+                await updateDoc(userRef, {
+                    nomineeData: nomineeData
+                });
+
+                document.getElementById('loadingOverlay').classList.remove('show');
+                alert("নমিনীর তথ্য সফলভাবে সেভ হয়েছে! এখন ব্যাংক তথ্য দিন।");
+                window.location.href = "bank.html";
+
+            } catch (error) {
+                console.error("Error:", error);
+                document.getElementById('loadingOverlay').classList.remove('show');
+                alert("তথ্য সেভ করা যায়নি! আবার চেষ্টা করুন।\n\n" + error.message);
             }
-
-            users[userIndex].nomineeData = nomineeData;
-            localStorage.setItem('worldbank_users', JSON.stringify(users));
-
-            currentUser.nomineeData = nomineeData;
-            localStorage.setItem('worldbank_current_user', JSON.stringify(currentUser));
-
-            // bank.html এ পাঠানো
-            alert("নমিনীর তথ্য সফলভাবে সেভ হয়েছে! এখন ব্যাংক তথ্য দিন।");
-            window.location.href = "bank.html";
         });
     </script>
 
