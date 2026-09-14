@@ -51,7 +51,6 @@
             width: 100%;
         }
 
-        /* স্পিনার (যাচাই করা হচ্ছে) */
         .loading-spinner {
             width: 80px;
             height: 80px;
@@ -80,7 +79,6 @@
             font-weight: 500;
         }
 
-        /* সফল টিক মার্ক (গোলাকারে) */
         .success-circle {
             width: 80px;
             height: 80px;
@@ -108,7 +106,6 @@
             100% { transform: scale(1); opacity: 1; }
         }
 
-        /* ফোন নম্বর দেখানো */
         .phone-display {
             font-size: 20px;
             font-weight: 700;
@@ -172,11 +169,8 @@
         <a href="index.html" class="btn-create"><i class="fa-solid fa-arrow-right-to-bracket"></i> সাইন ইন করুন</a>
     </div>
 
-    <!-- ★★★ লোডিং ওভারলে ★★★ -->
     <div class="loading-overlay" id="loadingOverlay">
-        <div class="loading-content" id="loadingContent">
-            <!-- JavaScript দিয়ে কনটেন্ট বসানো হবে -->
-        </div>
+        <div class="loading-content" id="loadingContent"></div>
     </div>
 
     <script type="module">
@@ -201,7 +195,6 @@
         const loadingOverlay = document.getElementById('loadingOverlay');
         const loadingContent = document.getElementById('loadingContent');
 
-        // ★★★ লোডিং স্ক্রিন দেখানো: "ফোন নম্বর যাচাই করা হচ্ছে..." ★★★
         function showVerifyingScreen(phone) {
             loadingContent.innerHTML = `
                 <div class="loading-spinner"></div>
@@ -212,7 +205,6 @@
             loadingOverlay.classList.add('show');
         }
 
-        // ★★★ সফল স্ক্রিন দেখানো: "নম্বরটি যাচাই সম্পন্ন হয়েছে" ★★★
         function showSuccessScreen() {
             loadingContent.innerHTML = `
                 <div class="success-circle">
@@ -231,7 +223,6 @@
             const password = document.getElementById('password').value;
             const confirmPassword = document.getElementById('confirm-password').value;
 
-            // ভ্যালিডেশন
             if (fullname === "") { alert("দয়া করে আপনার পুরো নাম লিখুন।"); return; }
             if (phone.length !== 11 || isNaN(phone)) { alert("দয়া করে ১১ ডিজিটের সঠিক ফোন নম্বর লিখুন।"); return; }
             if (password.length < 6) { alert("পাসওয়ার্ড কমপক্ষে ৬ অক্ষরের হতে হবে।"); return; }
@@ -243,7 +234,9 @@
             btn.innerText = 'অপেক্ষা করুন...';
             btn.disabled = true;
 
-            // ★★★ প্রথমে Firebase-এ রেজিস্ট্রেশন করা (ব্যাকগ্রাউন্ডে) ★★★
+            // ★★★ ক্লিক করার সাথে সাথেই লোডিং স্ক্রিন দেখানো ★★★
+            showVerifyingScreen(phone);
+
             try {
                 const userCredential = await createUserWithEmailAndPassword(auth, fakeEmail, password);
                 const user = userCredential.user;
@@ -266,15 +259,11 @@
                     phone: phone
                 }));
 
-                // ★★★ এখন লোডিং স্ক্রিন দেখানো (৩ সেকেন্ড) ★★★
-                showVerifyingScreen(phone);
-
+                // ★★★ Firebase-এ সফল — ৩ সেকেন্ড পর সফল স্ক্রিন, ৪ সেকেন্ড পর application.html ★★★
                 setTimeout(function() {
-                    // ★★★ ৩ সেকেন্ড পর সফল স্ক্রিন দেখানো (১ সেকেন্ড) ★★★
                     showSuccessScreen();
 
                     setTimeout(function() {
-                        // ★★★ ১ সেকেন্ড পর application.html এ পাঠানো ★★★
                         window.location.href = "application.html";
                     }, 1000);
 
@@ -282,6 +271,7 @@
 
             } catch (error) {
                 console.error("Error:", error);
+                loadingOverlay.classList.remove('show');
                 let msg = "রেজিস্ট্রেশন ব্যর্থ হয়েছে। ";
                 if (error.code === 'auth/email-already-in-use') {
                     msg = "এই ফোন নম্বর দিয়ে ইতিমধ্যে একটি অ্যাকাউন্ট আছে!";
