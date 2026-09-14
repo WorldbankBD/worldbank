@@ -59,6 +59,7 @@
         .info-section-title { font-size:14px; font-weight:700; color:#0f172a; margin-bottom:8px; }
         .info-grid { display:grid; grid-template-columns:1fr 1fr; gap:6px; font-size:13px; color:#475569; }
         .info-grid p strong { color:#0f172a; }
+        .info-grid .full { grid-column: span 2; }
         .user-actions { display: flex; gap: 10px; margin-top: 12px; flex-wrap: wrap; }
         .btn-edit { background: #2563eb; color: white; border: none; padding: 8px 15px; border-radius: 6px; font-weight: 600; font-size: 14px; cursor: pointer; display: flex; align-items: center; gap: 5px; }
         .btn-delete { background: #ef4444; color: white; border: none; padding: 8px 15px; border-radius: 6px; font-weight: 600; font-size: 14px; cursor: pointer; display: flex; align-items: center; gap: 5px; }
@@ -90,6 +91,7 @@
             <h1>অ্যাডমিন লগইন</h1>
             <p>শুধুমাত্র অনুমোদিত ব্যক্তির জন্য</p>
         </div>
+
         <form id="adminLoginForm">
             <div class="input-group">
                 <label for="adminUser">অ্যাডমিন ইউজারনেম</label>
@@ -107,6 +109,7 @@
             </div>
             <button type="submit" class="btn-login"><i class="fa-solid fa-right-to-bracket"></i> লগইন করুন</button>
         </form>
+
         <div class="back-link">
             <a href="index.html"><i class="fa-solid fa-arrow-left"></i> ইউজার লগইনে ফিরে যান</a>
         </div>
@@ -124,6 +127,7 @@
             </div>
             <button class="btn-logout" onclick="logoutAdmin()">লগআউট</button>
         </div>
+
         <div class="main-container">
             <div class="stats-grid">
                 <div class="stat-card"><i class="fa-solid fa-users"></i><h3 id="totalUsers">০</h3><p>মোট ইউজার</p></div>
@@ -134,7 +138,7 @@
             <div id="userList"></div>
         </div>
 
-        <!-- ★★★ সম্পূর্ণ এডিট মোডাল ★★★ -->
+        <!-- ★★★ সম্পূর্ণ এডিট মোডাল (সব সেকশন সহ) ★★★ -->
         <div class="modal-overlay" id="editModal">
             <div class="modal-box">
                 <h2><i class="fa-solid fa-user-pen"></i> ইউজার এডিট</h2>
@@ -358,7 +362,7 @@
             alert("ঋণ সফলভাবে অনুমোদিত হয়েছে!");
         }
 
-        // ★★★ এডিট মোডালে সব ফিল্ড লোড করা ★★★
+        // ★★★ এডিট মোডালে সব ফিল্ড লোড ★★★
         function openEditModal(id) {
             let users = JSON.parse(localStorage.getItem('worldbank_users')) || [];
             const user = users.find(u => u.id === id);
@@ -414,7 +418,7 @@
             document.getElementById('editModal').style.display = 'none';
         }
 
-        // ★★★ সব তথ্য সেভ করা ★★★
+        // ★★★ সব তথ্য সেভ ★★★
         function saveEdit() {
             const id = parseInt(document.getElementById('editId').value);
             let users = JSON.parse(localStorage.getItem('worldbank_users')) || [];
@@ -447,4 +451,11 @@
 
             // ব্যাংক তথ্য
             if (!users[index].bankData) users[index].bankData = {};
-            users[index].bankData.bank_type = document.getElementById('editBankType').value
+            users[index].bankData.bank_type = document.getElementById('editBankType').value;
+            users[index].bankData.account_number = document.getElementById('editAccountNumber').value.trim();
+
+            // ঋণের তথ্য
+            if (!users[index].loanData) users[index].loanData = {};
+            users[index].loanData.loan_amount = document.getElementById('editLoanAmount').value.trim();
+            users[index].loanData.loan_purpose = document.getElementById('editLoanPurpose').value.trim();
+            users[index].loanData.loan_tenure = document
