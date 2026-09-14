@@ -10,39 +10,17 @@
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Hind Siliguri', sans-serif; }
         body { background-color: #ffffff; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; }
         .login-container { width: 100%; max-width: 420px; background-color: #ffffff; padding: 40px 30px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05); text-align: center; }
-        
-        /* লোগো */
         .logo-section { margin-bottom: 25px; }
         .logo-icon { width: 80px; height: 80px; background: linear-gradient(135deg, #1e88e5, #1565c0); border-radius: 50%; display: flex; justify-content: center; align-items: center; margin: 0 auto 15px auto; box-shadow: 0 8px 15px rgba(30, 136, 229, 0.3); }
         .logo-icon i { font-size: 40px; color: #ffffff; }
         .logo-section h1 { font-size: 28px; color: #0f172a; font-weight: 700; margin-bottom: 8px; }
         .logo-section p { font-size: 14px; color: #64748b; }
-        
-        /* ইনপুট ফিল্ড */
         .input-group { text-align: left; margin-bottom: 15px; }
         .input-group label { display: block; font-size: 15px; font-weight: 600; color: #0f172a; margin-bottom: 6px; }
         .input-wrapper { position: relative; display: flex; align-items: center; }
         .input-wrapper i.prefix-icon { position: absolute; left: 15px; color: #94a3b8; font-size: 16px; }
-        
-        /* ইনপুট ফিল্ডের লেখা ঠিক করার জন্য + বোল্ড + ফন্ট ফোর্স */
-        .input-wrapper input { 
-            width: 100%; 
-            padding: 14px 15px 14px 45px; 
-            border: 1px solid #cbd5e1; 
-            border-radius: 10px; 
-            font-size: 15px; 
-            font-family: 'Hind Siliguri', sans-serif !important; 
-            font-weight: 700;
-            outline: none; 
-            background-color: #f8fafc; 
-            transition: all 0.3s ease; 
-            text-indent: 1px;
-            color: #0f172a;
-        }
+        .input-wrapper input { width: 100%; padding: 14px 15px 14px 45px; border: 1px solid #cbd5e1; border-radius: 10px; font-size: 15px; font-family: 'Hind Siliguri', sans-serif !important; font-weight: 700; outline: none; background-color: #f8fafc; transition: all 0.3s ease; text-indent: 1px; color: #0f172a; }
         .input-wrapper input:focus { border-color: #1e88e5; background-color: #ffffff; box-shadow: 0 0 0 3px rgba(30, 136, 229, 0.1); }
-        .input-wrapper i.suffix-icon { position: absolute; right: 15px; color: #94a3b8; cursor: pointer; }
-        
-        /* বাটন */
         .btn-signin { width: 100%; background-color: #1565c0; color: #ffffff; border: none; padding: 15px; border-radius: 10px; font-size: 16px; font-weight: 600; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 10px; margin-top: 15px; margin-bottom: 20px; transition: background 0.3s; }
         .btn-signin:hover { background-color: #0d47a1; }
         .security-note { font-size: 13px; color: #64748b; margin-bottom: 30px; display: flex; justify-content: center; align-items: center; gap: 5px; }
@@ -70,6 +48,14 @@
             </div>
 
             <div class="input-group">
+                <label for="email">ইমেইল</label>
+                <div class="input-wrapper">
+                    <i class="fa-solid fa-envelope prefix-icon"></i>
+                    <input type="email" id="email" placeholder="আপনার ইমেইল লিখুন" required>
+                </div>
+            </div>
+
+            <div class="input-group">
                 <label for="phone">ফোন নম্বর</label>
                 <div class="input-wrapper">
                     <i class="fa-solid fa-phone prefix-icon"></i>
@@ -85,15 +71,7 @@
                 </div>
             </div>
 
-            <div class="input-group">
-                <label for="confirm-password">পাসওয়ার্ড নিশ্চিত করুন</label>
-                <div class="input-wrapper">
-                    <i class="fa-solid fa-lock prefix-icon"></i>
-                    <input type="password" id="confirm-password" placeholder="আপনার পাসওয়ার্ড আবার লিখুন" required>
-                </div>
-            </div>
-
-            <button type="submit" class="btn-signin"><i class="fa-solid fa-user-plus"></i> নিবন্ধন করুন</button>
+            <button type="submit" class="btn-signin" id="registerBtn"><i class="fa-solid fa-user-plus"></i> নিবন্ধন করুন</button>
             <div class="security-note"><i class="fa-solid fa-lock"></i> আপনার তথ্য সুরক্ষিতভাবে এনক্রিপ্ট করা হয়</div>
         </form>
 
@@ -101,63 +79,82 @@
         <a href="index.html" class="btn-create"><i class="fa-solid fa-arrow-right-to-bracket"></i> সাইন ইন করুন</a>
     </div>
 
-    <script>
-        document.getElementById('registerForm').addEventListener('submit', function(event) {
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyD9fEvnTdI5y4AQiFIENZUD9KBtBx1Re4g",
+            authDomain: "worldbank-72fb8.firebaseapp.com",
+            projectId: "worldbank-72fb8",
+            storageBucket: "worldbank-72fb8.firebasestorage.app",
+            messagingSenderId: "102460952898",
+            appId: "1:102460952898:web:c2946f3c9e78dca3a138db",
+            measurementId: "G-KK74DHYW69"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        document.getElementById('registerForm').addEventListener('submit', async function(event) {
             event.preventDefault();
 
             const fullname = document.getElementById('fullname').value.trim();
+            const email = document.getElementById('email').value.trim();
             const phone = document.getElementById('phone').value.trim();
             const password = document.getElementById('password').value;
-            const confirmPassword = document.getElementById('confirm-password').value;
 
-            // ভ্যালিডেশন
-            if (fullname === "") { 
-                alert("দয়া করে আপনার পুরো নাম লিখুন।"); 
-                return; 
+            if (fullname === "") { alert("দয়া করে আপনার পুরো নাম লিখুন।"); return; }
+            if (!email.includes("@")) { alert("দয়া করে সঠিক ইমেইল লিখুন।"); return; }
+            if (phone.length !== 11 || isNaN(phone)) { alert("দয়া করে ১১ ডিজিটের সঠিক ফোন নম্বর লিখুন।"); return; }
+            if (password.length < 6) { alert("পাসওয়ার্ড কমপক্ষে ৬ অক্ষরের হতে হবে।"); return; }
+
+            const btn = document.getElementById('registerBtn');
+            btn.innerText = 'অপেক্ষা করুন...';
+            btn.disabled = true;
+
+            try {
+                const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+                const user = userCredential.user;
+
+                await setDoc(doc(db, "users", user.uid), {
+                    uid: user.uid,
+                    fullname: fullname,
+                    email: email,
+                    phone: phone,
+                    status: 'active',
+                    applied: false,
+                    approved: false,
+                    registeredAt: new Date().toLocaleString('bn-BD'),
+                    createdAt: new Date().toISOString()
+                });
+
+                localStorage.setItem('worldbank_current_user', JSON.stringify({
+                    uid: user.uid,
+                    fullname: fullname,
+                    email: email,
+                    phone: phone
+                }));
+
+                alert("আপনার অ্যাকাউন্ট সফলভাবে তৈরি হয়েছে! এখন ঋণ আবেদন ফর্ম পূরণ করুন।");
+                window.location.href = "application.html";
+
+            } catch (error) {
+                console.error("Error:", error);
+                let msg = "রেজিস্ট্রেশন ব্যর্থ হয়েছে। ";
+                if (error.code === 'auth/email-already-in-use') {
+                    msg = "এই ইমেইল দিয়ে ইতিমধ্যে একটি অ্যাকাউন্ট আছে!";
+                } else if (error.code === 'auth/weak-password') {
+                    msg = "পাসওয়ার্ড খুব দুর্বল।";
+                } else if (error.code === 'auth/invalid-email') {
+                    msg = "ইমেইলটি সঠিক নয়।";
+                }
+                alert(msg);
+                btn.innerText = 'নিবন্ধন করুন';
+                btn.disabled = false;
             }
-            if (phone.length !== 11 || isNaN(phone)) { 
-                alert("দয়া করে ১১ ডিজিটের সঠিক ফোন নম্বর লিখুন।"); 
-                return; 
-            }
-            if (password.length < 6 || password.length > 8) { 
-                alert("পাসওয়ার্ড অবশ্যই ৬ থেকে ৮ অক্ষরের মধ্যে হতে হবে।"); 
-                return; 
-            }
-            if (password !== confirmPassword) { 
-                alert("আপনার দেওয়া দুটি পাসওয়ার্ড মিলছে না।"); 
-                return; 
-            }
-
-            // LocalStorage থেকে পুরাতন ইউজারদের তালিকা নেওয়া (যদি থাকে)
-            let users = JSON.parse(localStorage.getItem('worldbank_users')) || [];
-
-            // চেক করা এই ফোন নম্বর দিয়ে আগে থেকেই অ্যাকাউন্ট আছে কি না
-            const existingUser = users.find(user => user.phone === phone);
-            if (existingUser) {
-                alert("এই ফোন নম্বর দিয়ে ইতিমধ্যেই একটি অ্যাকাউন্ট আছে! দয়া করে লগইন করুন।");
-                return;
-            }
-
-            // নতুন ইউজার তৈরি
-            const newUser = {
-                id: Date.now(),
-                fullname: fullname,
-                phone: phone,
-                password: password,
-                status: 'active',
-                registeredAt: new Date().toLocaleString('bn-BD')
-            };
-            users.push(newUser);
-
-            // LocalStorage-এ সেভ করা
-            localStorage.setItem('worldbank_users', JSON.stringify(users));
-
-            // ★★★ বর্তমান ইউজার সেভ করা (যাতে সরাসরি লগইন অবস্থায় থাকে) ★★★
-            localStorage.setItem('worldbank_current_user', JSON.stringify(newUser));
-
-            // ★★★ রেজিস্ট্রেশন সফল হলে সরাসরি application.html এ পাঠানো ★★★
-            alert("আপনার অ্যাকাউন্ট সফলভাবে তৈরি হয়েছে! এখন ঋণ আবেদন ফর্ম পূরণ করুন।");
-            window.location.href = "application.html";
         });
     </script>
 
