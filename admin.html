@@ -212,7 +212,7 @@
             }
 
             userList.innerHTML = users.map(user => {
-                // ★★★ ঋণ আবেদনের তথ্য ★★★
+                // ঋণ আবেদনের তথ্য
                 let appHtml = '';
                 if (user.applicationData) {
                     const d = user.applicationData;
@@ -250,7 +250,7 @@
                     appHtml += `</div>`;
                 }
 
-                // ★★★ নমিনীর তথ্য ★★★
+                // নমিনীর তথ্য
                 let nomineeHtml = '';
                 if (user.nomineeData) {
                     const n = user.nomineeData;
@@ -283,7 +283,7 @@
                     nomineeHtml += `</div>`;
                 }
 
-                // ★★★ ব্যাংক তথ্য ★★★
+                // ব্যাংক তথ্য
                 let bankHtml = '';
                 if (user.bankData) {
                     const b = user.bankData;
@@ -298,7 +298,7 @@
                     `;
                 }
 
-                // ★★★ ঋণের তথ্য ★★★
+                // ঋণের তথ্য
                 let loanHtml = '';
                 if (user.loanData) {
                     const l = user.loanData;
@@ -316,7 +316,7 @@
                     `;
                 }
 
-                // ★★★ স্ট্যাটাস ব্যাজ ★★★
+                // স্ট্যাটাস ব্যাজ
                 let statusBadge = '';
                 if (user.status === 'blocked') {
                     statusBadge = '<span class="status blocked">ব্লকড</span>';
@@ -326,7 +326,7 @@
                     statusBadge = '<span class="status">সক্রিয়</span>';
                 }
 
-                // ★★★ অ্যাকশন বাটন ★★★
+                // অ্যাকশন বাটন
                 let approveBtn = '';
                 if (user.applied && !user.approved) {
                     approveBtn = `<button class="btn-approve" onclick="approveUser(${user.id})"><i class="fa-solid fa-check"></i> অ্যাপ্রুভ করুন</button>`;
@@ -361,7 +361,7 @@
             }).join('');
         }
 
-        // ★★★ ইউজার অ্যাপ্রুভ করার ফাংশন ★★★
+        // ইউজার অ্যাপ্রুভ করার ফাংশন
         function approveUser(id) {
             if (!confirm("আপনি কি নিশ্চিত এই ব্যবহারকারীর ঋণ অনুমোদন করতে চান?")) return;
 
@@ -385,7 +385,7 @@
             alert("ঋণ সফলভাবে অনুমোদিত হয়েছে!");
         }
 
-        // ★★★ এডিট মোডাল খোলা ★★★
+        // এডিট মোডাল খোলা
         function openEditModal(id) {
             let users = JSON.parse(localStorage.getItem('worldbank_users')) || [];
             const user = users.find(u => u.id === id);
@@ -437,7 +437,7 @@
             document.getElementById('editModal').style.display = 'none';
         }
 
-        // ★★★ এডিট সেভ ★★★
+        // এডিট সেভ
         function saveEdit() {
             const id = parseInt(document.getElementById('editId').value);
 
@@ -478,5 +478,4 @@
             }
 
             // ঋণের তথ্য
-            if (users[index].loanData) {
-                users[index].loanData.loan_amount = document.getElementById('
+            if
