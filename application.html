@@ -2,13 +2,14 @@
 <html lang="bn">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>ঋণ আবেদন ফর্ম - WorldBank Bangladesh</title>
     <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Hind Siliguri', sans-serif; }
-        body { background-color: #f1f5f9; padding-bottom: 80px; }
+        html { touch-action: pan-y; -ms-touch-action: pan-y; }
+        body { background-color: #f1f5f9; padding-bottom: 30px; overflow-x: hidden; max-width: 100vw; touch-action: pan-y; }
         
         .header { background-color: #1e88e5; color: white; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
         .header-left { display: flex; align-items: center; gap: 10px; }
@@ -31,11 +32,11 @@
         .input-group label { display: block; font-size: 15px; font-weight: 600; color: #0f172a; margin-bottom: 6px; }
         .input-group label span { color: #ef4444; } 
         .input-wrapper { position: relative; display: flex; align-items: center; }
-        .input-wrapper i.prefix-icon { position: absolute; left: 15px; color: #94a3b8; font-size: 16px; }
+        .input-wrapper i.prefix-icon { position: absolute; left: 15px; color: #94a3b8; font-size: 16px; z-index: 2; pointer-events: none; }
         
         .input-wrapper input, .input-wrapper select { 
             width: 100%; 
-            padding: 14px 15px 14px 45px; 
+            padding: 14px 45px 14px 45px; 
             border: 1px solid #cbd5e1; 
             border-radius: 8px; 
             font-size: 15px; 
@@ -45,12 +46,25 @@
             background-color: #f8fafc; 
             color: #0f172a; 
             text-indent: 1px;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
         }
         .input-wrapper input:focus, .input-wrapper select:focus { border-color: #1e88e5; background-color: #fff; box-shadow: 0 0 0 3px rgba(30, 136, 229, 0.1); }
         
-        .input-wrapper select option { padding: 12px 15px 12px 45px; line-height: 1.8; font-size: 15px; font-family: 'Hind Siliguri', sans-serif !important; font-weight: 700; min-height: 40px; }
+        .input-wrapper select option { padding: 12px; font-size: 15px; font-family: 'Hind Siliguri', sans-serif !important; font-weight: 700; }
         
-        .select-wrapper::after { content: '\f107'; font-family: 'Font Awesome 6 Free'; font-weight: 900; position: absolute; right: 15px; color: #64748b; pointer-events: none; }
+        /* ★★★ রক্তের গ্রুপ ড্রপডাউনের তীর (ডান দিকে) ★★★ */
+        .select-wrapper::after { 
+            content: '\f107'; 
+            font-family: 'Font Awesome 6 Free'; 
+            font-weight: 900; 
+            position: absolute; 
+            right: 15px; 
+            color: #64748b; 
+            pointer-events: none; 
+            z-index: 2;
+        }
 
         .upload-grid { display: flex; flex-direction: column; gap: 15px; }
         .upload-box { border: 2px dashed #cbd5e1; border-radius: 10px; padding: 25px 15px; text-align: center; background: #f8fafc; position: relative; cursor: pointer; }
@@ -66,8 +80,6 @@
 
         .btn-submit { width: 100%; background: #1565c0; color: white; border: none; padding: 16px; border-radius: 8px; font-size: 18px; font-weight: 700; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 10px; margin-top: 10px; box-shadow: 0 4px 12px rgba(21, 101, 192, 0.3); text-decoration: none; }
         .btn-submit:hover { background: #0d47a1; color: white; }
-        
-        .floating-menu { position: fixed; bottom: 20px; left: 20px; background: #1e88e5; color: white; width: 50px; height: 50px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 22px; box-shadow: 0 4px 10px rgba(0,0,0,0.2); cursor: pointer; z-index: 999; }
 
         .loading-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 9999; justify-content: center; align-items: center; flex-direction: column; }
         .loading-overlay.show { display: flex; }
@@ -135,6 +147,7 @@
                     </div>
                 </div>
 
+                <!-- ★★★ রক্তের গ্রুপ ★★★ -->
                 <div class="input-group">
                     <label>রক্তের গ্রুপ <span>*</span></label>
                     <div class="input-wrapper select-wrapper">
@@ -227,10 +240,6 @@
             </button>
 
         </form>
-    </div>
-
-    <div class="floating-menu">
-        <i class="fa-solid fa-bars"></i>
     </div>
 
     <div class="loading-overlay" id="loadingOverlay">
@@ -365,7 +374,6 @@
                 const file = this.files[0];
                 if (!file) return;
                 
-                // ★★★ ছবি ছোট করে নেওয়া (সর্বোচ্চ 800px, 60% quality) ★★★
                 resizeImage(file, 800, 800, 0.6, function(resizedBase64) {
                     const base64Image = resizedBase64;
                     const oldImg = box.querySelector('img');
@@ -509,7 +517,6 @@
                 return;
             }
 
-            // স্বাক্ষর Base64 আকারে
             const signatureData = canvas.toDataURL('image/png');
             formData.signature = signatureData;
 
