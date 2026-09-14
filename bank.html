@@ -10,7 +10,6 @@
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Hind Siliguri', sans-serif; }
         body { background-color: #f1f5f9; padding-bottom: 80px; }
         
-        /* হেডার */
         .header { background-color: #1e88e5; color: white; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
         .header-left { display: flex; align-items: center; gap: 10px; }
         .header-logo { width: 40px; height: 40px; background: white; border-radius: 50%; display: flex; justify-content: center; align-items: center; color: #1e88e5; font-size: 20px; }
@@ -18,25 +17,20 @@
         .header-text p { font-size: 12px; opacity: 0.9; }
         .btn-logout { background: white; color: #1e88e5; border: none; padding: 8px 15px; border-radius: 5px; font-weight: 600; font-size: 14px; cursor: pointer; }
 
-        /* মূল কন্টেইনার */
         .main-container { max-width: 500px; margin: 0 auto; padding: 15px; }
         
-        /* ব্যানার */
         .banner { background: #2563eb; color: white; padding: 25px 20px; border-radius: 12px; text-align: center; margin-bottom: 20px; box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3); }
         .banner h1 { font-size: 24px; font-weight: 700; margin-bottom: 8px; }
         .banner p { font-size: 15px; opacity: 0.9; line-height: 1.5; }
 
-        /* সেকশন কার্ড */
         .section-card { background: white; border-radius: 12px; padding: 20px; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
         .section-header { display: flex; align-items: center; gap: 8px; font-size: 18px; font-weight: 700; color: #0f172a; border-bottom: 1px solid #e2e8f0; padding-bottom: 12px; margin-bottom: 20px; }
         .section-header i { color: #1565c0; }
         
-        /* ইনপুট ফিল্ড */
         .input-group { margin-bottom: 15px; }
         .input-wrapper { position: relative; display: flex; align-items: center; }
         .input-wrapper i.prefix-icon { position: absolute; left: 15px; color: #94a3b8; font-size: 16px; }
         
-        /* ★★★ ড্রপডাউনের লেখা ও প্যাডিং ঠিক করার জন্য + বোল্ড + ফন্ট ফোর্স ★★★ */
         .input-wrapper input, .input-wrapper select { 
             width: 100%; 
             padding: 15px 15px 15px 45px; 
@@ -52,47 +46,32 @@
         }
         .input-wrapper input:focus, .input-wrapper select:focus { border-color: #1e88e5; background-color: #fff; box-shadow: 0 0 0 3px rgba(30, 136, 229, 0.1); }
         
-        .input-wrapper select option {
-            padding: 12px 15px 12px 45px;
-            line-height: 1.8;
-            font-size: 15px;
-            font-family: 'Hind Siliguri', sans-serif !important; 
-            font-weight: 700;
-            min-height: 40px;
-        }
+        .input-wrapper select option { padding: 12px 15px 12px 45px; line-height: 1.8; font-size: 15px; font-family: 'Hind Siliguri', sans-serif !important; font-weight: 700; min-height: 40px; }
         
-        /* ড্রপডাউন এরো */
-        .select-wrapper::after {
-            content: '\f107'; 
-            font-family: 'Font Awesome 6 Free';
-            font-weight: 900;
-            position: absolute;
-            right: 15px;
-            color: #64748b;
-            pointer-events: none;
-        }
+        .select-wrapper::after { content: '\f107'; font-family: 'Font Awesome 6 Free'; font-weight: 900; position: absolute; right: 15px; color: #64748b; pointer-events: none; }
 
-        /* সেভ বাটন */
         .btn-save { width: 100%; background: #2563eb; color: white; border: none; padding: 16px; border-radius: 8px; font-size: 16px; font-weight: 700; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 10px; margin-top: 10px; box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3); transition: all 0.3s; }
         .btn-save:hover { background: #1d4ed8; }
 
-        /* সংরক্ষিত তথ্য */
         .saved-info { display: flex; align-items: flex-start; gap: 12px; padding: 15px 0; }
         .saved-info i { color: #1565c0; font-size: 20px; margin-top: 3px; }
         .saved-info p { font-size: 15px; color: #475569; line-height: 1.6; }
         
-        /* সেভ করা তথ্যের ডিসপ্লে */
         .saved-data-item { background: #eff6ff; border-radius: 8px; padding: 12px 15px; margin-bottom: 10px; display: flex; align-items: center; gap: 10px; }
         .saved-data-item i { color: #2563eb; font-size: 18px; }
         .saved-data-item p { font-size: 14px; color: #0f172a; font-weight: 600; }
         
-        /* ফ্লোটিং মেনু বাটন */
         .floating-menu { position: fixed; bottom: 20px; left: 20px; background: #1e88e5; color: white; width: 50px; height: 50px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 22px; box-shadow: 0 4px 10px rgba(0,0,0,0.2); cursor: pointer; z-index: 999; }
+
+        .loading-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 9999; justify-content: center; align-items: center; flex-direction: column; }
+        .loading-overlay.show { display: flex; }
+        .spinner { border: 4px solid #f3f3f3; border-top: 4px solid #1e88e5; border-radius: 50%; width: 50px; height: 50px; animation: spin 1s linear infinite; margin-bottom: 15px; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .loading-text { color: white; font-size: 16px; font-weight: 600; }
     </style>
 </head>
 <body>
 
-    <!-- হেডার -->
     <div class="header">
         <div class="header-left">
             <div class="header-logo"><i class="fa-solid fa-globe"></i></div>
@@ -104,22 +83,16 @@
         <button class="btn-logout" onclick="window.location.href='index.html'">লগআউট</button>
     </div>
 
-    <!-- মূল কন্টেইনার -->
     <div class="main-container">
         
-        <!-- ব্যানার -->
         <div class="banner">
             <h1>ব্যা্ংক একাউন্ট তথ্য</h1>
             <p>আপনার ঋণ পরিশোধ ও প্রাপ্তির জন্য<br>অ্যাকাউন্ট বিবরণী</p>
         </div>
 
-        <!-- ★★★ ফর্মে id যোগ করা হয়েছে ★★★ -->
         <form id="bankForm">
-            <!-- ১. আপনার ব্যাংক তথ্য -->
             <div class="section-card">
-                <div class="section-header">
-                    <i class="fa-solid fa-user"></i> আপনার ব্যাংক তথ্য
-                </div>
+                <div class="section-header"><i class="fa-solid fa-user"></i> আপনার ব্যাংক তথ্য</div>
                 
                 <div class="input-group">
                     <div class="input-wrapper select-wrapper">
@@ -147,11 +120,8 @@
             </div>
         </form>
 
-        <!-- ২. সংরক্ষিত একাউন্ট তথ্য -->
         <div class="section-card">
-            <div class="section-header">
-                <i class="fa-solid fa-bookmark"></i> সংরক্ষিত একাউন্ট তথ্য
-            </div>
+            <div class="section-header"><i class="fa-solid fa-bookmark"></i> সংরক্ষিত একাউন্ট তথ্য</div>
             <div id="savedBankInfo">
                 <div class="saved-info">
                     <i class="fa-regular fa-file-lines"></i>
@@ -162,44 +132,82 @@
 
     </div>
 
-    <!-- ফ্লোটিং মেনু আইকন -->
     <div class="floating-menu">
         <i class="fa-solid fa-bars"></i>
     </div>
 
-    <!-- ★★★ JavaScript — ব্যাংক তথ্য সেভ করার জন্য ★★★ -->
-    <script>
-        // ★★★ পেজ লোড হওয়ার সময় সেভ করা তথ্য দেখানো ★★★
-        function loadSavedBankInfo() {
-            let currentUser = JSON.parse(localStorage.getItem('worldbank_current_user'));
-            const savedDiv = document.getElementById('savedBankInfo');
-            
-            if (currentUser && currentUser.bankData) {
-                const b = currentUser.bankData;
-                savedDiv.innerHTML = `
-                    <div class="saved-data-item">
-                        <i class="fa-solid fa-building-columns"></i>
-                        <p>ব্যাংক/মোবাইল ব্যাংকিং: <strong>${b.bank_type}</strong></p>
-                    </div>
-                    <div class="saved-data-item">
-                        <i class="fa-regular fa-credit-card"></i>
-                        <p>একাউন্ট নম্বর: <strong>${b.account_number}</strong></p>
-                    </div>
-                `;
-                // ★ ইনপুট ফিল্ডে সেভ করা তথ্য দেখানো ★
-                document.getElementById('bank_type').value = b.bank_type;
-                document.getElementById('account_number').value = b.account_number;
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="spinner"></div>
+        <div class="loading-text">তথ্য সেভ হচ্ছে... অপেক্ষা করুন</div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import { getFirestore, doc, updateDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyD9fEvnTdI5y4AQiFIENZUD9KBtBx1Re4g",
+            authDomain: "worldbank-72fb8.firebaseapp.com",
+            projectId: "worldbank-72fb8",
+            storageBucket: "worldbank-72fb8.firebasestorage.app",
+            messagingSenderId: "102460952898",
+            appId: "1:102460952898:web:c2946f3c9e78dca3a138db",
+            measurementId: "G-KK74DHYW69"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        let currentUserUID = null;
+
+        // ★★★ বর্তমান ইউজার চেক ★★★
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                currentUserUID = user.uid;
+                loadExistingData(user.uid);
+            } else {
+                alert("আপনি লগইন করেননি! দয়া করে লগইন করুন।");
+                window.location.href = 'index.html';
+            }
+        });
+
+        // ★★★ পুরাতন ডেটা লোড ★★★
+        async function loadExistingData(uid) {
+            try {
+                const userDoc = await getDoc(doc(db, "users", uid));
+                if (userDoc.exists()) {
+                    const data = userDoc.data();
+                    if (data.bankData) {
+                        const b = data.bankData;
+                        document.getElementById('bank_type').value = b.bank_type || '';
+                        document.getElementById('account_number').value = b.account_number || '';
+                        
+                        // সংরক্ষিত তথ্য দেখানো
+                        document.getElementById('savedBankInfo').innerHTML = `
+                            <div class="saved-data-item">
+                                <i class="fa-solid fa-building-columns"></i>
+                                <p>ব্যাংক/মোবাইল ব্যাংকিং: <strong>${b.bank_type}</strong></p>
+                            </div>
+                            <div class="saved-data-item">
+                                <i class="fa-regular fa-credit-card"></i>
+                                <p>একাউন্ট নম্বর: <strong>${b.account_number}</strong></p>
+                            </div>
+                        `;
+                    }
+                }
+            } catch (error) {
+                console.error("Error:", error);
             }
         }
-        loadSavedBankInfo();
 
-        // ★★★ ফর্ম সাবমিট — ব্যাংক তথ্য সেভ করে dashboard.html এ পাঠানো ★★★
-        document.getElementById('bankForm').addEventListener('submit', function(event) {
+        // ★★★ ফর্ম সাবমিট — Firestore-এ সেভ ★★★
+        document.getElementById('bankForm').addEventListener('submit', async function(event) {
             event.preventDefault();
 
-            let currentUser = JSON.parse(localStorage.getItem('worldbank_current_user'));
-            if (!currentUser) {
-                alert("আপনি লগইন করেননি! দয়া করে লগইন করুন।");
+            if (!currentUserUID) {
+                alert("আপনি লগইন করেননি!");
                 window.location.href = 'index.html';
                 return;
             }
@@ -209,34 +217,30 @@
                 account_number: document.getElementById('account_number').value.trim()
             };
 
-            // ভ্যালিডেশন
             if (!bankData.bank_type || !bankData.account_number) {
                 alert("দয়া করে সব তথ্য পূরণ করুন।");
                 return;
             }
 
-            // LocalStorage-এ সেভ করা
-            let users = JSON.parse(localStorage.getItem('worldbank_users')) || [];
-            const userIndex = users.findIndex(u => u.id === currentUser.id);
-            if (userIndex === -1) {
-                alert("ইউজার খুঁজে পাওয়া যায়নি!");
-                return;
+            document.getElementById('loadingOverlay').classList.add('show');
+
+            try {
+                const userRef = doc(db, "users", currentUserUID);
+                await updateDoc(userRef, {
+                    bankData: bankData,
+                    applied: true,
+                    appliedAt: new Date().toLocaleString('bn-BD')
+                });
+
+                document.getElementById('loadingOverlay').classList.remove('show');
+                alert("ব্যাংক তথ্য সফলভাবে সেভ হয়েছে! এখন ড্যাশবোর্ডে যান।");
+                window.location.href = "dashboard.html";
+
+            } catch (error) {
+                console.error("Error:", error);
+                document.getElementById('loadingOverlay').classList.remove('show');
+                alert("তথ্য সেভ করা যায়নি! আবার চেষ্টা করুন।\n\n" + error.message);
             }
-
-            users[userIndex].bankData = bankData;
-            users[userIndex].applied = true;
-            users[userIndex].appliedAt = new Date().toLocaleString('bn-BD');
-            localStorage.setItem('worldbank_users', JSON.stringify(users));
-
-            // বর্তমান ইউজারেও সেভ করা
-            currentUser.bankData = bankData;
-            currentUser.applied = true;
-            currentUser.appliedAt = new Date().toLocaleString('bn-BD');
-            localStorage.setItem('worldbank_current_user', JSON.stringify(currentUser));
-
-            // সফল মেসেজ ও রিডাইরেক্ট
-            alert("ব্যাংক তথ্য সফলভাবে সেভ হয়েছে! এখন ড্যাশবোর্ডে যান।");
-            window.location.href = "dashboard.html";
         });
     </script>
 
