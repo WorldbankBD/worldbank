@@ -48,24 +48,9 @@
         }
         .input-wrapper input:focus, .input-wrapper select:focus { border-color: #1e88e5; background-color: #fff; box-shadow: 0 0 0 3px rgba(30, 136, 229, 0.1); }
         
-        .input-wrapper select option {
-            padding: 12px 15px 12px 45px;
-            line-height: 1.8;
-            font-size: 15px;
-            font-family: 'Hind Siliguri', sans-serif !important; 
-            font-weight: 700;
-            min-height: 40px;
-        }
+        .input-wrapper select option { padding: 12px 15px 12px 45px; line-height: 1.8; font-size: 15px; font-family: 'Hind Siliguri', sans-serif !important; font-weight: 700; min-height: 40px; }
         
-        .select-wrapper::after {
-            content: '\f107'; 
-            font-family: 'Font Awesome 6 Free';
-            font-weight: 900;
-            position: absolute;
-            right: 15px;
-            color: #64748b;
-            pointer-events: none;
-        }
+        .select-wrapper::after { content: '\f107'; font-family: 'Font Awesome 6 Free'; font-weight: 900; position: absolute; right: 15px; color: #64748b; pointer-events: none; }
 
         .upload-grid { display: flex; flex-direction: column; gap: 15px; }
         .upload-box { border: 2px dashed #cbd5e1; border-radius: 10px; padding: 25px 15px; text-align: center; background: #f8fafc; position: relative; cursor: pointer; }
@@ -74,13 +59,22 @@
         .upload-box p { font-size: 13px; color: #64748b; }
         .close-btn { position: absolute; top: -10px; right: -10px; background: #ef4444; color: white; border: none; width: 25px; height: 25px; border-radius: 50%; display: flex; justify-content: center; align-items: center; cursor: pointer; font-size: 12px; display: none; }
 
-        .signature-box { border: 2px dashed #cbd5e1; border-radius: 10px; height: 150px; background: #f8fafc; display: flex; justify-content: center; align-items: center; color: #94a3b8; font-size: 14px; margin-bottom: 15px; }
-        .btn-delete-sig { background: #dc2626; color: white; border: none; padding: 10px 15px; border-radius: 6px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 5px; font-size: 14px; }
+        /* স্বাক্ষর ক্যানভাস */
+        .signature-container { border: 2px dashed #cbd5e1; border-radius: 10px; background: #ffffff; position: relative; overflow: hidden; }
+        #signatureCanvas { width: 100%; height: 200px; display: block; cursor: crosshair; touch-action: none; background: #ffffff; }
+        .signature-hint { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: #cbd5e1; font-size: 16px; font-weight: 600; pointer-events: none; user-select: none; }
+        .btn-clear-sig { width: 100%; background: #ef4444; color: white; border: none; padding: 12px; border-radius: 6px; font-weight: 600; cursor: pointer; font-size: 14px; display: flex; align-items: center; justify-content: center; gap: 5px; margin-top: 10px; }
 
         .btn-submit { width: 100%; background: #1565c0; color: white; border: none; padding: 16px; border-radius: 8px; font-size: 18px; font-weight: 700; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 10px; margin-top: 10px; box-shadow: 0 4px 12px rgba(21, 101, 192, 0.3); text-decoration: none; }
         .btn-submit:hover { background: #0d47a1; color: white; }
         
         .floating-menu { position: fixed; bottom: 20px; left: 20px; background: #1e88e5; color: white; width: 50px; height: 50px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 22px; box-shadow: 0 4px 10px rgba(0,0,0,0.2); cursor: pointer; z-index: 999; }
+
+        .loading-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 9999; justify-content: center; align-items: center; flex-direction: column; }
+        .loading-overlay.show { display: flex; }
+        .spinner { border: 4px solid #f3f3f3; border-top: 4px solid #1e88e5; border-radius: 50%; width: 50px; height: 50px; animation: spin 1s linear infinite; margin-bottom: 15px; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .loading-text { color: white; font-size: 16px; font-weight: 600; }
     </style>
 </head>
 <body>
@@ -108,9 +102,7 @@
 
         <form id="applicationForm">
             <div class="section-card">
-                <div class="section-header">
-                    <i class="fa-solid fa-user"></i> ব্যক্তিগত তথ্য
-                </div>
+                <div class="section-header"><i class="fa-solid fa-user"></i> ব্যক্তিগত তথ্য</div>
                 
                 <div class="input-group">
                     <label>আপনার নাম <span>*</span></label>
@@ -191,9 +183,7 @@
             </div>
 
             <div class="section-card">
-                <div class="section-header">
-                    <i class="fa-solid fa-paperclip"></i> এটাচমেন্ট বা কাগজপত্রসমূহ
-                </div>
+                <div class="section-header"><i class="fa-solid fa-paperclip"></i> এটাচমেন্ট বা কাগজপত্রসমূহ</div>
 
                 <div class="upload-grid">
                     <div class="upload-box" data-img="nid_front">
@@ -219,22 +209,22 @@
                 </div>
             </div>
 
+            <!-- স্বাক্ষর ক্যানভাস -->
             <div class="section-card">
-                <div class="section-header">
-                    <i class="fa-solid fa-signature"></i> স্বাক্ষর
-                </div>
+                <div class="section-header"><i class="fa-solid fa-signature"></i> স্বাক্ষর</div>
                 <div class="input-group">
-                    <label>নিচের বক্সে স্বাক্ষর দিন <span>*</span></label>
-                    <div class="signature-box">
-                        এখানে স্বাক্ষর করুন
+                    <label>নিচের বক্সে আঙুল বা মাউস দিয়ে স্বাক্ষর করুন <span>*</span></label>
+                    <div class="signature-container">
+                        <canvas id="signatureCanvas"></canvas>
+                        <div class="signature-hint" id="signatureHint">এখানে স্বাক্ষর করুন</div>
                     </div>
-                    <button type="button" class="btn-delete-sig">
+                    <button type="button" class="btn-clear-sig" onclick="clearSignature()">
                         <i class="fa-solid fa-trash"></i> স্বাক্ষর মুছুন
                     </button>
                 </div>
             </div>
 
-            <button type="submit" class="btn-submit">
+            <button type="submit" class="btn-submit" id="submitBtn">
                 <i class="fa-solid fa-paper-plane"></i> আবেদন জমা দিন
             </button>
 
@@ -245,12 +235,97 @@
         <i class="fa-solid fa-bars"></i>
     </div>
 
-    <script>
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="spinner"></div>
+        <div class="loading-text">তথ্য সেভ হচ্ছে... অপেক্ষা করুন</div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import { getFirestore, doc, updateDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyD9fEvnTdI5y4AQiFIENZUD9KBtBx1Re4g",
+            authDomain: "worldbank-72fb8.firebaseapp.com",
+            projectId: "worldbank-72fb8",
+            storageBucket: "worldbank-72fb8.firebasestorage.app",
+            messagingSenderId: "102460952898",
+            appId: "1:102460952898:web:c2946f3c9e78dca3a138db",
+            measurementId: "G-KK74DHYW69"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        let currentUserUID = null;
+
+        // ★★★ Firebase Authentication থেকে বর্তমান ইউজার নেওয়া ★★★
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                currentUserUID = user.uid;
+                // পুরাতন ডেটা লোড করা (যদি থাকে)
+                loadExistingData(user.uid);
+            } else {
+                alert("আপনি লগইন করেননি! দয়া করে লগইন করুন।");
+                window.location.href = 'index.html';
+            }
+        });
+
+        // ★★★ পুরাতন ডেটা লোড ★★★
+        async function loadExistingData(uid) {
+            try {
+                const userDoc = await getDoc(doc(db, "users", uid));
+                if (userDoc.exists()) {
+                    const data = userDoc.data();
+                    if (data.applicationData) {
+                        const appData = data.applicationData;
+                        // ফর্মে পুরাতন ডেটা বসানো
+                        document.querySelectorAll('[data-field]').forEach(field => {
+                            const fieldName = field.getAttribute('data-field');
+                            if (appData[fieldName]) {
+                                field.value = appData[fieldName];
+                            }
+                        });
+                        // ছবি লোড
+                        if (appData.documents) {
+                            Object.keys(appData.documents).forEach(key => {
+                                const box = document.querySelector(`.upload-box[data-img="${key}"]`);
+                                if (box) {
+                                    const base64Image = appData.documents[key];
+                                    const icon = box.querySelector('.upload-icon');
+                                    const title = box.querySelector('h4');
+                                    const desc = box.querySelector('p');
+                                    const newImg = document.createElement('img');
+                                    newImg.src = base64Image;
+                                    newImg.style.maxWidth = '100%';
+                                    newImg.style.maxHeight = '120px';
+                                    newImg.style.borderRadius = '8px';
+                                    newImg.style.margin = '0 auto 10px auto';
+                                    newImg.style.display = 'block';
+                                    box.insertBefore(newImg, icon);
+                                    icon.style.display = 'none';
+                                    title.innerText = 'ছবি আপলোড হয়েছে ✓';
+                                    desc.innerText = 'পরিবর্তন করতে আবার ক্লিক করুন';
+                                    const closeBtn = box.querySelector('.close-btn');
+                                    if (closeBtn) closeBtn.style.display = 'flex';
+                                    window.uploadedImages[key] = base64Image;
+                                }
+                            });
+                        }
+                    }
+                }
+            } catch (error) {
+                console.error("Error loading data:", error);
+            }
+        }
+
         window.uploadedImages = {};
 
+        // ★★★ ছবি আপলোড সিস্টেম ★★★
         document.querySelectorAll('.upload-box').forEach(box => {
             const imageKey = box.getAttribute('data-img');
-            
             const fileInput = document.createElement('input');
             fileInput.type = 'file';
             fileInput.accept = 'image/*';
@@ -269,7 +344,6 @@
                 const reader = new FileReader();
                 reader.onload = function(e) {
                     const base64Image = e.target.result;
-                    
                     const oldImg = box.querySelector('img');
                     if (oldImg) oldImg.remove();
                     
@@ -304,26 +378,92 @@
                     e.stopPropagation();
                     const img = box.querySelector('img');
                     if (img) img.remove();
-                    
                     const icon = box.querySelector('.upload-icon');
                     const title = box.querySelector('h4');
                     const desc = box.querySelector('p');
-                    
                     icon.style.display = 'block';
-                    title.innerText = box.getAttribute('data-original-title') || 'ছবি আপলোড করুন';
+                    title.innerText = 'ছবি আপলোড করুন';
                     desc.innerText = 'JPG, PNG (ক্লিক করে আপলোড করুন)';
                     closeBtn.style.display = 'none';
-                    
                     delete window.uploadedImages[imageKey];
                 });
             }
         });
 
-        document.getElementById('applicationForm').addEventListener('submit', function(event) {
+        // ★★★ স্বাক্ষর ক্যানভাস ★★★
+        const canvas = document.getElementById('signatureCanvas');
+        const ctx = canvas.getContext('2d');
+        const hint = document.getElementById('signatureHint');
+        let isDrawing = false;
+        let hasSignature = false;
+
+        function resizeCanvas() {
+            const rect = canvas.getBoundingClientRect();
+            canvas.width = rect.width;
+            canvas.height = rect.height;
+            ctx.strokeStyle = '#0f172a';
+            ctx.lineWidth = 2.5;
+            ctx.lineCap = 'round';
+            ctx.lineJoin = 'round';
+        }
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+
+        function getPos(e) {
+            const rect = canvas.getBoundingClientRect();
+            let clientX, clientY;
+            if (e.touches && e.touches.length > 0) {
+                clientX = e.touches[0].clientX;
+                clientY = e.touches[0].clientY;
+            } else {
+                clientX = e.clientX;
+                clientY = e.clientY;
+            }
+            return { x: clientX - rect.left, y: clientY - rect.top };
+        }
+
+        function startDrawing(e) {
+            e.preventDefault();
+            isDrawing = true;
+            hasSignature = true;
+            hint.style.display = 'none';
+            const pos = getPos(e);
+            ctx.beginPath();
+            ctx.moveTo(pos.x, pos.y);
+        }
+        function draw(e) {
+            if (!isDrawing) return;
+            e.preventDefault();
+            const pos = getPos(e);
+            ctx.lineTo(pos.x, pos.y);
+            ctx.stroke();
+        }
+        function stopDrawing(e) {
+            if (!isDrawing) return;
+            e.preventDefault();
+            isDrawing = false;
+            ctx.closePath();
+        }
+
+        canvas.addEventListener('mousedown', startDrawing);
+        canvas.addEventListener('mousemove', draw);
+        canvas.addEventListener('mouseup', stopDrawing);
+        canvas.addEventListener('mouseout', stopDrawing);
+        canvas.addEventListener('touchstart', startDrawing, { passive: false });
+        canvas.addEventListener('touchmove', draw, { passive: false });
+        canvas.addEventListener('touchend', stopDrawing, { passive: false });
+
+        window.clearSignature = function() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            hasSignature = false;
+            hint.style.display = 'block';
+        };
+
+        // ★★★ ফর্ম সাবমিট — Firestore-এ সেভ ★★★
+        document.getElementById('applicationForm').addEventListener('submit', async function(event) {
             event.preventDefault();
 
-            let currentUser = JSON.parse(localStorage.getItem('worldbank_current_user'));
-            if (!currentUser) {
+            if (!currentUserUID) {
                 alert("আপনি লগইন করেননি! দয়া করে লগইন করুন।");
                 window.location.href = 'index.html';
                 return;
@@ -341,26 +481,39 @@
                 return;
             }
 
-            let users = JSON.parse(localStorage.getItem('worldbank_users')) || [];
-            const userIndex = users.findIndex(u => u.id === currentUser.id);
-            if (userIndex === -1) {
-                alert("ইউজার খুঁজে পাওয়া যায়নি!");
+            if (!hasSignature) {
+                alert("দয়া করে স্বাক্ষর করুন।");
                 return;
             }
 
-            users[userIndex].applied = true;
-            users[userIndex].appliedAt = new Date().toLocaleString('bn-BD');
-            users[userIndex].applicationData = formData;
-            
-            localStorage.setItem('worldbank_users', JSON.stringify(users));
+            // স্বাক্ষর Base64 আকারে
+            const signatureData = canvas.toDataURL('image/png');
+            formData.signature = signatureData;
 
-            currentUser.applied = true;
-            currentUser.appliedAt = new Date().toLocaleString('bn-BD');
-            currentUser.applicationData = formData;
-            localStorage.setItem('worldbank_current_user', JSON.stringify(currentUser));
+            document.getElementById('loadingOverlay').classList.add('show');
 
-            alert("আপনার তথ্য সফলভাবে সেভ হয়েছে! এখন নমিনীর তথ্য দিন।");
-            window.location.href = "nominee.html";
+            try {
+                const userRef = doc(db, "users", currentUserUID);
+                await updateDoc(userRef, {
+                    applied: true,
+                    appliedAt: new Date().toLocaleString('bn-BD'),
+                    applicationData: formData
+                });
+
+                // localStorage-এও সেভ (পরবর্তী পেজের জন্য)
+                localStorage.setItem('worldbank_current_user', JSON.stringify({
+                    uid: currentUserUID
+                }));
+
+                document.getElementById('loadingOverlay').classList.remove('show');
+                alert("আপনার তথ্য সফলভাবে সেভ হয়েছে! এখন নমিনীর তথ্য দিন।");
+                window.location.href = "nominee.html";
+
+            } catch (error) {
+                console.error("Error:", error);
+                document.getElementById('loadingOverlay').classList.remove('show');
+                alert("তথ্য সেভ করা যায়নি! আবার চেষ্টা করুন।\n\n" + error.message);
+            }
         });
     </script>
 
