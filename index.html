@@ -8,23 +8,10 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Hind Siliguri', sans-serif; }
-        html {
-            touch-action: pan-y;
-            -ms-touch-action: pan-y;
-        }
-        body {
-            background-color: #ffffff;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            padding: 20px;
-            overflow-x: hidden;
-            max-width: 100vw;
-            touch-action: pan-y;
-        }
+        html { touch-action: pan-y; -ms-touch-action: pan-y; }
+        body { background-color: #ffffff; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; overflow-x: hidden; max-width: 100vw; touch-action: pan-y; }
         .login-container { width: 100%; max-width: 420px; background-color: #ffffff; padding: 40px 30px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05); text-align: center; }
-
+        
         /* লোগো */
         .logo-section { margin-bottom: 20px; }
         .logo-icon { width: 80px; height: 80px; background: linear-gradient(135deg, #1e88e5, #1565c0); border-radius: 50%; display: flex; justify-content: center; align-items: center; margin: 0 auto 15px auto; box-shadow: 0 8px 15px rgba(30, 136, 229, 0.3); }
@@ -32,7 +19,7 @@
         .logo-section h1 { font-size: 28px; color: #0f172a; font-weight: 700; margin-bottom: 8px; }
         .logo-section p { font-size: 14px; color: #64748b; }
 
-        /* ★★★ ব্যাংক সেকশন ★★★ */
+        /* ★★★ ব্যাংক লোগো স্ক্রলিং সেকশন ★★★ */
         .bank-section {
             margin: 20px 0 25px 0;
             overflow: hidden;
@@ -55,35 +42,28 @@
         .bank-slider {
             display: flex;
             gap: 20px;
-            animation: scrollBanks 25s linear infinite;
+            animation: scrollBanks 30s linear infinite;
             width: max-content;
+            align-items: center;
         }
         .bank-item {
             display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 5px;
-            min-width: 70px;
-            flex-shrink: 0;
-        }
-        .bank-item .bank-logo {
-            width: 45px;
-            height: 45px;
-            border-radius: 50%;
-            display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 18px;
-            font-weight: 700;
-            color: white;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+            min-width: 90px;
+            height: 50px;
+            flex-shrink: 0;
+            background: #ffffff;
+            border-radius: 8px;
+            padding: 5px 10px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.06);
         }
-        .bank-item .bank-name {
-            font-size: 10px;
-            font-weight: 600;
-            color: #334155;
-            text-align: center;
-            white-space: nowrap;
+        .bank-item img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            width: auto;
+            height: auto;
         }
         @keyframes scrollBanks {
             0% { transform: translateX(0); }
@@ -95,24 +75,24 @@
         .input-group label { display: block; font-size: 15px; font-weight: 600; color: #0f172a; margin-bottom: 8px; }
         .input-wrapper { position: relative; display: flex; align-items: center; }
         .input-wrapper i.prefix-icon { position: absolute; left: 15px; color: #94a3b8; font-size: 16px; }
-
-        .input-wrapper input {
-            width: 100%;
-            padding: 14px 15px 14px 45px;
-            border: 1px solid #cbd5e1;
-            border-radius: 10px;
-            font-size: 15px;
-            font-family: 'Hind Siliguri', sans-serif !important;
+        
+        .input-wrapper input { 
+            width: 100%; 
+            padding: 14px 15px 14px 45px; 
+            border: 1px solid #cbd5e1; 
+            border-radius: 10px; 
+            font-size: 15px; 
+            font-family: 'Hind Siliguri', sans-serif !important; 
             font-weight: 700;
-            outline: none;
-            background-color: #f8fafc;
-            transition: all 0.3s ease;
+            outline: none; 
+            background-color: #f8fafc; 
+            transition: all 0.3s ease; 
             text-indent: 1px;
             color: #0f172a;
         }
         .input-wrapper input:focus { border-color: #1e88e5; background-color: #ffffff; box-shadow: 0 0 0 3px rgba(30, 136, 229, 0.1); }
         .input-wrapper i.suffix-icon { position: absolute; right: 15px; color: #94a3b8; cursor: pointer; }
-
+        
         /* বাটন */
         .btn-signin { width: 100%; background-color: #1565c0; color: #ffffff; border: none; padding: 15px; border-radius: 10px; font-size: 16px; font-weight: 600; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 10px; margin-top: 10px; margin-bottom: 20px; transition: background 0.3s; }
         .btn-signin:hover { background-color: #0d47a1; }
@@ -187,17 +167,18 @@
         const db = getFirestore(app);
 
         // ★★★ বাংলাদেশের ১০টি জনপ্রিয় ব্যাংকের লোগো ★★★
+        // ★★★ এখানে আপনার আপলোড করা লোগোর ফাইল নাম দিতে হবে ★★★
         const banks = [
-            { name: 'BRAC Bank', color: '#e11d48', icon: 'fa-building-columns' },
-            { name: 'City Bank', color: '#dc2626', icon: 'fa-city' },
-            { name: 'Dhaka Bank', color: '#0891b2', icon: 'fa-building-columns' },
-            { name: 'DBBL', color: '#059669', icon: 'fa-mobile-screen' },
-            { name: 'EBL', color: '#7c3aed', icon: 'fa-building-columns' },
-            { name: 'Prime Bank', color: '#ea580c', icon: 'fa-building-columns' },
-            { name: 'Bank Asia', color: '#0369a1', icon: 'fa-building-columns' },
-            { name: 'ONE Bank', color: '#be123c', icon: 'fa-building-columns' },
-            { name: 'বিকাশ', color: '#e2136e', icon: 'fa-wallet' },
-            { name: 'নগদ', color: '#f59e0b', icon: 'fa-mobile-screen-button' }
+            { name: 'BRAC Bank', logo: 'logos/brac-bank.png' },
+            { name: 'City Bank', logo: 'logos/city-bank.png' },
+            { name: 'Dhaka Bank', logo: 'logos/dhaka-bank.png' },
+            { name: 'DBBL', logo: 'logos/dbbl.png' },
+            { name: 'EBL', logo: 'logos/ebl.png' },
+            { name: 'Prime Bank', logo: 'logos/prime-bank.png' },
+            { name: 'Bank Asia', logo: 'logos/bank-asia.png' },
+            { name: 'ONE Bank', logo: 'logos/one-bank.png' },
+            { name: 'বিকাশ', logo: 'logos/bkash.png' },
+            { name: 'নগদ', logo: 'logos/nagad.png' }
         ];
 
         const bankSlider = document.getElementById('bankSlider');
@@ -205,10 +186,7 @@
             const allBanks = [...banks, ...banks];
             bankSlider.innerHTML = allBanks.map(bank => `
                 <div class="bank-item">
-                    <div class="bank-logo" style="background-color: ${bank.color};">
-                        <i class="fa-solid ${bank.icon}"></i>
-                    </div>
-                    <div class="bank-name">${bank.name}</div>
+                    <img src="${bank.logo}" alt="${bank.name}" onerror="this.style.display='none'; this.parentElement.innerHTML='<span style=\\'font-size:10px; color:#64748b; font-weight:600; text-align:center;\\'>${bank.name}</span>';">
                 </div>
             `).join('');
         }
@@ -229,7 +207,7 @@
                 const user = userCredential.user;
 
                 const userDoc = await getDoc(doc(db, "users", user.uid));
-
+                
                 if (userDoc.exists()) {
                     const userData = userDoc.data();
 
