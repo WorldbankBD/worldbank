@@ -9,25 +9,20 @@
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Hind Siliguri', sans-serif; }
         body { background-color: #f1f5f9; padding-bottom: 50px; }
-        
         .header { background-color: #0f172a; color: white; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 10px rgba(0,0,0,0.2); }
         .header-left { display: flex; align-items: center; gap: 10px; }
         .header-logo { width: 40px; height: 40px; background: #1e88e5; border-radius: 50%; display: flex; justify-content: center; align-items: center; color: white; font-size: 20px; }
         .header-text h2 { font-size: 18px; font-weight: 700; margin-bottom: -3px;}
         .header-text p { font-size: 12px; opacity: 0.8; }
         .btn-logout { background: #ef4444; color: white; border: none; padding: 8px 15px; border-radius: 5px; font-weight: 600; font-size: 14px; cursor: pointer; }
-
         .main-container { max-width: 750px; margin: 0 auto; padding: 20px; }
-
         .stats-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px; margin-bottom: 25px; }
         .stat-card { background: white; padding: 20px; border-radius: 12px; text-align: center; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
         .stat-card i { font-size: 28px; color: #2563eb; margin-bottom: 8px; display: block; }
         .stat-card h3 { font-size: 28px; color: #0f172a; font-weight: 700; }
         .stat-card p { font-size: 14px; color: #64748b; }
-
         .section-title { font-size: 20px; color: #0f172a; font-weight: 700; margin-bottom: 15px; display: flex; align-items: center; gap: 8px; }
         .section-title i { color: #2563eb; }
-
         .user-card { background: white; border-radius: 12px; padding: 18px; margin-bottom: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); border-left: 5px solid #2563eb; }
         .user-card.approved { border-left-color: #16a34a; }
         .user-card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; }
@@ -35,24 +30,19 @@
         .user-card-header .status { background: #dcfce7; color: #16a34a; padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: 600; }
         .user-card-header .status.blocked { background: #fee2e2; color: #dc2626; }
         .user-card-header .status.approved { background: #dcfce7; color: #16a34a; }
-        
         .user-info { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px; }
         .user-info p { font-size: 14px; color: #475569; }
         .user-info p strong { color: #0f172a; }
-
         .info-section { margin-top:12px; padding-top:12px; border-top:1px dashed #cbd5e1; }
         .info-section-title { font-size:14px; font-weight:700; color:#0f172a; margin-bottom:8px; }
         .info-grid { display:grid; grid-template-columns:1fr 1fr; gap:6px; font-size:13px; color:#475569; }
         .info-grid p strong { color:#0f172a; }
         .info-grid .full { grid-column: span 2; }
-
         .user-actions { display: flex; gap: 10px; margin-top: 12px; flex-wrap: wrap; }
         .btn-edit { background: #2563eb; color: white; border: none; padding: 8px 15px; border-radius: 6px; font-weight: 600; font-size: 14px; cursor: pointer; display: flex; align-items: center; gap: 5px; }
         .btn-delete { background: #ef4444; color: white; border: none; padding: 8px 15px; border-radius: 6px; font-weight: 600; font-size: 14px; cursor: pointer; display: flex; align-items: center; gap: 5px; }
         .btn-approve { background: #16a34a; color: white; border: none; padding: 8px 15px; border-radius: 6px; font-weight: 600; font-size: 14px; cursor: pointer; display: flex; align-items: center; gap: 5px; }
         .btn-approved-tag { background: #dcfce7; color: #16a34a; padding: 8px 15px; border-radius: 6px; font-weight: 600; font-size: 14px; display: flex; align-items: center; gap: 5px; }
-
-        /* এডিট মোডাল */
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 2000; justify-content: center; align-items: center; }
         .modal-box { background: white; width: 95%; max-width: 520px; border-radius: 16px; padding: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); max-height: 90vh; overflow-y: auto; }
         .modal-box h2 { font-size: 22px; color: #0f172a; margin-bottom: 20px; text-align: center; }
@@ -63,13 +53,11 @@
         .modal-buttons button { flex: 1; padding: 12px; border-radius: 8px; font-weight: 600; font-size: 15px; cursor: pointer; border: none; }
         .btn-save { background: #2563eb; color: white; }
         .btn-cancel { background: #e2e8f0; color: #0f172a; }
-
         .empty-state { text-align: center; padding: 40px 20px; color: #64748b; }
         .empty-state i { font-size: 50px; color: #cbd5e1; margin-bottom: 15px; display: block; }
     </style>
 </head>
 <body>
-
     <div class="header">
         <div class="header-left">
             <div class="header-logo"><i class="fa-solid fa-user-shield"></i></div>
@@ -83,98 +71,40 @@
 
     <div class="main-container">
         <div class="stats-grid">
-            <div class="stat-card">
-                <i class="fa-solid fa-users"></i>
-                <h3 id="totalUsers">০</h3>
-                <p>মোট ইউজার</p>
-            </div>
-            <div class="stat-card">
-                <i class="fa-solid fa-user-check"></i>
-                <h3 id="activeUsers">০</h3>
-                <p>সক্রিয়</p>
-            </div>
-            <div class="stat-card">
-                <i class="fa-solid fa-clock"></i>
-                <h3 id="todayUsers">০</h3>
-                <p>আজকের</p>
-            </div>
+            <div class="stat-card"><i class="fa-solid fa-users"></i><h3 id="totalUsers">০</h3><p>মোট ইউজার</p></div>
+            <div class="stat-card"><i class="fa-solid fa-user-check"></i><h3 id="activeUsers">০</h3><p>সক্রিয়</p></div>
+            <div class="stat-card"><i class="fa-solid fa-clock"></i><h3 id="todayUsers">০</h3><p>আজকের</p></div>
         </div>
-
         <h2 class="section-title"><i class="fa-solid fa-list"></i> ব্যবহারকারীদের তালিকা</h2>
         <div id="userList"></div>
     </div>
 
-    <!-- ★★★ এডিট মোডাল ★★★ -->
     <div class="modal-overlay" id="editModal">
         <div class="modal-box">
             <h2><i class="fa-solid fa-user-pen"></i> ইউজার এডিট</h2>
             <input type="hidden" id="editId">
-            
-            <p style="font-size:15px; font-weight:700; color:#2563eb; margin-bottom:10px; border-bottom:1px solid #e2e8f0; padding-bottom:5px;">অ্যাকাউন্ট তথ্য</p>
             <div class="input-group"><label>নাম</label><input type="text" id="editName"></div>
             <div class="input-group"><label>ফোন নম্বর</label><input type="text" id="editPhone"></div>
             <div class="input-group"><label>পাসওয়ার্ড</label><input type="text" id="editPassword"></div>
             <div class="input-group"><label>স্ট্যাটাস</label>
-                <select id="editStatus">
-                    <option value="active">সক্রিয়</option>
-                    <option value="blocked">ব্লকড</option>
-                </select>
+                <select id="editStatus"><option value="active">সক্রিয়</option><option value="blocked">ব্লকড</option></select>
             </div>
-
-            <p style="font-size:15px; font-weight:700; color:#2563eb; margin:20px 0 10px 0; border-bottom:1px solid #e2e8f0; padding-bottom:5px;">ঋণ আবেদনের তথ্য</p>
-            <div class="input-group"><label>আবেদনকারীর নাম</label><input type="text" id="editAppName"></div>
-            <div class="input-group"><label>পিতার নাম</label><input type="text" id="editFatherName"></div>
-            <div class="input-group"><label>মাতার নাম</label><input type="text" id="editMotherName"></div>
             <div class="input-group"><label>এনআইটি নম্বর</label><input type="text" id="editNid"></div>
             <div class="input-group"><label>রক্তের গ্রুপ</label>
                 <select id="editBloodGroup">
-                    <option value="A+">A+</option>
-                    <option value="A-">A-</option>
-                    <option value="B+">B+</option>
-                    <option value="B-">B-</option>
-                    <option value="O+">O+</option>
-                    <option value="O-">O-</option>
-                    <option value="AB+">AB+</option>
-                    <option value="AB-">AB-</option>
+                    <option value="A+">A+</option><option value="A-">A-</option><option value="B+">B+</option><option value="B-">B-</option>
+                    <option value="O+">O+</option><option value="O-">O-</option><option value="AB+">AB+</option><option value="AB-">AB-</option>
                     <option value="জানা নেই">জানা নেই</option>
                 </select>
             </div>
-            <div class="input-group"><label>বর্তমান ঠিকানা</label><input type="text" id="editPresentAddress"></div>
-            <div class="input-group"><label>স্থায়ী ঠিকানা</label><input type="text" id="editPermanentAddress"></div>
-            <div class="input-group"><label>পেশা</label><input type="text" id="editOccupation"></div>
-
-            <p style="font-size:15px; font-weight:700; color:#2563eb; margin:20px 0 10px 0; border-bottom:1px solid #e2e8f0; padding-bottom:5px;">নমিনীর তথ্য</p>
             <div class="input-group"><label>নমিনীর নাম</label><input type="text" id="editNomineeName"></div>
-            <div class="input-group"><label>সম্পর্ক</label>
-                <select id="editRelation">
-                    <option value="পিতা">পিতা</option>
-                    <option value="মাতা">মাতা</option>
-                    <option value="ভাই">ভাই</option>
-                    <option value="বোন">বোন</option>
-                    <option value="স্বামী">স্বামী</option>
-                    <option value="স্ত্রী">স্ত্রী</option>
-                    <option value="অন্যান্য">অন্যান্য</option>
-                </select>
-            </div>
             <div class="input-group"><label>নমিনীর মোবাইল</label><input type="text" id="editNomineePhone"></div>
-            <div class="input-group"><label>নমিনীর এনআইটি</label><input type="text" id="editNomineeNid"></div>
-
-            <p style="font-size:15px; font-weight:700; color:#2563eb; margin:20px 0 10px 0; border-bottom:1px solid #e2e8f0; padding-bottom:5px;">ব্যাংক তথ্য</p>
-            <div class="input-group"><label>ব্যাংক/মোবাইল ব্যাংকিং</label>
+            <div class="input-group"><label>ব্যাংক টাইপ</label>
                 <select id="editBankType">
-                    <option value="বিকাশ">বিকাশ</option>
-                    <option value="নগদ">নগদ</option>
-                    <option value="রকেট">রকেট</option>
-                    <option value="ব্যাংক">ব্যাংক</option>
+                    <option value="বিকাশ">বিকাশ</option><option value="নগদ">নগদ</option><option value="রকেট">রকেট</option><option value="ব্যাংক">ব্যাংক</option>
                 </select>
             </div>
             <div class="input-group"><label>একাউন্ট নম্বর</label><input type="text" id="editAccountNumber"></div>
-
-            <p style="font-size:15px; font-weight:700; color:#2563eb; margin:20px 0 10px 0; border-bottom:1px solid #e2e8f0; padding-bottom:5px;">ঋণের তথ্য</p>
-            <div class="input-group"><label>ঋণের পরিমাণ (টাকা)</label><input type="text" id="editLoanAmount"></div>
-            <div class="input-group"><label>ঋণের উদ্দেশ্য</label><input type="text" id="editLoanPurpose"></div>
-            <div class="input-group"><label>পরিশোধের মেয়াদ</label><input type="text" id="editLoanTenure"></div>
-
             <div class="modal-buttons">
                 <button class="btn-save" onclick="saveEdit()"><i class="fa-solid fa-floppy-disk"></i> সেভ করুন</button>
                 <button class="btn-cancel" onclick="closeEditModal()">বাতিল</button>
@@ -189,6 +119,7 @@
             window.location.href = 'admin_login.html';
         }
 
+        // ★★★ ইউজার লিস্ট লোড করা ★★★
         function loadUsers() {
             let users = JSON.parse(localStorage.getItem('worldbank_users')) || [];
             const userList = document.getElementById('userList');
@@ -212,111 +143,62 @@
             }
 
             userList.innerHTML = users.map(user => {
-                // ঋণ আবেদনের তথ্য
                 let appHtml = '';
                 if (user.applicationData) {
                     const d = user.applicationData;
-                    appHtml = `
-                        <div class="info-section">
-                            <p class="info-section-title"><i class="fa-solid fa-file-lines"></i> ঋণ আবেদনের তথ্য:</p>
-                            <div class="info-grid">
-                                <p><strong>নাম:</strong> ${d.name || 'N/A'}</p>
-                                <p><strong>পিতার নাম:</strong> ${d.father_name || 'N/A'}</p>
-                                <p><strong>মাতার নাম:</strong> ${d.mother_name || 'N/A'}</p>
-                                <p><strong>এনআইটি:</strong> ${d.nid || 'N/A'}</p>
-                                <p><strong>রক্তের গ্রুপ:</strong> ${d.blood_group || 'N/A'}</p>
-                                <p><strong>পেশা:</strong> ${d.occupation || 'N/A'}</p>
-                                <p class="full"><strong>বর্তমান ঠিকানা:</strong> ${d.present_address || 'N/A'}</p>
-                                <p class="full"><strong>স্থায়ী ঠিকানা:</strong> ${d.permanent_address || 'N/A'}</p>
-                                <p class="full"><strong>আবেদনের সময়:</strong> ${user.appliedAt || 'N/A'}</p>
-                            </div>
-                    `;
-                    if (d.documents && (d.documents.nid_front || d.documents.nid_back || d.documents.photo)) {
-                        appHtml += `
-                            <p class="info-section-title" style="margin-top:10px;"><i class="fa-solid fa-paperclip"></i> আপলোড করা কাগজপত্র:</p>
-                            <div style="display:flex; gap:10px; flex-wrap:wrap;">
-                        `;
-                        if (d.documents.nid_front) {
-                            appHtml += `<div style="text-align:center;"><img src="${d.documents.nid_front}" style="width:100px; height:75px; object-fit:cover; border-radius:6px; border:1px solid #cbd5e1; cursor:pointer;" onclick="showImage('${d.documents.nid_front}')"><p style="font-size:11px; color:#475569; margin-top:3px;">এনআইডি সামনে</p></div>`;
-                        }
-                        if (d.documents.nid_back) {
-                            appHtml += `<div style="text-align:center;"><img src="${d.documents.nid_back}" style="width:100px; height:75px; object-fit:cover; border-radius:6px; border:1px solid #cbd5e1; cursor:pointer;" onclick="showImage('${d.documents.nid_back}')"><p style="font-size:11px; color:#475569; margin-top:3px;">এনআইডি পিছনে</p></div>`;
-                        }
-                        if (d.documents.photo) {
-                            appHtml += `<div style="text-align:center;"><img src="${d.documents.photo}" style="width:100px; height:75px; object-fit:cover; border-radius:6px; border:1px solid #cbd5e1; cursor:pointer;" onclick="showImage('${d.documents.photo}')"><p style="font-size:11px; color:#475569; margin-top:3px;">ব্যবহারকারীর ছবি</p></div>`;
-                        }
-                        appHtml += `</div>`;
-                    }
-                    appHtml += `</div>`;
+                    appHtml = `<div class="info-section">
+                        <p class="info-section-title"><i class="fa-solid fa-file-lines"></i> ঋণ আবেদনের তথ্য:</p>
+                        <div class="info-grid">
+                            <p><strong>নাম:</strong> ${d.name || 'N/A'}</p>
+                            <p><strong>পিতার নাম:</strong> ${d.father_name || 'N/A'}</p>
+                            <p><strong>মাতার নাম:</strong> ${d.mother_name || 'N/A'}</p>
+                            <p><strong>এনআইটি:</strong> ${d.nid || 'N/A'}</p>
+                            <p><strong>রক্তের গ্রুপ:</strong> ${d.blood_group || 'N/A'}</p>
+                            <p><strong>পেশা:</strong> ${d.occupation || 'N/A'}</p>
+                        </div>
+                    </div>`;
                 }
 
-                // নমিনীর তথ্য
                 let nomineeHtml = '';
                 if (user.nomineeData) {
                     const n = user.nomineeData;
-                    nomineeHtml = `
-                        <div class="info-section">
-                            <p class="info-section-title"><i class="fa-solid fa-users"></i> নমিনীর তথ্য:</p>
-                            <div class="info-grid">
-                                <p><strong>নমিনীর নাম:</strong> ${n.nominee_name || 'N/A'}</p>
-                                <p><strong>সম্পর্ক:</strong> ${n.relation || 'N/A'}</p>
-                                <p><strong>মোবাইল:</strong> ${n.nominee_phone || 'N/A'}</p>
-                                <p><strong>এনআইটি:</strong> ${n.nominee_nid || 'N/A'}</p>
-                            </div>
-                    `;
-                    if (n.documents && (n.documents.nominee_photo || n.documents.nominee_nid_front || n.documents.nominee_nid_back)) {
-                        nomineeHtml += `
-                            <p class="info-section-title" style="margin-top:10px;"><i class="fa-solid fa-paperclip"></i> নমিনীর কাগজপত্র:</p>
-                            <div style="display:flex; gap:10px; flex-wrap:wrap;">
-                        `;
-                        if (n.documents.nominee_photo) {
-                            nomineeHtml += `<div style="text-align:center;"><img src="${n.documents.nominee_photo}" style="width:100px; height:75px; object-fit:cover; border-radius:6px; border:1px solid #cbd5e1; cursor:pointer;" onclick="showImage('${n.documents.nominee_photo}')"><p style="font-size:11px; color:#475569; margin-top:3px;">নমিনীর ছবি</p></div>`;
-                        }
-                        if (n.documents.nominee_nid_front) {
-                            nomineeHtml += `<div style="text-align:center;"><img src="${n.documents.nominee_nid_front}" style="width:100px; height:75px; object-fit:cover; border-radius:6px; border:1px solid #cbd5e1; cursor:pointer;" onclick="showImage('${n.documents.nominee_nid_front}')"><p style="font-size:11px; color:#475569; margin-top:3px;">এনআইডি সামনে</p></div>`;
-                        }
-                        if (n.documents.nominee_nid_back) {
-                            nomineeHtml += `<div style="text-align:center;"><img src="${n.documents.nominee_nid_back}" style="width:100px; height:75px; object-fit:cover; border-radius:6px; border:1px solid #cbd5e1; cursor:pointer;" onclick="showImage('${n.documents.nominee_nid_back}')"><p style="font-size:11px; color:#475569; margin-top:3px;">এনআইডি পিছনে</p></div>`;
-                        }
-                        nomineeHtml += `</div>`;
-                    }
-                    nomineeHtml += `</div>`;
+                    nomineeHtml = `<div class="info-section">
+                        <p class="info-section-title"><i class="fa-solid fa-users"></i> নমিনীর তথ্য:</p>
+                        <div class="info-grid">
+                            <p><strong>নমিনীর নাম:</strong> ${n.nominee_name || 'N/A'}</p>
+                            <p><strong>সম্পর্ক:</strong> ${n.relation || 'N/A'}</p>
+                            <p><strong>মোবাইল:</strong> ${n.nominee_phone || 'N/A'}</p>
+                            <p><strong>এনআইটি:</strong> ${n.nominee_nid || 'N/A'}</p>
+                        </div>
+                    </div>`;
                 }
 
-                // ব্যাংক তথ্য
                 let bankHtml = '';
                 if (user.bankData) {
                     const b = user.bankData;
-                    bankHtml = `
-                        <div class="info-section">
-                            <p class="info-section-title"><i class="fa-solid fa-building-columns"></i> ব্যাংক তথ্য:</p>
-                            <div class="info-grid">
-                                <p><strong>ব্যাংক/মোবাইল ব্যাংকিং:</strong> ${b.bank_type || 'N/A'}</p>
-                                <p><strong>একাউন্ট নম্বর:</strong> ${b.account_number || 'N/A'}</p>
-                            </div>
+                    bankHtml = `<div class="info-section">
+                        <p class="info-section-title"><i class="fa-solid fa-building-columns"></i> ব্যাংক তথ্য:</p>
+                        <div class="info-grid">
+                            <p><strong>ব্যাংক:</strong> ${b.bank_type || 'N/A'}</p>
+                            <p><strong>একাউন্ট নম্বর:</strong> ${b.account_number || 'N/A'}</p>
                         </div>
-                    `;
+                    </div>`;
                 }
 
-                // ঋণের তথ্য
                 let loanHtml = '';
                 if (user.loanData) {
                     const l = user.loanData;
                     const amountBn = parseInt(l.loan_amount).toLocaleString('bn-BD');
-                    loanHtml = `
-                        <div class="info-section">
-                            <p class="info-section-title"><i class="fa-solid fa-hand-holding-dollar"></i> ঋণের তথ্য:</p>
-                            <div class="info-grid">
-                                <p><strong>ঋণের পরিমাণ:</strong> ৳ ${amountBn}</p>
-                                <p><strong>ঋণের উদ্দেশ্য:</strong> ${l.loan_purpose || 'N/A'}</p>
-                                <p><strong>পরিশোধের মেয়াদ:</strong> ${l.loan_tenure || 'N/A'} মাস</p>
-                                <p><strong>আবেদনের সময়:</strong> ${l.applied_loan_at || 'N/A'}</p>
-                            </div>
+                    loanHtml = `<div class="info-section">
+                        <p class="info-section-title"><i class="fa-solid fa-hand-holding-dollar"></i> ঋণের তথ্য:</p>
+                        <div class="info-grid">
+                            <p><strong>ঋণের পরিমাণ:</strong> ৳ ${amountBn}</p>
+                            <p><strong>উদ্দেশ্য:</strong> ${l.loan_purpose || 'N/A'}</p>
+                            <p><strong>মেয়াদ:</strong> ${l.loan_tenure || 'N/A'} মাস</p>
                         </div>
-                    `;
+                    </div>`;
                 }
 
-                // স্ট্যাটাস ব্যাজ
                 let statusBadge = '';
                 if (user.status === 'blocked') {
                     statusBadge = '<span class="status blocked">ব্লকড</span>';
@@ -326,7 +208,6 @@
                     statusBadge = '<span class="status">সক্রিয়</span>';
                 }
 
-                // অ্যাকশন বাটন
                 let approveBtn = '';
                 if (user.applied && !user.approved) {
                     approveBtn = `<button class="btn-approve" onclick="approveUser(${user.id})"><i class="fa-solid fa-check"></i> অ্যাপ্রুভ করুন</button>`;
@@ -334,8 +215,7 @@
                     approveBtn = `<span class="btn-approved-tag"><i class="fa-solid fa-circle-check"></i> অনুমোদিত</span>`;
                 }
 
-                return `
-                <div class="user-card ${user.approved ? 'approved' : ''}">
+                return `<div class="user-card ${user.approved ? 'approved' : ''}">
                     <div class="user-card-header">
                         <h4><i class="fa-solid fa-user"></i> ${user.fullname}</h4>
                         ${statusBadge}
@@ -345,91 +225,58 @@
                         <p><strong>পাসওয়ার্ড:</strong> ${user.password}</p>
                         <p><strong>আইডি:</strong> ${user.id}</p>
                         <p><strong>নিবন্ধন:</strong> ${user.registeredAt || 'N/A'}</p>
-                        <p style="grid-column: span 2;"><strong>আবেদন:</strong> ${user.applied ? '✓ সম্পন্ন' : '✗ এখনো করেনি'}</p>
                     </div>
-                    ${appHtml}
-                    ${nomineeHtml}
-                    ${bankHtml}
-                    ${loanHtml}
+                    ${appHtml}${nomineeHtml}${bankHtml}${loanHtml}
                     <div class="user-actions">
                         <button class="btn-edit" onclick="openEditModal(${user.id})"><i class="fa-solid fa-pen"></i> এডিট</button>
                         <button class="btn-delete" onclick="deleteUser(${user.id})"><i class="fa-solid fa-trash"></i> ডিলিট</button>
                         ${approveBtn}
                     </div>
-                </div>
-                `;
+                </div>`;
             }).join('');
         }
 
-        // ইউজার অ্যাপ্রুভ করার ফাংশন
+        // ★★★ অ্যাপ্রুভ ফাংশন ★★★
         function approveUser(id) {
             if (!confirm("আপনি কি নিশ্চিত এই ব্যবহারকারীর ঋণ অনুমোদন করতে চান?")) return;
-
             let users = JSON.parse(localStorage.getItem('worldbank_users')) || [];
             const index = users.findIndex(u => u.id === id);
             if (index === -1) return;
-
             users[index].approved = true;
             users[index].approvedAt = new Date().toLocaleString('bn-BD');
             localStorage.setItem('worldbank_users', JSON.stringify(users));
 
-            // বর্তমান ইউজার আপডেট
             let currentUser = JSON.parse(localStorage.getItem('worldbank_current_user'));
             if (currentUser && currentUser.id === id) {
                 currentUser.approved = true;
-                currentUser.approvedAt = new Date().toLocaleString('bn-BD');
                 localStorage.setItem('worldbank_current_user', JSON.stringify(currentUser));
             }
-
             loadUsers();
             alert("ঋণ সফলভাবে অনুমোদিত হয়েছে!");
         }
 
-        // এডিট মোডাল খোলা
+        // ★★★ এডিট মোডাল ★★★
         function openEditModal(id) {
             let users = JSON.parse(localStorage.getItem('worldbank_users')) || [];
             const user = users.find(u => u.id === id);
             if (!user) return;
-
             document.getElementById('editId').value = user.id;
             document.getElementById('editName').value = user.fullname || '';
             document.getElementById('editPhone').value = user.phone || '';
             document.getElementById('editPassword').value = user.password || '';
             document.getElementById('editStatus').value = user.status || 'active';
-
             if (user.applicationData) {
-                const d = user.applicationData;
-                document.getElementById('editAppName').value = d.name || '';
-                document.getElementById('editFatherName').value = d.father_name || '';
-                document.getElementById('editMotherName').value = d.mother_name || '';
-                document.getElementById('editNid').value = d.nid || '';
-                document.getElementById('editBloodGroup').value = d.blood_group || 'A+';
-                document.getElementById('editPresentAddress').value = d.present_address || '';
-                document.getElementById('editPermanentAddress').value = d.permanent_address || '';
-                document.getElementById('editOccupation').value = d.occupation || '';
+                document.getElementById('editNid').value = user.applicationData.nid || '';
+                document.getElementById('editBloodGroup').value = user.applicationData.blood_group || 'A+';
             }
-
             if (user.nomineeData) {
-                const n = user.nomineeData;
-                document.getElementById('editNomineeName').value = n.nominee_name || '';
-                document.getElementById('editRelation').value = n.relation || 'পিতা';
-                document.getElementById('editNomineePhone').value = n.nominee_phone || '';
-                document.getElementById('editNomineeNid').value = n.nominee_nid || '';
+                document.getElementById('editNomineeName').value = user.nomineeData.nominee_name || '';
+                document.getElementById('editNomineePhone').value = user.nomineeData.nominee_phone || '';
             }
-
             if (user.bankData) {
-                const b = user.bankData;
-                document.getElementById('editBankType').value = b.bank_type || 'বিকাশ';
-                document.getElementById('editAccountNumber').value = b.account_number || '';
+                document.getElementById('editBankType').value = user.bankData.bank_type || 'বিকাশ';
+                document.getElementById('editAccountNumber').value = user.bankData.account_number || '';
             }
-
-            if (user.loanData) {
-                const l = user.loanData;
-                document.getElementById('editLoanAmount').value = l.loan_amount || '';
-                document.getElementById('editLoanPurpose').value = l.loan_purpose || '';
-                document.getElementById('editLoanTenure').value = l.loan_tenure || '';
-            }
-
             document.getElementById('editModal').style.display = 'flex';
         }
 
@@ -437,45 +284,55 @@
             document.getElementById('editModal').style.display = 'none';
         }
 
-        // এডিট সেভ
+        // ★★★ এডিট সেভ ★★★
         function saveEdit() {
             const id = parseInt(document.getElementById('editId').value);
-
             let users = JSON.parse(localStorage.getItem('worldbank_users')) || [];
             const index = users.findIndex(u => u.id === id);
             if (index === -1) return;
 
-            // অ্যাকাউন্ট তথ্য
             users[index].fullname = document.getElementById('editName').value.trim();
             users[index].phone = document.getElementById('editPhone').value.trim();
             users[index].password = document.getElementById('editPassword').value;
             users[index].status = document.getElementById('editStatus').value;
 
-            // ঋণ আবেদনের তথ্য
             if (users[index].applicationData) {
-                users[index].applicationData.name = document.getElementById('editAppName').value.trim();
-                users[index].applicationData.father_name = document.getElementById('editFatherName').value.trim();
-                users[index].applicationData.mother_name = document.getElementById('editMotherName').value.trim();
                 users[index].applicationData.nid = document.getElementById('editNid').value.trim();
                 users[index].applicationData.blood_group = document.getElementById('editBloodGroup').value;
-                users[index].applicationData.present_address = document.getElementById('editPresentAddress').value.trim();
-                users[index].applicationData.permanent_address = document.getElementById('editPermanentAddress').value.trim();
-                users[index].applicationData.occupation = document.getElementById('editOccupation').value.trim();
             }
-
-            // নমিনীর তথ্য
             if (users[index].nomineeData) {
                 users[index].nomineeData.nominee_name = document.getElementById('editNomineeName').value.trim();
-                users[index].nomineeData.relation = document.getElementById('editRelation').value;
                 users[index].nomineeData.nominee_phone = document.getElementById('editNomineePhone').value.trim();
-                users[index].nomineeData.nominee_nid = document.getElementById('editNomineeNid').value.trim();
             }
-
-            // ব্যাংক তথ্য
             if (users[index].bankData) {
                 users[index].bankData.bank_type = document.getElementById('editBankType').value;
                 users[index].bankData.account_number = document.getElementById('editAccountNumber').value.trim();
             }
 
-            // ঋণের তথ্য
-            if
+            localStorage.setItem('worldbank_users', JSON.stringify(users));
+            closeEditModal();
+            loadUsers();
+            alert("তথ্য সফলভাবে আপডেট হয়েছে!");
+        }
+
+        // ★★★ ডিলিট ★★★
+        function deleteUser(id) {
+            if (!confirm("আপনি কি নিশ্চিত এই ব্যবহারকারীকে ডিলিট করতে চান?")) return;
+            let users = JSON.parse(localStorage.getItem('worldbank_users')) || [];
+            users = users.filter(u => u.id !== id);
+            localStorage.setItem('worldbank_users', JSON.stringify(users));
+            loadUsers();
+            alert("ব্যবহারকারী ডিলিট করা হয়েছে।");
+        }
+
+        // ★★★ লগআউট ★★★
+        function logoutAdmin() {
+            localStorage.removeItem('worldbank_admin_logged_in');
+            window.location.href = 'admin_login.html';
+        }
+
+        // পেজ লোড হওয়ার সময় লিস্ট লোড
+        loadUsers();
+    </script>
+</body>
+</html>
