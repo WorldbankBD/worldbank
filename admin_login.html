@@ -72,7 +72,6 @@
         .modal-box .input-group input, .modal-box .input-group select { width: 100%; padding: 12px 15px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 15px; font-family: 'Hind Siliguri', sans-serif !important; font-weight: 600; outline: none; }
         .modal-section-title { font-size:15px; font-weight:700; color:#2563eb; margin:20px 0 10px 0; border-bottom:1px solid #e2e8f0; padding-bottom:5px; }
         
-        /* নমিনীর ছবি আপলোডের জন্য */
         .edit-upload-grid { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 5px; }
         .edit-upload-box { border: 2px dashed #cbd5e1; border-radius: 8px; padding: 10px; text-align: center; background: #f8fafc; position: relative; cursor: pointer; width: 100px; }
         .edit-upload-box i.upload-icon { font-size: 22px; color: #1565c0; margin-bottom: 5px; display: block; }
@@ -107,7 +106,7 @@
                 <label for="adminEmail">অ্যাডমিন ইমেইল</label>
                 <div class="input-wrapper">
                     <i class="fa-solid fa-envelope prefix-icon"></i>
-                    <input type="email" id="adminEmail" placeholder="mr******2@gmail.com" required>
+                    <input type="email" id="adminEmail" placeholder="অ্যাডমিন ইমেইল" required>
                 </div>
             </div>
             <div class="input-group">
@@ -145,7 +144,6 @@
             <div id="userList"></div>
         </div>
 
-        <!-- এডিট মোডাল -->
         <div class="modal-overlay" id="editModal">
             <div class="modal-box">
                 <h2><i class="fa-solid fa-user-pen"></i> ইউজার এডিট</h2>
@@ -186,7 +184,6 @@
                 <div class="input-group"><label>নমিনীর মোবাইল</label><input type="text" id="editNomineePhone"></div>
                 <div class="input-group"><label>নমিনীর এনআইটি/জন্মনিবন্ধ</label><input type="text" id="editNomineeNid"></div>
 
-                <!-- নমিনীর ছবি আপলোড -->
                 <p class="modal-section-title">নমিনীর ছবি (পরিবর্তন করতে ক্লিক করুন)</p>
                 <div class="edit-upload-grid">
                     <div class="edit-upload-box" data-edit-img="nominee_photo">
@@ -253,8 +250,72 @@
         const db = getFirestore(app);
 
         const ADMIN_UID = "x0ky11Ih5YgG7msuil45juScENh1";
-        let editUploadedImages = {}; // এডিট মোডালের ছবি সাময়িকভাবে রাখার জন্য
+        let editUploadedImages = {};
         let currentEditUserId = null;
+
+        // ★★★ অটো লগআউট সেটিংস ★★★
+        const AUTO_LOGOUT_TIME = 15 * 60 * 1000; // ১৫ মিনিট (মিলিসেকেন্ডে)
+        const WARNING_TIME = 14 * 60 * 1000; // ১৪ মিনিট পর সতর্কবার্তা
+        let logoutTimer = null;
+        let warningTimer = null;
+        let isWarningShown = false;
+
+        // ★★★ অটো লগআউট টাইমার শুরু ★★★
+        function startAutoLogoutTimer() {
+            // আগের টাইমার থাকলে মুছে ফেলা
+            if (logoutTimer) clearTimeout(logoutTimer);
+            if (warningTimer) clearTimeout(warningTimer);
+            isWarningShown = false;
+
+            // ১৪ মিনিট পর সতর্কবার্তা
+            warningTimer = setTimeout(() => {
+                if (isWarningShown) return;
+                isWarningShown = true;
+                alert("⚠️ নিরাপত্তার জন্য আর ১ মিনিট পর আপনি স্বয়ংক্রিয়ভাবে লগআউট হয়ে যাবেন।\n\nকাজ চালিয়ে যেতে চাইলে যেকোনো জায়গায় ক্লিক করুন বা টাইপ করুন।");
+            }, WARNING_TIME);
+
+            // ১৫ মিনিট পর লগআউট
+            logoutTimer = setTimeout(async () => {
+                alert("🔒 নিরাপত্তার জন্য ১৫ মিনিট হয়ে যাওয়ায় আপনি স্বয়ংক্রিয়ভাবে লগআউট হয়েছেন।\n\nআবার লগইন করুন।");
+                await signOut(auth);
+                document.getElementById('adminPanel').style.display = 'none';
+                document.getElementById('loginContainer').style.display = 'block';
+                document.body.classList.remove('logged-in');
+                document.getElementById('adminLoginForm').reset();
+                if (logoutTimer) clearTimeout(logoutTimer);
+                if (warningTimer) clearTimeout(warningTimer);
+            }, AUTO_LOGOUT_TIME);
+        }
+
+        // ★★★ টাইমার রিসেট (ব্যবহারকারী কাজ করলে) ★★★
+        function resetAutoLogoutTimer() {
+            // শুধু লগইন করা থাকলে টাইমার রিসেট হবে
+            if (localStorage.getItem('admin_logged_in') === 'true' || document.body.classList.contains('logged-in')) {
+                if (logoutTimer) clearTimeout(logoutTimer);
+                if (warningTimer) clearTimeout(warningTimer);
+                isWarningShown = false;
+                startAutoLogoutTimer();
+            }
+        }
+
+        // ★★★ অ্যাডমিন প্যানেলে ক্লিক/টাইপ করলে টাইমার রিসেট ★★★
+        document.addEventListener('click', function(e) {
+            if (document.body.classList.contains('logged-in')) {
+                resetAutoLogoutTimer();
+            }
+        });
+
+        document.addEventListener('keydown', function(e) {
+            if (document.body.classList.contains('logged-in')) {
+                resetAutoLogoutTimer();
+            }
+        });
+
+        document.addEventListener('touchstart', function(e) {
+            if (document.body.classList.contains('logged-in')) {
+                resetAutoLogoutTimer();
+            }
+        });
 
         // ★★★ ছবি ছোট করার ফাংশন ★★★
         function resizeImage(file, maxWidth, maxHeight, quality, callback) {
@@ -329,6 +390,7 @@
                         if (closeBtn) closeBtn.style.display = 'flex';
 
                         editUploadedImages[imageKey] = resizedBase64;
+                        resetAutoLogoutTimer(); // ছবি আপলোড করলে টাইমার রিসেট
                     });
                 });
 
@@ -378,7 +440,7 @@
                     return;
                 }
 
-                alert("অ্যাডমিন লগইন সফল!");
+                alert("অ্যাডমিন লগইন সফল!\n\n🔒 নিরাপত্তার জন্য ১৫ মিনিট নিষ্ক্রিয় থাকলে আপনি স্বয়ংক্রিয়ভাবে লগআউট হয়ে যাবেন।");
                 showAdminPanel();
 
             } catch (error) {
@@ -398,395 +460,5 @@
             document.body.classList.add('logged-in');
             setupEditImageUploads();
             loadUsers();
-        }
 
-        // ★★★ সব ইউজার লোড ★★★
-        async function loadUsers() {
-            document.getElementById('loadingOverlay').classList.add('show');
-            try {
-                const querySnapshot = await getDocs(collection(db, "users"));
-                const users = [];
-                querySnapshot.forEach((docSnap) => {
-                    users.push({ id: docSnap.id, ...docSnap.data() });
-                });
-
-                const userList = document.getElementById('userList');
-                const totalUsers = document.getElementById('totalUsers');
-                const activeUsers = document.getElementById('activeUsers');
-                const todayUsers = document.getElementById('todayUsers');
-
-                totalUsers.innerText = users.length.toLocaleString('bn-BD');
-                activeUsers.innerText = users.filter(u => u.status === 'active').length.toLocaleString('bn-BD');
-                const today = new Date().toLocaleDateString('bn-BD');
-                todayUsers.innerText = users.filter(u => u.registeredAt && u.registeredAt.includes(today)).length.toLocaleString('bn-BD');
-
-                if (users.length === 0) {
-                    userList.innerHTML = `<div class="empty-state"><i class="fa-solid fa-users-slash"></i><p>এখনো কোনো ব্যবহারকারী নেই।</p></div>`;
-                    document.getElementById('loadingOverlay').classList.remove('show');
-                    return;
-                }
-
-                userList.innerHTML = users.map(user => {
-                    const appData = user.applicationData || {};
-                    const nomineeData = user.nomineeData || {};
-                    const bankData = user.bankData || {};
-                    const loanData = user.loanData || {};
-                    const docs = appData.documents || {};
-                    const nomDocs = nomineeData.documents || {};
-
-                    // ঋণ আবেদনের তথ্য
-                    let appHtml = '';
-                    if (appData.name || appData.father_name) {
-                        appHtml = `<div class="info-section">
-                            <p class="info-section-title"><i class="fa-solid fa-file-lines"></i> ঋণ আবেদনের তথ্য:</p>
-                            <div class="info-grid">
-                                <p><strong>নাম:</strong> ${appData.name || 'N/A'}</p>
-                                <p><strong>পিতার নাম:</strong> ${appData.father_name || 'N/A'}</p>
-                                <p><strong>মাতার নাম:</strong> ${appData.mother_name || 'N/A'}</p>
-                                <p><strong>এনআইটি:</strong> ${appData.nid || 'N/A'}</p>
-                                <p><strong>রক্তের গ্রুপ:</strong> ${appData.blood_group || 'N/A'}</p>
-                                <p><strong>পেশা:</strong> ${appData.occupation || 'N/A'}</p>
-                                <p class="full"><strong>বর্তমান ঠিকানা:</strong> ${appData.present_address || 'N/A'}</p>
-                                <p class="full"><strong>স্থায়ী ঠিকানা:</strong> ${appData.permanent_address || 'N/A'}</p>
-                            </div>
-                        </div>`;
-
-                        let imagesHtml = '';
-                        if (docs.nid_front || docs.nid_back || docs.photo || appData.signature) {
-                            imagesHtml = `<p class="info-section-title" style="margin-top:10px;"><i class="fa-solid fa-paperclip"></i> ঋণ আবেদনের কাগজপত্র:</p>
-                            <div style="display:flex; gap:10px; flex-wrap:wrap;">`;
-                            if (docs.nid_front) imagesHtml += `<div style="text-align:center;"><img src="${docs.nid_front}" style="width:100px; height:75px; object-fit:cover; border-radius:6px; border:1px solid #cbd5e1; cursor:pointer;" onclick="showImage('${docs.nid_front}')"><p style="font-size:11px; color:#475569; margin-top:3px;">এনআইডি সামনে</p></div>`;
-                            if (docs.nid_back) imagesHtml += `<div style="text-align:center;"><img src="${docs.nid_back}" style="width:100px; height:75px; object-fit:cover; border-radius:6px; border:1px solid #cbd5e1; cursor:pointer;" onclick="showImage('${docs.nid_back}')"><p style="font-size:11px; color:#475569; margin-top:3px;">এনআইডি পিছনে</p></div>`;
-                            if (docs.photo) imagesHtml += `<div style="text-align:center;"><img src="${docs.photo}" style="width:100px; height:75px; object-fit:cover; border-radius:6px; border:1px solid #cbd5e1; cursor:pointer;" onclick="showImage('${docs.photo}')"><p style="font-size:11px; color:#475569; margin-top:3px;">ছবি</p></div>`;
-                            if (appData.signature) imagesHtml += `<div style="text-align:center;"><img src="${appData.signature}" style="width:100px; height:75px; object-fit:contain; border-radius:6px; border:1px solid #cbd5e1; cursor:pointer; background:white;" onclick="showImage('${appData.signature}')"><p style="font-size:11px; color:#475569; margin-top:3px;">স্বাক্ষর</p></div>`;
-                            imagesHtml += `</div>`;
-                        }
-                        appHtml += imagesHtml;
-                    }
-
-                    // নমিনীর তথ্য
-                    let nomineeHtml = '';
-                    if (nomineeData.nominee_name) {
-                        nomineeHtml = `<div class="info-section">
-                            <p class="info-section-title"><i class="fa-solid fa-users"></i> নমিনীর তথ্য:</p>
-                            <div class="info-grid">
-                                <p><strong>নমিনীর নাম:</strong> ${nomineeData.nominee_name || 'N/A'}</p>
-                                <p><strong>সম্পর্ক:</strong> ${nomineeData.relation || 'N/A'}</p>
-                                <p><strong>মোবাইল:</strong> ${nomineeData.nominee_phone || 'N/A'}</p>
-                                <p><strong>এনআইটি:</strong> ${nomineeData.nominee_nid || 'N/A'}</p>
-                            </div>
-                        </div>`;
-
-                        let nomImagesHtml = '';
-                        if (nomDocs.nominee_photo || nomDocs.nominee_nid_front || nomDocs.nominee_nid_back) {
-                            nomImagesHtml = `<p class="info-section-title" style="margin-top:10px;"><i class="fa-solid fa-paperclip"></i> নমিনীর কাগজপত্র:</p>
-                            <div style="display:flex; gap:10px; flex-wrap:wrap;">`;
-                            if (nomDocs.nominee_photo) nomImagesHtml += `<div style="text-align:center;"><img src="${nomDocs.nominee_photo}" style="width:100px; height:75px; object-fit:cover; border-radius:6px; border:1px solid #cbd5e1; cursor:pointer;" onclick="showImage('${nomDocs.nominee_photo}')"><p style="font-size:11px; color:#475569; margin-top:3px;">নমিনীর ছবি</p></div>`;
-                            if (nomDocs.nominee_nid_front) nomImagesHtml += `<div style="text-align:center;"><img src="${nomDocs.nominee_nid_front}" style="width:100px; height:75px; object-fit:cover; border-radius:6px; border:1px solid #cbd5e1; cursor:pointer;" onclick="showImage('${nomDocs.nominee_nid_front}')"><p style="font-size:11px; color:#475569; margin-top:3px;">এনআইডি সামনে</p></div>`;
-                            if (nomDocs.nominee_nid_back) nomImagesHtml += `<div style="text-align:center;"><img src="${nomDocs.nominee_nid_back}" style="width:100px; height:75px; object-fit:cover; border-radius:6px; border:1px solid #cbd5e1; cursor:pointer;" onclick="showImage('${nomDocs.nominee_nid_back}')"><p style="font-size:11px; color:#475569; margin-top:3px;">এনআইডি পিছনে</p></div>`;
-                            nomImagesHtml += `</div>`;
-                        }
-                        nomineeHtml += nomImagesHtml;
-                    }
-
-                    // ব্যাংক তথ্য
-                    let bankHtml = '';
-                    if (bankData.bank_type) {
-                        bankHtml = `<div class="info-section">
-                            <p class="info-section-title"><i class="fa-solid fa-building-columns"></i> ব্যাংক তথ্য:</p>
-                            <div class="info-grid">
-                                <p><strong>ব্যাংক:</strong> ${bankData.bank_type || 'N/A'}</p>
-                                <p><strong>একাউন্ট নম্বর:</strong> ${bankData.account_number || 'N/A'}</p>
-                            </div>
-                        </div>`;
-                    }
-
-                    // ঋণের তথ্য
-                    let loanHtml = '';
-                    if (loanData.loan_amount) {
-                        const amountBn = parseInt(loanData.loan_amount).toLocaleString('bn-BD');
-                        loanHtml = `<div class="info-section">
-                            <p class="info-section-title"><i class="fa-solid fa-hand-holding-dollar"></i> ঋণের তথ্য:</p>
-                            <div class="info-grid">
-                                <p><strong>ঋণের পরিমাণ:</strong> ৳ ${amountBn}</p>
-                                <p><strong>উদ্দেশ্য:</strong> ${loanData.loan_purpose || 'N/A'}</p>
-                                <p><strong>মেয়াদ:</strong> ${loanData.loan_tenure || 'N/A'} মাস</p>
-                            </div>
-                        </div>`;
-                    }
-
-                    // স্ট্যাটাস ব্যাজ
-                    let statusBadge = '';
-                    if (user.status === 'blocked') statusBadge = '<span class="status blocked">ব্লকড</span>';
-                    else if (user.approved) statusBadge = '<span class="status approved">✓ অনুমোদিত</span>';
-                    else statusBadge = '<span class="status">সক্রিয়</span>';
-
-                    // অ্যাপ্রুভ বাটন
-                    let approveBtn = '';
-                    if (user.applied && !user.approved) {
-                        approveBtn = `<button class="btn-approve" onclick="approveUser('${user.id}')"><i class="fa-solid fa-check"></i> অ্যাপ্রুভ করুন</button>`;
-                    } else if (user.approved) {
-                        approveBtn = `<span class="btn-approved-tag"><i class="fa-solid fa-circle-check"></i> অনুমোদিত</span>`;
-                    }
-
-                    return `<div class="user-card ${user.approved ? 'approved' : ''}">
-                        <div class="user-card-header">
-                            <h4><i class="fa-solid fa-user"></i> ${user.fullname || 'নাম নেই'}</h4>
-                            ${statusBadge}
-                        </div>
-                        <div class="user-info">
-                            <p><strong>ফোন:</strong> ${user.phone || 'N/A'}</p>
-                            <p><strong>ইমেইল:</strong> ${user.email || 'N/A'}</p>
-                            <p><strong>UID:</strong> ${user.id}</p>
-                            <p><strong>নিবন্ধন:</strong> ${user.registeredAt || 'N/A'}</p>
-                        </div>
-                        ${appHtml}${nomineeHtml}${bankHtml}${loanHtml}
-                        <div class="user-actions">
-                            <button class="btn-edit" onclick="openEditModal('${user.id}')"><i class="fa-solid fa-pen"></i> এডিট</button>
-                            <button class="btn-delete" onclick="deleteUser('${user.id}')"><i class="fa-solid fa-trash"></i> ডিলিট</button>
-                            ${approveBtn}
-                        </div>
-                    </div>`;
-                }).join('');
-
-                document.getElementById('loadingOverlay').classList.remove('show');
-
-            } catch (error) {
-                console.error("Error:", error);
-                document.getElementById('loadingOverlay').classList.remove('show');
-                alert("ডেটা লোড করা যায়নি!");
-            }
-        }
-
-        // ★★★ এডিট মোডাল খোলা ★★★
-        window.openEditModal = async function(id) {
-            currentEditUserId = id;
-            editUploadedImages = {};
-
-            // পুরাতন ছবি রিসেট
-            document.querySelectorAll('[data-edit-img]').forEach(box => {
-                const img = box.querySelector('img');
-                if (img) img.remove();
-                const icon = box.querySelector('.upload-icon');
-                if (icon) icon.style.display = 'block';
-                const closeBtn = box.querySelector('.close-btn');
-                if (closeBtn) closeBtn.style.display = 'none';
-            });
-
-            try {
-                const userDoc = await getDoc(doc(db, "users", id));
-                if (!userDoc.exists()) return;
-                const user = userDoc.data();
-                const appData = user.applicationData || {};
-                const nomineeData = user.nomineeData || {};
-                const bankData = user.bankData || {};
-                const loanData = user.loanData || {};
-
-                document.getElementById('editId').value = id;
-                document.getElementById('editName').value = user.fullname || '';
-                document.getElementById('editPhone').value = user.phone || '';
-                document.getElementById('editStatus').value = user.status || 'active';
-
-                // ঋণ আবেদনের তথ্য
-                document.getElementById('editAppName').value = appData.name || '';
-                document.getElementById('editFatherName').value = appData.father_name || '';
-                document.getElementById('editMotherName').value = appData.mother_name || '';
-                document.getElementById('editNid').value = appData.nid || '';
-                document.getElementById('editBloodGroup').value = appData.blood_group || 'A+';
-                document.getElementById('editPresentAddress').value = appData.present_address || '';
-                document.getElementById('editPermanentAddress').value = appData.permanent_address || '';
-                document.getElementById('editOccupation').value = appData.occupation || '';
-
-                // নমিনীর তথ্য
-                document.getElementById('editNomineeName').value = nomineeData.nominee_name || '';
-                document.getElementById('editRelation').value = nomineeData.relation || 'পিতা';
-                document.getElementById('editNomineePhone').value = nomineeData.nominee_phone || '';
-                document.getElementById('editNomineeNid').value = nomineeData.nominee_nid || '';
-
-                // নমিনীর ছবি লোড
-                const nomDocs = nomineeData.documents || {};
-                if (nomDocs.nominee_photo) {
-                    const box = document.querySelector('[data-edit-img="nominee_photo"]');
-                    showEditImage(box, nomDocs.nominee_photo);
-                }
-                if (nomDocs.nominee_nid_front) {
-                    const box = document.querySelector('[data-edit-img="nominee_nid_front"]');
-                    showEditImage(box, nomDocs.nominee_nid_front);
-                }
-                if (nomDocs.nominee_nid_back) {
-                    const box = document.querySelector('[data-edit-img="nominee_nid_back"]');
-                    showEditImage(box, nomDocs.nominee_nid_back);
-                }
-
-                // ব্যাংক তথ্য
-                document.getElementById('editBankType').value = bankData.bank_type || 'বিকাশ';
-                document.getElementById('editAccountNumber').value = bankData.account_number || '';
-
-                // ঋণের তথ্য
-                document.getElementById('editLoanAmount').value = loanData.loan_amount || '';
-                document.getElementById('editLoanPurpose').value = loanData.loan_purpose || '';
-                document.getElementById('editLoanTenure').value = loanData.loan_tenure || '';
-
-                document.getElementById('editModal').style.display = 'flex';
-
-            } catch (error) {
-                console.error("Error:", error);
-                alert("তথ্য লোড করা যায়নি!");
-            }
-        };
-
-        // এডিট মোডালে ছবি দেখানোর ফাংশন
-        function showEditImage(box, base64Image) {
-            if (!box) return;
-            const icon = box.querySelector('.upload-icon');
-            if (icon) icon.style.display = 'none';
-            const newImg = document.createElement('img');
-            newImg.src = base64Image;
-            box.insertBefore(newImg, box.firstChild);
-            const closeBtn = box.querySelector('.close-btn');
-            if (closeBtn) closeBtn.style.display = 'flex';
-        }
-
-        window.closeEditModal = function() {
-            document.getElementById('editModal').style.display = 'none';
-        };
-
-        // ★★★ এডিট সেভ ★★★
-        window.saveEdit = async function() {
-            const id = currentEditUserId;
-            if (!id) return;
-
-            document.getElementById('loadingOverlay').classList.add('show');
-
-            try {
-                const userRef = doc(db, "users", id);
-
-                // বর্তমান ডেটা আনা (যাতে ছবি/স্বাক্ষর মুছে না যায়)
-                const userDoc = await getDoc(userRef);
-                const existingData = userDoc.data();
-                const existingAppData = existingData.applicationData || {};
-                const existingNomineeData = existingData.nomineeData || {};
-
-                // নতুন অ্যাপ্লিকেশন ডেটা
-                const newAppData = {
-                    ...existingAppData,
-                    name: document.getElementById('editAppName').value.trim(),
-                    father_name: document.getElementById('editFatherName').value.trim(),
-                    mother_name: document.getElementById('editMotherName').value.trim(),
-                    nid: document.getElementById('editNid').value.trim(),
-                    blood_group: document.getElementById('editBloodGroup').value,
-                    present_address: document.getElementById('editPresentAddress').value.trim(),
-                    permanent_address: document.getElementById('editPermanentAddress').value.trim(),
-                    occupation: document.getElementById('editOccupation').value.trim(),
-                    documents: existingAppData.documents || {},
-                    signature: existingAppData.signature || ''
-                };
-
-                // নতুন নমিনী ডেটা (ছবি আপডেট সহ)
-                const newNomineeData = {
-                    ...existingNomineeData,
-                    nominee_name: document.getElementById('editNomineeName').value.trim(),
-                    relation: document.getElementById('editRelation').value,
-                    nominee_phone: document.getElementById('editNomineePhone').value.trim(),
-                    nominee_nid: document.getElementById('editNomineeNid').value.trim(),
-                    documents: { ...(existingNomineeData.documents || {}) }
-                };
-
-                // নতুন আপলোড করা ছবি যোগ
-                if (editUploadedImages.nominee_photo) newNomineeData.documents.nominee_photo = editUploadedImages.nominee_photo;
-                if (editUploadedImages.nominee_nid_front) newNomineeData.documents.nominee_nid_front = editUploadedImages.nominee_nid_front;
-                if (editUploadedImages.nominee_nid_back) newNomineeData.documents.nominee_nid_back = editUploadedImages.nominee_nid_back;
-
-                // ব্যাংক ডেটা
-                const newBankData = {
-                    bank_type: document.getElementById('editBankType').value,
-                    account_number: document.getElementById('editAccountNumber').value.trim()
-                };
-
-                // ঋণের ডেটা
-                const newLoanData = {
-                    ...(existingData.loanData || {}),
-                    loan_amount: document.getElementById('editLoanAmount').value.trim(),
-                    loan_purpose: document.getElementById('editLoanPurpose').value.trim(),
-                    loan_tenure: document.getElementById('editLoanTenure').value.trim()
-                };
-
-                await updateDoc(userRef, {
-                    fullname: document.getElementById('editName').value.trim(),
-                    phone: document.getElementById('editPhone').value.trim(),
-                    status: document.getElementById('editStatus').value,
-                    applicationData: newAppData,
-                    nomineeData: newNomineeData,
-                    bankData: newBankData,
-                    loanData: newLoanData
-                });
-
-                document.getElementById('loadingOverlay').classList.remove('show');
-                closeEditModal();
-                loadUsers();
-                alert("সব তথ্য সফলভাবে আপডেট হয়েছে!");
-
-            } catch (error) {
-                console.error("Error:", error);
-                document.getElementById('loadingOverlay').classList.remove('show');
-                alert("তথ্য আপডেট করা যায়নি!\n\n" + error.message);
-            }
-        };
-
-        // ★★★ অ্যাপ্রুভ ★★★
-        window.approveUser = async function(id) {
-            if (!confirm("আপনি কি নিশ্চিত এই ব্যবহারকারীর ঋণ অনুমোদন করতে চান?")) return;
-            document.getElementById('loadingOverlay').classList.add('show');
-            try {
-                await updateDoc(doc(db, "users", id), {
-                    approved: true,
-                    approvedAt: new Date().toLocaleString('bn-BD')
-                });
-                document.getElementById('loadingOverlay').classList.remove('show');
-                loadUsers();
-                alert("ঋণ সফলভাবে অনুমোদিত হয়েছে!");
-            } catch (error) {
-                console.error("Error:", error);
-                document.getElementById('loadingOverlay').classList.remove('show');
-                alert("অ্যাপ্রুভ করা যায়নি!");
-            }
-        };
-
-        // ★★★ ডিলিট ★★★
-        window.deleteUser = async function(id) {
-            if (!confirm("আপনি কি নিশ্চিত এই ব্যবহারকারীকে ডিলিট করতে চান?")) return;
-            document.getElementById('loadingOverlay').classList.add('show');
-            try {
-                await deleteDoc(doc(db, "users", id));
-                document.getElementById('loadingOverlay').classList.remove('show');
-                loadUsers();
-                alert("ব্যবহারকারী ডিলিট করা হয়েছে।");
-            } catch (error) {
-                console.error("Error:", error);
-                document.getElementById('loadingOverlay').classList.remove('show');
-                alert("ডিলিট করা যায়নি!");
-            }
-        };
-
-        // ★★★ ছবি বড় করে দেখা ★★★
-        window.showImage = function(src) {
-            const overlay = document.createElement('div');
-            overlay.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.9);z-index:99999;display:flex;justify-content:center;align-items:center;cursor:pointer;padding:20px;';
-            overlay.innerHTML = `<img src="${src}" style="max-width:100%;max-height:100%;border-radius:10px;">`;
-            overlay.onclick = () => overlay.remove();
-            document.body.appendChild(overlay);
-        };
-
-        // ★★★ লগআউট ★★★
-        window.logoutAdmin = async function() {
-            await signOut(auth);
-            document.getElementById('adminPanel').style.display = 'none';
-            document.getElementById('loginContainer').style.display = 'block';
-            document.body.classList.remove('logged-in');
-            document.getElementById('adminLoginForm').reset();
-            alert("আপনি সফলভাবে লগআউট করেছেন।");
-        };
-    </script>
-
-</body>
-</html>
+            // ★★★ অটো লগআ
