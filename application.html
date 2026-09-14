@@ -59,7 +59,6 @@
         .upload-box p { font-size: 13px; color: #64748b; }
         .close-btn { position: absolute; top: -10px; right: -10px; background: #ef4444; color: white; border: none; width: 25px; height: 25px; border-radius: 50%; display: flex; justify-content: center; align-items: center; cursor: pointer; font-size: 12px; display: none; }
 
-        /* স্বাক্ষর ক্যানভাস */
         .signature-container { border: 2px dashed #cbd5e1; border-radius: 10px; background: #ffffff; position: relative; overflow: hidden; }
         #signatureCanvas { width: 100%; height: 200px; display: block; cursor: crosshair; touch-action: none; background: #ffffff; }
         .signature-hint { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: #cbd5e1; font-size: 16px; font-weight: 600; pointer-events: none; user-select: none; }
@@ -209,7 +208,6 @@
                 </div>
             </div>
 
-            <!-- স্বাক্ষর ক্যানভাস -->
             <div class="section-card">
                 <div class="section-header"><i class="fa-solid fa-signature"></i> স্বাক্ষর</div>
                 <div class="input-group">
@@ -260,12 +258,12 @@
         const db = getFirestore(app);
 
         let currentUserUID = null;
+        window.uploadedImages = {};
 
-        // ★★★ Firebase Authentication থেকে বর্তমান ইউজার নেওয়া ★★★
+        // ★★★ বর্তমান ইউজার চেক ★★★
         onAuthStateChanged(auth, (user) => {
             if (user) {
                 currentUserUID = user.uid;
-                // পুরাতন ডেটা লোড করা (যদি থাকে)
                 loadExistingData(user.uid);
             } else {
                 alert("আপনি লগইন করেননি! দয়া করে লগইন করুন।");
@@ -281,14 +279,10 @@
                     const data = userDoc.data();
                     if (data.applicationData) {
                         const appData = data.applicationData;
-                        // ফর্মে পুরাতন ডেটা বসানো
                         document.querySelectorAll('[data-field]').forEach(field => {
                             const fieldName = field.getAttribute('data-field');
-                            if (appData[fieldName]) {
-                                field.value = appData[fieldName];
-                            }
+                            if (appData[fieldName]) field.value = appData[fieldName];
                         });
-                        // ছবি লোড
                         if (appData.documents) {
                             Object.keys(appData.documents).forEach(key => {
                                 const box = document.querySelector(`.upload-box[data-img="${key}"]`);
@@ -321,9 +315,39 @@
             }
         }
 
-        window.uploadedImages = {};
+        // ★★★ ছবি ছোট করার ফাংশন ★★★
+        function resizeImage(file, maxWidth, maxHeight, quality, callback) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const img = new Image();
+                img.onload = function() {
+                    let width = img.width;
+                    let height = img.height;
 
-        // ★★★ ছবি আপলোড সিস্টেম ★★★
+                    if (width > maxWidth) {
+                        height = (height * maxWidth) / width;
+                        width = maxWidth;
+                    }
+                    if (height > maxHeight) {
+                        width = (width * maxHeight) / height;
+                        height = maxHeight;
+                    }
+
+                    const canvas = document.createElement('canvas');
+                    canvas.width = width;
+                    canvas.height = height;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, width, height);
+
+                    const resizedBase64 = canvas.toDataURL('image/jpeg', quality);
+                    callback(resizedBase64);
+                };
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // ★★★ ছবি আপলোড সিস্টেম (রিসাইজ সহ) ★★★
         document.querySelectorAll('.upload-box').forEach(box => {
             const imageKey = box.getAttribute('data-img');
             const fileInput = document.createElement('input');
@@ -341,9 +365,9 @@
                 const file = this.files[0];
                 if (!file) return;
                 
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    const base64Image = e.target.result;
+                // ★★★ ছবি ছোট করে নেওয়া (সর্বোচ্চ 800px, 60% quality) ★★★
+                resizeImage(file, 800, 800, 0.6, function(resizedBase64) {
+                    const base64Image = resizedBase64;
                     const oldImg = box.querySelector('img');
                     if (oldImg) oldImg.remove();
                     
@@ -368,8 +392,7 @@
                     if (closeBtn) closeBtn.style.display = 'flex';
                     
                     window.uploadedImages[imageKey] = base64Image;
-                };
-                reader.readAsDataURL(file);
+                });
             });
             
             const closeBtn = box.querySelector('.close-btn');
@@ -499,11 +522,6 @@
                     appliedAt: new Date().toLocaleString('bn-BD'),
                     applicationData: formData
                 });
-
-                // localStorage-এও সেভ (পরবর্তী পেজের জন্য)
-                localStorage.setItem('worldbank_current_user', JSON.stringify({
-                    uid: currentUserUID
-                }));
 
                 document.getElementById('loadingOverlay').classList.remove('show');
                 alert("আপনার তথ্য সফলভাবে সেভ হয়েছে! এখন নমিনীর তথ্য দিন।");
