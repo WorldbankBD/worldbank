@@ -29,25 +29,28 @@
         
         .input-group { margin-bottom: 15px; }
         .input-wrapper { position: relative; display: flex; align-items: center; }
-        .input-wrapper i.prefix-icon { position: absolute; left: 15px; color: #94a3b8; font-size: 16px; }
         
         .input-wrapper input, .input-wrapper select { 
             width: 100%; 
-            padding: 15px 15px 15px 45px; 
+            padding: 15px 40px 15px 48px; 
             border: 1px solid #cbd5e1; 
             border-radius: 8px; 
-            font-size: 15px; 
+            font-size: 16px; 
             font-family: 'Hind Siliguri', sans-serif !important; 
             font-weight: 700;
             outline: none; 
             background-color: #f8fafc; 
             color: #0f172a; 
-            text-indent: 1px;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
         }
         .input-wrapper input:focus, .input-wrapper select:focus { border-color: #1e88e5; background-color: #fff; box-shadow: 0 0 0 3px rgba(30, 136, 229, 0.1); }
         
-        .input-wrapper select option { padding: 12px 15px 12px 45px; line-height: 1.8; font-size: 15px; font-family: 'Hind Siliguri', sans-serif !important; font-weight: 700; min-height: 40px; }
+        .input-wrapper select option { padding: 12px 15px 12px 45px; line-height: 1.8; font-size: 16px; font-family: 'Hind Siliguri', sans-serif !important; font-weight: 700; min-height: 40px; }
         
+        .input-wrapper i.prefix-icon { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: #94a3b8; font-size: 16px; z-index: 2; pointer-events: none; }
+
         .select-wrapper::after { content: '\f107'; font-family: 'Font Awesome 6 Free'; font-weight: 900; position: absolute; right: 15px; color: #64748b; pointer-events: none; }
 
         .btn-save { width: 100%; background: #2563eb; color: white; border: none; padding: 16px; border-radius: 8px; font-size: 16px; font-weight: 700; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 10px; margin-top: 10px; box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3); transition: all 0.3s; }
