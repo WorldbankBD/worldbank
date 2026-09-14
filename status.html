@@ -10,7 +10,6 @@
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Hind Siliguri', sans-serif; }
         body { background-color: #f1f5f9; padding-bottom: 80px; }
         
-        /* হেডার */
         .header { background-color: #1e88e5; color: white; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
         .header-left { display: flex; align-items: center; gap: 10px; }
         .header-logo { width: 40px; height: 40px; background: white; border-radius: 50%; display: flex; justify-content: center; align-items: center; color: #1e88e5; font-size: 20px; }
@@ -18,10 +17,8 @@
         .header-text p { font-size: 12px; opacity: 0.9; }
         .btn-logout { background: white; color: #1e88e5; border: none; padding: 8px 15px; border-radius: 5px; font-weight: 600; font-size: 14px; cursor: pointer; }
 
-        /* মূল কন্টেইনার */
         .main-container { max-width: 500px; margin: 0 auto; padding: 15px; }
 
-        /* ইমেজ স্লাইডার */
         .slider-container { position: relative; border-radius: 12px; overflow: hidden; margin-bottom: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); height: 220px; }
         .slide { width: 100%; height: 100%; position: relative; display: none; }
         .slide.active { display: block; }
@@ -33,19 +30,16 @@
         .dot { width: 12px; height: 12px; background: rgba(255,255,255,0.5); border-radius: 50%; cursor: pointer; transition: 0.3s; }
         .dot.active { background: #ffffff; width: 30px; border-radius: 10px; }
 
-        /* ফিচার কার্ড */
         .feature-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 25px; }
         .feature-card { background: white; padding: 20px; border-radius: 12px; text-align: center; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
         .feature-icon { width: 60px; height: 60px; background: #2563eb; color: white; border-radius: 12px; display: flex; justify-content: center; align-items: center; font-size: 28px; margin: 0 auto 15px auto; }
         .feature-card h3 { font-size: 20px; color: #0f172a; margin-bottom: 5px; font-weight: 700; }
         .feature-card p { font-size: 14px; color: #64748b; }
 
-        /* ড্যাশবোর্ড টাইটেল */
         .dashboard-title { display: flex; align-items: center; gap: 10px; margin-bottom: 15px; }
         .dashboard-title i { font-size: 30px; color: #2563eb; }
         .dashboard-title h1 { font-size: 26px; color: #2563eb; font-weight: 700; line-height: 1.2; }
 
-        /* ঋণের তথ্য কার্ড */
         .loan-info-card { background: #64748b; border-radius: 12px; padding: 20px; margin-bottom: 20px; color: white; box-shadow: 0 4px 15px rgba(100, 116, 139, 0.3); transition: all 0.5s ease; }
         .loan-info-card.approved { background: #16a34a; box-shadow: 0 4px 15px rgba(22, 163, 74, 0.3); }
         .loan-info-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.2); padding-bottom: 12px; margin-bottom: 15px; }
@@ -59,7 +53,6 @@
         .loan-detail-item p { font-size: 12px; color: #e2e8f0; margin-bottom: 3px; }
         .loan-detail-item h4 { font-size: 18px; font-weight: 700; }
 
-        /* আবেদন পর্যালোচনা কার্ড */
         .review-card { background: white; border-radius: 12px; padding: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); margin-bottom: 20px; transition: all 0.5s ease; }
         .review-card.approved { background: #f0fdf4; border: 1px solid #86efac; }
         .review-header { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
@@ -74,10 +67,8 @@
         .review-tag.approved { background: #dcfce7; color: #16a34a; }
         .review-tag i { font-size: 12px; }
 
-        /* ফ্লোটিং মেনু বাটন */
         .floating-menu { position: fixed; bottom: 20px; left: 20px; background: #1e88e5; color: white; width: 50px; height: 50px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 22px; box-shadow: 0 4px 10px rgba(0,0,0,0.2); cursor: pointer; z-index: 999; }
 
-        /* সাইড মেনু */
         .side-menu-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5); z-index: 2000; }
         .side-menu { position: fixed; top: 0; left: 0; width: 80%; max-width: 320px; height: 100%; background: white; z-index: 2001; transform: translateX(-100%); transition: transform 0.3s ease; display: flex; flex-direction: column; padding: 20px; box-shadow: 5px 0 15px rgba(0,0,0,0.1); }
         .side-menu.open { transform: translateX(0); }
@@ -93,7 +84,6 @@
 </head>
 <body>
 
-    <!-- হেডার -->
     <div class="header">
         <div class="header-left">
             <div class="header-logo"><i class="fa-solid fa-globe"></i></div>
@@ -105,10 +95,8 @@
         <button class="btn-logout" onclick="window.location.href='index.html'">লগআউট</button>
     </div>
 
-    <!-- মূল কন্টেইনার -->
     <div class="main-container">
 
-        <!-- ইমেজ স্লাইডার -->
         <div class="slider-container">
             <div class="slide active">
                 <img src="https://images.unsplash.com/photo-1554224155-6726b3ff858f?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Bank">
@@ -146,7 +134,6 @@
             </div>
         </div>
 
-        <!-- ফিচার কার্ড -->
         <div class="feature-grid">
             <div class="feature-card">
                 <div class="feature-icon"><i class="fa-solid fa-shield-halved"></i></div>
@@ -160,25 +147,19 @@
             </div>
         </div>
 
-        <!-- ড্যাশবোর্ড টাইটেল -->
         <div class="dashboard-title">
             <i class="fa-solid fa-chart-pie"></i>
             <h1>আপনার ঋণ<br>ড্যাশবোর্ড</h1>
         </div>
 
-        <!-- ★★★ ঋণের তথ্য কার্ড (JavaScript দিয়ে ডাইনামিক) ★★★ -->
         <div id="loanInfoContainer">
-            <!-- এখানে JavaScript দিয়ে কনটেন্ট বসানো হবে -->
+            <p style="text-align:center; padding:20px;">লোড হচ্ছে...</p>
         </div>
 
-        <!-- ★★★ আবেদনের অবস্থা কার্ড (JavaScript দিয়ে ডাইনামিক) ★★★ -->
-        <div id="reviewContainer">
-            <!-- এখানে JavaScript দিয়ে কনটেন্ট বসানো হবে -->
-        </div>
+        <div id="reviewContainer"></div>
 
     </div>
 
-    <!-- ★★★ সাইড মেনু ★★★ -->
     <div class="side-menu-overlay" id="menuOverlay" onclick="closeMenu()">
         <div class="side-menu" id="sideMenu" onclick="event.stopPropagation()">
             <div class="side-menu-header">
@@ -198,13 +179,29 @@
         </div>
     </div>
 
-    <!-- ফ্লোটিং মেনু আইকন -->
     <div class="floating-menu" onclick="openMenu()">
         <i class="fa-solid fa-bars"></i>
     </div>
 
-    <!-- ★★★ স্লাইডার, মেনু এবং ঋণের স্ট্যাটাস JavaScript ★★★ -->
-    <script>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyD9fEvnTdI5y4AQiFIENZUD9KBtBx1Re4g",
+            authDomain: "worldbank-72fb8.firebaseapp.com",
+            projectId: "worldbank-72fb8",
+            storageBucket: "worldbank-72fb8.firebasestorage.app",
+            messagingSenderId: "102460952898",
+            appId: "1:102460952898:web:c2946f3c9e78dca3a138db",
+            measurementId: "G-KK74DHYW69"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
         // ★★★ স্লাইডার ★★★
         let slideIndex = 0;
         const slides = document.querySelectorAll('.slide');
@@ -218,101 +215,116 @@
             dots[slideIndex].classList.add('active');
         }
 
-        function currentSlide(n) { showSlide(n); }
+        window.currentSlide = function(n) { showSlide(n); };
         setInterval(() => { showSlide(slideIndex + 1); }, 3000);
 
         // ★★★ সাইড মেনু ★★★
-        function openMenu() {
+        window.openMenu = function() {
             document.getElementById('sideMenu').classList.add('open');
             document.getElementById('menuOverlay').style.display = 'block';
-        }
-        function closeMenu() {
+        };
+        window.closeMenu = function() {
             document.getElementById('sideMenu').classList.remove('open');
             document.getElementById('menuOverlay').style.display = 'none';
-        }
+        };
 
-        // ★★★ ইউজারের ঋণের স্ট্যাটাস লোড করা ★★★
-        function loadLoanStatus() {
-            let currentUser = JSON.parse(localStorage.getItem('worldbank_current_user'));
+        // ★★★ বর্তমান ইউজার চেক এবং ডেটা লোড ★★★
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                await loadLoanStatus(user.uid);
+            } else {
+                alert("আপনি লগইন করেননি! দয়া করে লগইন করুন।");
+                window.location.href = 'index.html';
+            }
+        });
+
+        async function loadLoanStatus(uid) {
             const loanContainer = document.getElementById('loanInfoContainer');
             const reviewContainer = document.getElementById('reviewContainer');
 
-            if (!currentUser) {
-                loanContainer.innerHTML = '<p style="text-align:center; padding:20px;">আপনি লগইন করেননি।</p>';
-                return;
-            }
+            try {
+                const userDoc = await getDoc(doc(db, "users", uid));
+                if (!userDoc.exists()) {
+                    loanContainer.innerHTML = '<p style="text-align:center; padding:20px;">ইউজারের তথ্য পাওয়া যায়নি।</p>';
+                    return;
+                }
 
-            // ইউজারের নাম দেখানো
-            document.getElementById('welcomeText').innerText = 'স্বাগতম, ' + currentUser.fullname + '!';
+                const userData = userDoc.data();
+                const fullname = userData.fullname || 'বন্ধু';
+                const loanData = userData.loanData || {};
+                const isApproved = userData.approved === true;
 
-            // ঋণের তথ্য নেওয়া
-            const loanAmount = currentUser.loanData ? currentUser.loanData.loan_amount : 0;
-            const loanPurpose = currentUser.loanData ? currentUser.loanData.loan_purpose : 'N/A';
-            const tenure = currentUser.loanData ? currentUser.loanData.loan_tenure : 0;
-            const isApproved = currentUser.approved === true;
+                // ইউজারের নাম দেখানো
+                document.getElementById('welcomeText').innerText = 'স্বাগতম, ' + fullname + '!';
 
-            // ঋণের পরিমাণ বাংলায় রূপান্তর
-            const loanAmountBn = parseInt(loanAmount).toLocaleString('bn-BD');
+                const loanAmount = loanData.loan_amount || 0;
+                const tenure = loanData.loan_tenure || 0;
+                const loanAmountBn = parseInt(loanAmount).toLocaleString('bn-BD');
 
-            // ★★★ ঋণের তথ্য কার্ড ★★★
-            loanContainer.innerHTML = `
-                <div class="loan-info-card ${isApproved ? 'approved' : ''}">
-                    <div class="loan-info-header">
-                        <h3><i class="fa-solid fa-file-invoice-dollar"></i> আপনার ঋণের তথ্য</h3>
-                        <span class="status-badge ${isApproved ? 'approved' : ''}">
-                            <i class="fa-solid ${isApproved ? 'fa-circle-check' : 'fa-hourglass-half'}"></i> 
-                            ${isApproved ? 'অনুমোদিত' : 'প্রক্রিয়াধীন'}
-                        </span>
-                    </div>
-                    <div class="loan-details-grid">
-                        <div class="loan-detail-item">
-                            <i class="fa-solid fa-wallet"></i>
-                            <p>মোট ব্যালেন্স</p>
-                            <h4>${isApproved ? '৳ ' + loanAmountBn : '৳ ০'}</h4>
+                // ★★★ ঋণের তথ্য কার্ড ★★★
+                loanContainer.innerHTML = `
+                    <div class="loan-info-card ${isApproved ? 'approved' : ''}">
+                        <div class="loan-info-header">
+                            <h3><i class="fa-solid fa-file-invoice-dollar"></i> আপনার ঋণের তথ্য</h3>
+                            <span class="status-badge ${isApproved ? 'approved' : ''}">
+                                <i class="fa-solid ${isApproved ? 'fa-circle-check' : 'fa-hourglass-half'}"></i> 
+                                ${isApproved ? 'অনুমোদিত' : 'প্রক্রিয়াধীন'}
+                            </span>
                         </div>
-                        <div class="loan-detail-item">
-                            <i class="fa-solid fa-hand-holding-dollar"></i>
-                            <p>ঋণের পরিমাণ</p>
-                            <h4>৳ ${loanAmountBn}</h4>
-                        </div>
-                        <div class="loan-detail-item">
-                            <i class="fa-solid fa-calendar-check"></i>
-                            <p>মাসিক কিস্তি</p>
-                            <h4>৳ ${currentUser.loanData ? calculateEMIAmount(parseInt(loanAmount), parseInt(tenure)) : '০'}</h4>
-                        </div>
-                    </div>
-                </div>
-            `;
-
-            // ★★★ আবেদনের অবস্থা কার্ড ★★★
-            if (isApproved) {
-                reviewContainer.innerHTML = `
-                    <div class="review-card approved">
-                        <div class="review-header">
-                            <i class="fa-solid fa-circle-check approved"></i>
-                            <h3 class="approved">ঋণ অনুমোদিত হয়েছে!</h3>
-                        </div>
-                        <p>অভিনন্দন! আপনার ঋণ আবেদনটি আমাদের বিশেষজ্ঞ টিম কর্তৃক <strong>অনুমোদিত</strong> হয়েছে। আপনার একাউন্টে <strong>৳ ${loanAmountBn}</strong> যোগ করা হয়েছে।</p>
-                        <div class="review-tags">
-                            <span class="review-tag approved"><i class="fa-solid fa-check"></i> অনুমোদিত</span>
-                            <span class="review-tag approved"><i class="fa-solid fa-check"></i> ব্যালেন্স যোগ হয়েছে</span>
+                        <div class="loan-details-grid">
+                            <div class="loan-detail-item">
+                                <i class="fa-solid fa-wallet"></i>
+                                <p>মোট ব্যালেন্স</p>
+                                <h4>${isApproved ? '৳ ' + loanAmountBn : '৳ ০'}</h4>
+                            </div>
+                            <div class="loan-detail-item">
+                                <i class="fa-solid fa-hand-holding-dollar"></i>
+                                <p>ঋণের পরিমাণ</p>
+                                <h4>৳ ${loanAmountBn}</h4>
+                            </div>
+                            <div class="loan-detail-item">
+                                <i class="fa-solid fa-calendar-check"></i>
+                                <p>মাসিক কিস্তি</p>
+                                <h4>৳ ${loanData.loan_amount ? calculateEMIAmount(parseInt(loanAmount), parseInt(tenure)) : '০'}</h4>
+                            </div>
                         </div>
                     </div>
                 `;
-            } else {
-                reviewContainer.innerHTML = `
-                    <div class="review-card">
-                        <div class="review-header">
-                            <i class="fa-solid fa-circle-info"></i>
-                            <h3>আবেদন পর্যালোচনা চলছে</h3>
+
+                // ★★★ আবেদনের অবস্থা কার্ড ★★★
+                if (isApproved) {
+                    reviewContainer.innerHTML = `
+                        <div class="review-card approved">
+                            <div class="review-header">
+                                <i class="fa-solid fa-circle-check approved"></i>
+                                <h3 class="approved">ঋণ অনুমোদিত হয়েছে!</h3>
+                            </div>
+                            <p>অভিনন্দন! আপনার ঋণ আবেদনটি আমাদের বিশেষজ্ঞ টিম কর্তৃক <strong>অনুমোদিত</strong> হয়েছে। আপনার একাউন্টে <strong>৳ ${loanAmountBn}</strong> যোগ করা হয়েছে।</p>
+                            <div class="review-tags">
+                                <span class="review-tag approved"><i class="fa-solid fa-check"></i> অনুমোদিত</span>
+                                <span class="review-tag approved"><i class="fa-solid fa-check"></i> ব্যালেন্স যোগ হয়েছে</span>
+                            </div>
                         </div>
-                        <p>আপনার ঋণ আবেদনটি আমাদের বিশেষজ্ঞ টিম ক্রুতদার সাথে যাচাই করছে। <strong>২৪-৪৮ ঘন্টার</strong> মধ্যে আপনি ইমেইল/SMS এর মাধ্যমে ফলাফল পাবেন।</p>
-                        <div class="review-tags">
-                            <span class="review-tag"><i class="fa-solid fa-check"></i> তথ্য যাচাই হচ্ছে</span>
-                            <span class="review-tag"><i class="fa-solid fa-check"></i> ক্রুত প্রক্রিয়া</span>
+                    `;
+                } else {
+                    reviewContainer.innerHTML = `
+                        <div class="review-card">
+                            <div class="review-header">
+                                <i class="fa-solid fa-circle-info"></i>
+                                <h3>আবেদন পর্যালোচনা চলছে</h3>
+                            </div>
+                            <p>আপনার ঋণ আবেদনটি আমাদের বিশেষজ্ঞ টিম ক্রুতদার সাথে যাচাই করছে। <strong>২৪-৪৮ ঘন্টার</strong> মধ্যে আপনি ইমেইল/SMS এর মাধ্যমে ফলাফল পাবেন।</p>
+                            <div class="review-tags">
+                                <span class="review-tag"><i class="fa-solid fa-check"></i> তথ্য যাচাই হচ্ছে</span>
+                                <span class="review-tag"><i class="fa-solid fa-check"></i> ক্রুত প্রক্রিয়া</span>
+                            </div>
                         </div>
-                    </div>
-                `;
+                    `;
+                }
+
+            } catch (error) {
+                console.error("Error:", error);
+                loanContainer.innerHTML = '<p style="text-align:center; padding:20px;">ডেটা লোড করা যায়নি।</p>';
             }
         }
 
@@ -322,9 +334,6 @@
             const emi = (principal / tenure) + 100;
             return emi.toLocaleString('bn-BD', { minimumFractionDigits: 0, maximumFractionDigits: 0 });
         }
-
-        // পেজ লোড হওয়ার সময় স্ট্যাটাস লোড করা
-        loadLoanStatus();
     </script>
 
 </body>
