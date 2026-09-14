@@ -48,14 +48,6 @@
             </div>
 
             <div class="input-group">
-                <label for="email">ইমেইল</label>
-                <div class="input-wrapper">
-                    <i class="fa-solid fa-envelope prefix-icon"></i>
-                    <input type="email" id="email" placeholder="আপনার ইমেইল লিখুন" required>
-                </div>
-            </div>
-
-            <div class="input-group">
                 <label for="phone">ফোন নম্বর</label>
                 <div class="input-wrapper">
                     <i class="fa-solid fa-phone prefix-icon"></i>
@@ -68,6 +60,14 @@
                 <div class="input-wrapper">
                     <i class="fa-solid fa-lock prefix-icon"></i>
                     <input type="password" id="password" placeholder="একটি শক্তিশালী পাসওয়ার্ড তৈরি করুন" required>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label for="confirm-password">পাসওয়ার্ড নিশ্চিত করুন</label>
+                <div class="input-wrapper">
+                    <i class="fa-solid fa-lock prefix-icon"></i>
+                    <input type="password" id="confirm-password" placeholder="আপনার পাসওয়ার্ড আবার লিখুন" required>
                 </div>
             </div>
 
@@ -102,28 +102,34 @@
             event.preventDefault();
 
             const fullname = document.getElementById('fullname').value.trim();
-            const email = document.getElementById('email').value.trim();
             const phone = document.getElementById('phone').value.trim();
             const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirm-password').value;
 
+            // ভ্যালিডেশন
             if (fullname === "") { alert("দয়া করে আপনার পুরো নাম লিখুন।"); return; }
-            if (!email.includes("@")) { alert("দয়া করে সঠিক ইমেইল লিখুন।"); return; }
             if (phone.length !== 11 || isNaN(phone)) { alert("দয়া করে ১১ ডিজিটের সঠিক ফোন নম্বর লিখুন।"); return; }
             if (password.length < 6) { alert("পাসওয়ার্ড কমপক্ষে ৬ অক্ষরের হতে হবে।"); return; }
+            if (password !== confirmPassword) { alert("আপনার দেওয়া দুটি পাসওয়ার্ড মিলছে না।"); return; }
+
+            // ★★★ ফোন নম্বরকে Firebase-এর জন্য কাল্পনিক ইমেইলে রূপান্তর ★★★
+            const fakeEmail = phone + "@worldbank.app";
 
             const btn = document.getElementById('registerBtn');
             btn.innerText = 'অপেক্ষা করুন...';
             btn.disabled = true;
 
             try {
-                const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+                // Firebase Authentication-এ রেজিস্ট্রেশন (ফোনকে ইমেইল হিসেবে ব্যবহার)
+                const userCredential = await createUserWithEmailAndPassword(auth, fakeEmail, password);
                 const user = userCredential.user;
 
+                // Firestore-এ ইউজারের সব তথ্য সেভ
                 await setDoc(doc(db, "users", user.uid), {
                     uid: user.uid,
                     fullname: fullname,
-                    email: email,
                     phone: phone,
+                    email: fakeEmail,
                     status: 'active',
                     applied: false,
                     approved: false,
@@ -131,10 +137,10 @@
                     createdAt: new Date().toISOString()
                 });
 
+                // বর্তমান ইউজার সেভ
                 localStorage.setItem('worldbank_current_user', JSON.stringify({
                     uid: user.uid,
                     fullname: fullname,
-                    email: email,
                     phone: phone
                 }));
 
@@ -145,11 +151,9 @@
                 console.error("Error:", error);
                 let msg = "রেজিস্ট্রেশন ব্যর্থ হয়েছে। ";
                 if (error.code === 'auth/email-already-in-use') {
-                    msg = "এই ইমেইল দিয়ে ইতিমধ্যে একটি অ্যাকাউন্ট আছে!";
+                    msg = "এই ফোন নম্বর দিয়ে ইতিমধ্যে একটি অ্যাকাউন্ট আছে!";
                 } else if (error.code === 'auth/weak-password') {
                     msg = "পাসওয়ার্ড খুব দুর্বল।";
-                } else if (error.code === 'auth/invalid-email') {
-                    msg = "ইমেইলটি সঠিক নয়।";
                 }
                 alert(msg);
                 btn.innerText = 'নিবন্ধন করুন';
