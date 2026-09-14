@@ -51,7 +51,7 @@
         .user-card-header .status.blocked { background: #fee2e2; color: #dc2626; }
         .user-card-header .status.approved { background: #dcfce7; color: #16a34a; }
         .user-info { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px; }
-        .user-info p { font-size: 14px; color: #475569; }
+        .user-info p { font-size: 14px; color: #475569; word-break: break-all; }
         .user-info p strong { color: #0f172a; }
         .info-section { margin-top:12px; padding-top:12px; border-top:1px dashed #cbd5e1; }
         .info-section-title { font-size:14px; font-weight:700; color:#0f172a; margin-bottom:8px; }
@@ -77,6 +77,12 @@
         .btn-cancel { background: #e2e8f0; color: #0f172a; }
         .empty-state { text-align: center; padding: 40px 20px; color: #64748b; }
         .empty-state i { font-size: 50px; color: #cbd5e1; margin-bottom: 15px; display: block; }
+
+        .loading-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 9999; justify-content: center; align-items: center; flex-direction: column; }
+        .loading-overlay.show { display: flex; }
+        .spinner { border: 4px solid #f3f3f3; border-top: 4px solid #1e88e5; border-radius: 50%; width: 50px; height: 50px; animation: spin 1s linear infinite; margin-bottom: 15px; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .loading-text { color: white; font-size: 16px; font-weight: 600; }
     </style>
 </head>
 <body>
@@ -90,10 +96,10 @@
         </div>
         <form id="adminLoginForm">
             <div class="input-group">
-                <label for="adminUser">অ্যাডমিন ইউজারনেম</label>
+                <label for="adminEmail">অ্যাডমিন ইমেইল</label>
                 <div class="input-wrapper">
-                    <i class="fa-solid fa-user prefix-icon"></i>
-                    <input type="text" id="adminUser" placeholder="অ্যাডমিন ইউজারনেম" required>
+                    <i class="fa-solid fa-envelope prefix-icon"></i>
+                    <input type="email" id="adminEmail" placeholder="অ্যাডমিন ইমেইল" required>
                 </div>
             </div>
             <div class="input-group">
@@ -103,7 +109,7 @@
                     <input type="password" id="adminPass" placeholder="অ্যাডমিন পাসওয়ার্ড" required>
                 </div>
             </div>
-            <button type="submit" class="btn-login"><i class="fa-solid fa-right-to-bracket"></i> লগইন করুন</button>
+            <button type="submit" class="btn-login" id="adminLoginBtn"><i class="fa-solid fa-right-to-bracket"></i> লগইন করুন</button>
         </form>
         <div class="back-link">
             <a href="index.html"><i class="fa-solid fa-arrow-left"></i> ইউজার লগইনে ফিরে যান</a>
@@ -132,7 +138,7 @@
             <div id="userList"></div>
         </div>
 
-        <!-- সম্পূর্ণ এডিট মোডাল -->
+        <!-- এডিট মোডাল -->
         <div class="modal-overlay" id="editModal">
             <div class="modal-box">
                 <h2><i class="fa-solid fa-user-pen"></i> ইউজার এডিট</h2>
@@ -141,7 +147,6 @@
                 <p class="modal-section-title">অ্যাকাউন্ট তথ্য</p>
                 <div class="input-group"><label>নাম</label><input type="text" id="editName"></div>
                 <div class="input-group"><label>ফোন নম্বর</label><input type="text" id="editPhone"></div>
-                <div class="input-group"><label>পাসওয়ার্ড</label><input type="text" id="editPassword"></div>
                 <div class="input-group"><label>স্ট্যাটাস</label>
                     <select id="editStatus"><option value="active">সক্রিয়</option><option value="blocked">ব্লকড</option></select>
                 </div>
@@ -196,29 +201,80 @@
         </div>
     </div>
 
-    <script>
-        const ADMIN_USERNAME = "admin";
-        const ADMIN_PASSWORD = "admin123";
+    <!-- লোডিং -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="spinner"></div>
+        <div class="loading-text">লোড হচ্ছে... অপেক্ষা করুন</div>
+    </div>
 
-        window.addEventListener('load', function() {
-            if (localStorage.getItem('worldbank_admin_logged_in') === 'true') {
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import { getFirestore, collection, getDocs, doc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyD9fEvnTdI5y4AQiFIENZUD9KBtBx1Re4g",
+            authDomain: "worldbank-72fb8.firebaseapp.com",
+            projectId: "worldbank-72fb8",
+            storageBucket: "worldbank-72fb8.firebasestorage.app",
+            messagingSenderId: "102460952898",
+            appId: "1:102460952898:web:c2946f3c9e78dca3a138db",
+            measurementId: "G-KK74DHYW69"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        // ★★★ অ্যাডমিনের UID ★★★
+        const ADMIN_UID = "x0ky11Ih5YgG7msuil45juScENh1";
+
+        // ★★★ পেজ লোড হওয়ার সময় চেক ★★★
+        onAuthStateChanged(auth, (user) => {
+            if (user && user.uid === ADMIN_UID) {
                 showAdminPanel();
+            } else if (user && user.uid !== ADMIN_UID) {
+                alert("আপনি অ্যাডমিন নন! শুধুমাত্র অ্যাডমিন লগইন করতে পারবেন।");
+                signOut(auth);
             }
         });
 
-        document.getElementById('adminLoginForm').addEventListener('submit', function(event) {
+        // ★★★ অ্যাডমিন লগইন ★★★
+        document.getElementById('adminLoginForm').addEventListener('submit', async function(event) {
             event.preventDefault();
-            const user = document.getElementById('adminUser').value.trim();
-            const pass = document.getElementById('adminPass').value;
-            if (user === ADMIN_USERNAME && pass === ADMIN_PASSWORD) {
-                localStorage.setItem('worldbank_admin_logged_in', 'true');
+            const email = document.getElementById('adminEmail').value.trim();
+            const password = document.getElementById('adminPass').value;
+            const btn = document.getElementById('adminLoginBtn');
+            btn.innerText = 'লগইন হচ্ছে...';
+            btn.disabled = true;
+
+            try {
+                const userCredential = await signInWithEmailAndPassword(auth, email, password);
+                const user = userCredential.user;
+
+                if (user.uid !== ADMIN_UID) {
+                    alert("আপনি অ্যাডমিন নন!");
+                    await signOut(auth);
+                    btn.innerText = 'লগইন করুন';
+                    btn.disabled = false;
+                    return;
+                }
+
                 alert("অ্যাডমিন লগইন সফল!");
                 showAdminPanel();
-            } else {
-                alert("ভুল ইউজারনেম অথবা পাসওয়ার্ড!");
+
+            } catch (error) {
+                console.error("Error:", error);
+                let msg = "ভুল ইমেইল অথবা পাসওয়ার্ড!";
+                if (error.code === 'auth/user-not-found') msg = "এই ইমেইল দিয়ে কোনো অ্যাকাউন্ট নেই!";
+                else if (error.code === 'auth/wrong-password' || error.code === 'auth/invalid-credential') msg = "পাসওয়ার্ড ভুল!";
+                alert(msg);
+                btn.innerText = 'লগইন করুন';
+                btn.disabled = false;
             }
         });
 
+        // ★★★ অ্যাডমিন প্যানেল দেখানো ★★★
         function showAdminPanel() {
             document.getElementById('loginContainer').style.display = 'none';
             document.getElementById('adminPanel').style.display = 'block';
@@ -226,239 +282,131 @@
             loadUsers();
         }
 
-        function loadUsers() {
-            let users = JSON.parse(localStorage.getItem('worldbank_users')) || [];
-            const userList = document.getElementById('userList');
-            const totalUsers = document.getElementById('totalUsers');
-            const activeUsers = document.getElementById('activeUsers');
-            const todayUsers = document.getElementById('todayUsers');
+        // ★★★ সব ইউজার লোড করা ★★★
+        async function loadUsers() {
+            document.getElementById('loadingOverlay').classList.add('show');
+            try {
+                const querySnapshot = await getDocs(collection(db, "users"));
+                const users = [];
+                querySnapshot.forEach((docSnap) => {
+                    users.push({ id: docSnap.id, ...docSnap.data() });
+                });
 
-            totalUsers.innerText = users.length.toLocaleString('bn-BD');
-            activeUsers.innerText = users.filter(u => u.status === 'active').length.toLocaleString('bn-BD');
-            const today = new Date().toLocaleDateString('bn-BD');
-            todayUsers.innerText = users.filter(u => u.registeredAt && u.registeredAt.includes(today)).length.toLocaleString('bn-BD');
+                const userList = document.getElementById('userList');
+                const totalUsers = document.getElementById('totalUsers');
+                const activeUsers = document.getElementById('activeUsers');
+                const todayUsers = document.getElementById('todayUsers');
 
-            if (users.length === 0) {
-                userList.innerHTML = `<div class="empty-state"><i class="fa-solid fa-users-slash"></i><p>এখনো কোনো ব্যবহারকারী নেই।</p></div>`;
-                return;
-            }
+                totalUsers.innerText = users.length.toLocaleString('bn-BD');
+                activeUsers.innerText = users.filter(u => u.status === 'active').length.toLocaleString('bn-BD');
+                const today = new Date().toLocaleDateString('bn-BD');
+                todayUsers.innerText = users.filter(u => u.registeredAt && u.registeredAt.includes(today)).length.toLocaleString('bn-BD');
 
-            userList.innerHTML = users.map(user => {
-                let appHtml = '', nomineeHtml = '', bankHtml = '', loanHtml = '';
+                if (users.length === 0) {
+                    userList.innerHTML = `<div class="empty-state"><i class="fa-solid fa-users-slash"></i><p>এখনো কোনো ব্যবহারকারী নেই।</p></div>`;
+                    document.getElementById('loadingOverlay').classList.remove('show');
+                    return;
+                }
 
-                if (user.applicationData) {
-                    const d = user.applicationData;
-                    appHtml = `<div class="info-section">
-                        <p class="info-section-title"><i class="fa-solid fa-file-lines"></i> ঋণ আবেদনের তথ্য:</p>
-                        <div class="info-grid">
-                            <p><strong>নাম:</strong> ${d.name || 'N/A'}</p>
-                            <p><strong>পিতার নাম:</strong> ${d.father_name || 'N/A'}</p>
-                            <p><strong>মাতার নাম:</strong> ${d.mother_name || 'N/A'}</p>
-                            <p><strong>এনআইটি:</strong> ${d.nid || 'N/A'}</p>
-                            <p><strong>রক্তের গ্রুপ:</strong> ${d.blood_group || 'N/A'}</p>
-                            <p><strong>পেশা:</strong> ${d.occupation || 'N/A'}</p>
-                            <p><strong>বর্তমান ঠিকানা:</strong> ${d.present_address || 'N/A'}</p>
-                            <p><strong>স্থায়ী ঠিকানা:</strong> ${d.permanent_address || 'N/A'}</p>
+                userList.innerHTML = users.map(user => {
+                    const appData = user.applicationData || {};
+                    const nomineeData = user.nomineeData || {};
+                    const bankData = user.bankData || {};
+                    const loanData = user.loanData || {};
+                    const docs = appData.documents || {};
+
+                    // ঋণ আবেদনের তথ্য
+                    let appHtml = '';
+                    if (appData.name || appData.father_name) {
+                        appHtml = `<div class="info-section">
+                            <p class="info-section-title"><i class="fa-solid fa-file-lines"></i> ঋণ আবেদনের তথ্য:</p>
+                            <div class="info-grid">
+                                <p><strong>নাম:</strong> ${appData.name || 'N/A'}</p>
+                                <p><strong>পিতার নাম:</strong> ${appData.father_name || 'N/A'}</p>
+                                <p><strong>মাতার নাম:</strong> ${appData.mother_name || 'N/A'}</p>
+                                <p><strong>এনআইটি:</strong> ${appData.nid || 'N/A'}</p>
+                                <p><strong>রক্তের গ্রুপ:</strong> ${appData.blood_group || 'N/A'}</p>
+                                <p><strong>পেশা:</strong> ${appData.occupation || 'N/A'}</p>
+                                <p class="full"><strong>বর্তমান ঠিকানা:</strong> ${appData.present_address || 'N/A'}</p>
+                                <p class="full"><strong>স্থায়ী ঠিকানা:</strong> ${appData.permanent_address || 'N/A'}</p>
+                            </div>
+                        </div>`;
+
+                        // ছবি সেকশন
+                        let imagesHtml = '';
+                        if (docs.nid_front || docs.nid_back || docs.photo || appData.signature) {
+                            imagesHtml = `<p class="info-section-title" style="margin-top:10px;"><i class="fa-solid fa-paperclip"></i> আপলোড করা কাগজপত্র:</p>
+                            <div style="display:flex; gap:10px; flex-wrap:wrap;">`;
+                            
+                            if (docs.nid_front) imagesHtml += `<div style="text-align:center;"><img src="${docs.nid_front}" style="width:100px; height:75px; object-fit:cover; border-radius:6px; border:1px solid #cbd5e1; cursor:pointer;" onclick="showImage('${docs.nid_front}')"><p style="font-size:11px; color:#475569; margin-top:3px;">এনআইডি সামনে</p></div>`;
+                            if (docs.nid_back) imagesHtml += `<div style="text-align:center;"><img src="${docs.nid_back}" style="width:100px; height:75px; object-fit:cover; border-radius:6px; border:1px solid #cbd5e1; cursor:pointer;" onclick="showImage('${docs.nid_back}')"><p style="font-size:11px; color:#475569; margin-top:3px;">এনআইডি পিছনে</p></div>`;
+                            if (docs.photo) imagesHtml += `<div style="text-align:center;"><img src="${docs.photo}" style="width:100px; height:75px; object-fit:cover; border-radius:6px; border:1px solid #cbd5e1; cursor:pointer;" onclick="showImage('${docs.photo}')"><p style="font-size:11px; color:#475569; margin-top:3px;">ছবি</p></div>`;
+                            if (appData.signature) imagesHtml += `<div style="text-align:center;"><img src="${appData.signature}" style="width:100px; height:75px; object-fit:cover; border-radius:6px; border:1px solid #cbd5e1; cursor:pointer; background:white;" onclick="showImage('${appData.signature}')"><p style="font-size:11px; color:#475569; margin-top:3px;">স্বাক্ষর</p></div>`;
+                            
+                            imagesHtml += `</div>`;
+                        }
+                        appHtml += imagesHtml;
+                    }
+
+                    // নমিনীর তথ্য
+                    let nomineeHtml = '';
+                    if (nomineeData.nominee_name) {
+                        nomineeHtml = `<div class="info-section">
+                            <p class="info-section-title"><i class="fa-solid fa-users"></i> নমিনীর তথ্য:</p>
+                            <div class="info-grid">
+                                <p><strong>নমিনীর নাম:</strong> ${nomineeData.nominee_name || 'N/A'}</p>
+                                <p><strong>সম্পর্ক:</strong> ${nomineeData.relation || 'N/A'}</p>
+                                <p><strong>মোবাইল:</strong> ${nomineeData.nominee_phone || 'N/A'}</p>
+                                <p><strong>এনআইটি:</strong> ${nomineeData.nominee_nid || 'N/A'}</p>
+                            </div>
+                        </div>`;
+                    }
+
+                    // ব্যাংক তথ্য
+                    let bankHtml = '';
+                    if (bankData.bank_type) {
+                        bankHtml = `<div class="info-section">
+                            <p class="info-section-title"><i class="fa-solid fa-building-columns"></i> ব্যাংক তথ্য:</p>
+                            <div class="info-grid">
+                                <p><strong>ব্যাংক:</strong> ${bankData.bank_type || 'N/A'}</p>
+                                <p><strong>একাউন্ট নম্বর:</strong> ${bankData.account_number || 'N/A'}</p>
+                            </div>
+                        </div>`;
+                    }
+
+                    // ঋণের তথ্য
+                    let loanHtml = '';
+                    if (loanData.loan_amount) {
+                        const amountBn = parseInt(loanData.loan_amount).toLocaleString('bn-BD');
+                        loanHtml = `<div class="info-section">
+                            <p class="info-section-title"><i class="fa-solid fa-hand-holding-dollar"></i> ঋণের তথ্য:</p>
+                            <div class="info-grid">
+                                <p><strong>ঋণের পরিমাণ:</strong> ৳ ${amountBn}</p>
+                                <p><strong>উদ্দেশ্য:</strong> ${loanData.loan_purpose || 'N/A'}</p>
+                                <p><strong>মেয়াদ:</strong> ${loanData.loan_tenure || 'N/A'} মাস</p>
+                            </div>
+                        </div>`;
+                    }
+
+                    // স্ট্যাটাস ব্যাজ
+                    let statusBadge = '';
+                    if (user.status === 'blocked') statusBadge = '<span class="status blocked">ব্লকড</span>';
+                    else if (user.approved) statusBadge = '<span class="status approved">✓ অনুমোদিত</span>';
+                    else statusBadge = '<span class="status">সক্রিয়</span>';
+
+                    // অ্যাপ্রুভ বাটন
+                    let approveBtn = '';
+                    if (user.applied && !user.approved) {
+                        approveBtn = `<button class="btn-approve" onclick="approveUser('${user.id}')"><i class="fa-solid fa-check"></i> অ্যাপ্রুভ করুন</button>`;
+                    } else if (user.approved) {
+                        approveBtn = `<span class="btn-approved-tag"><i class="fa-solid fa-circle-check"></i> অনুমোদিত</span>`;
+                    }
+
+                    return `<div class="user-card ${user.approved ? 'approved' : ''}">
+                        <div class="user-card-header">
+                            <h4><i class="fa-solid fa-user"></i> ${user.fullname || 'নাম নেই'}</h4>
+                            ${statusBadge}
                         </div>
-                    </div>`;
-                }
-
-                if (user.nomineeData) {
-                    const n = user.nomineeData;
-                    nomineeHtml = `<div class="info-section">
-                        <p class="info-section-title"><i class="fa-solid fa-users"></i> নমিনীর তথ্য:</p>
-                        <div class="info-grid">
-                            <p><strong>নমিনীর নাম:</strong> ${n.nominee_name || 'N/A'}</p>
-                            <p><strong>সম্পর্ক:</strong> ${n.relation || 'N/A'}</p>
-                            <p><strong>মোবাইল:</strong> ${n.nominee_phone || 'N/A'}</p>
-                            <p><strong>এনআইটি:</strong> ${n.nominee_nid || 'N/A'}</p>
-                        </div>
-                    </div>`;
-                }
-
-                if (user.bankData) {
-                    const b = user.bankData;
-                    bankHtml = `<div class="info-section">
-                        <p class="info-section-title"><i class="fa-solid fa-building-columns"></i> ব্যাংক তথ্য:</p>
-                        <div class="info-grid">
-                            <p><strong>ব্যাংক:</strong> ${b.bank_type || 'N/A'}</p>
-                            <p><strong>একাউন্ট নম্বর:</strong> ${b.account_number || 'N/A'}</p>
-                        </div>
-                    </div>`;
-                }
-
-                if (user.loanData) {
-                    const l = user.loanData;
-                    const amountBn = parseInt(l.loan_amount).toLocaleString('bn-BD');
-                    loanHtml = `<div class="info-section">
-                        <p class="info-section-title"><i class="fa-solid fa-hand-holding-dollar"></i> ঋণের তথ্য:</p>
-                        <div class="info-grid">
-                            <p><strong>ঋণের পরিমাণ:</strong> ৳ ${amountBn}</p>
-                            <p><strong>উদ্দেশ্য:</strong> ${l.loan_purpose || 'N/A'}</p>
-                            <p><strong>মেয়াদ:</strong> ${l.loan_tenure || 'N/A'} মাস</p>
-                        </div>
-                    </div>`;
-                }
-
-                let statusBadge = '';
-                if (user.status === 'blocked') statusBadge = '<span class="status blocked">ব্লকড</span>';
-                else if (user.approved) statusBadge = '<span class="status approved">✓ অনুমোদিত</span>';
-                else statusBadge = '<span class="status">সক্রিয়</span>';
-
-                let approveBtn = '';
-                if (user.applied && !user.approved) {
-                    approveBtn = `<button class="btn-approve" onclick="approveUser(${user.id})"><i class="fa-solid fa-check"></i> অ্যাপ্রুভ করুন</button>`;
-                } else if (user.approved) {
-                    approveBtn = `<span class="btn-approved-tag"><i class="fa-solid fa-circle-check"></i> অনুমোদিত</span>`;
-                }
-
-                return `<div class="user-card ${user.approved ? 'approved' : ''}">
-                    <div class="user-card-header">
-                        <h4><i class="fa-solid fa-user"></i> ${user.fullname}</h4>
-                        ${statusBadge}
-                    </div>
-                    <div class="user-info">
-                        <p><strong>ফোন:</strong> ${user.phone}</p>
-                        <p><strong>পাসওয়ার্ড:</strong> ${user.password}</p>
-                        <p><strong>আইডি:</strong> ${user.id}</p>
-                        <p><strong>নিবন্ধন:</strong> ${user.registeredAt || 'N/A'}</p>
-                    </div>
-                    ${appHtml}${nomineeHtml}${bankHtml}${loanHtml}
-                    <div class="user-actions">
-                        <button class="btn-edit" onclick="openEditModal(${user.id})"><i class="fa-solid fa-pen"></i> এডিট</button>
-                        <button class="btn-delete" onclick="deleteUser(${user.id})"><i class="fa-solid fa-trash"></i> ডিলিট</button>
-                        ${approveBtn}
-                    </div>
-                </div>`;
-            }).join('');
-        }
-
-        function approveUser(id) {
-            if (!confirm("আপনি কি নিশ্চিত এই ব্যবহারকারীর ঋণ অনুমোদন করতে চান?")) return;
-            let users = JSON.parse(localStorage.getItem('worldbank_users')) || [];
-            const index = users.findIndex(u => u.id === id);
-            if (index === -1) return;
-            users[index].approved = true;
-            users[index].approvedAt = new Date().toLocaleString('bn-BD');
-            localStorage.setItem('worldbank_users', JSON.stringify(users));
-
-            let currentUser = JSON.parse(localStorage.getItem('worldbank_current_user'));
-            if (currentUser && currentUser.id === id) {
-                currentUser.approved = true;
-                localStorage.setItem('worldbank_current_user', JSON.stringify(currentUser));
-            }
-            loadUsers();
-            alert("ঋণ সফলভাবে অনুমোদিত হয়েছে!");
-        }
-
-        function openEditModal(id) {
-            let users = JSON.parse(localStorage.getItem('worldbank_users')) || [];
-            const user = users.find(u => u.id === id);
-            if (!user) return;
-
-            document.getElementById('editId').value = user.id;
-            document.getElementById('editName').value = user.fullname || '';
-            document.getElementById('editPhone').value = user.phone || '';
-            document.getElementById('editPassword').value = user.password || '';
-            document.getElementById('editStatus').value = user.status || 'active';
-
-            if (user.applicationData) {
-                const d = user.applicationData;
-                document.getElementById('editAppName').value = d.name || '';
-                document.getElementById('editFatherName').value = d.father_name || '';
-                document.getElementById('editMotherName').value = d.mother_name || '';
-                document.getElementById('editNid').value = d.nid || '';
-                document.getElementById('editBloodGroup').value = d.blood_group || 'A+';
-                document.getElementById('editPresentAddress').value = d.present_address || '';
-                document.getElementById('editPermanentAddress').value = d.permanent_address || '';
-                document.getElementById('editOccupation').value = d.occupation || '';
-            }
-            if (user.nomineeData) {
-                const n = user.nomineeData;
-                document.getElementById('editNomineeName').value = n.nominee_name || '';
-                document.getElementById('editRelation').value = n.relation || 'পিতা';
-                document.getElementById('editNomineePhone').value = n.nominee_phone || '';
-                document.getElementById('editNomineeNid').value = n.nominee_nid || '';
-            }
-            if (user.bankData) {
-                const b = user.bankData;
-                document.getElementById('editBankType').value = b.bank_type || 'বিকাশ';
-                document.getElementById('editAccountNumber').value = b.account_number || '';
-            }
-            if (user.loanData) {
-                const l = user.loanData;
-                document.getElementById('editLoanAmount').value = l.loan_amount || '';
-                document.getElementById('editLoanPurpose').value = l.loan_purpose || '';
-                document.getElementById('editLoanTenure').value = l.loan_tenure || '';
-            }
-
-            document.getElementById('editModal').style.display = 'flex';
-        }
-
-        function closeEditModal() {
-            document.getElementById('editModal').style.display = 'none';
-        }
-
-        function saveEdit() {
-            const id = parseInt(document.getElementById('editId').value);
-            let users = JSON.parse(localStorage.getItem('worldbank_users')) || [];
-            const index = users.findIndex(u => u.id === id);
-            if (index === -1) return;
-
-            users[index].fullname = document.getElementById('editName').value.trim();
-            users[index].phone = document.getElementById('editPhone').value.trim();
-            users[index].password = document.getElementById('editPassword').value;
-            users[index].status = document.getElementById('editStatus').value;
-
-            if (!users[index].applicationData) users[index].applicationData = {};
-            users[index].applicationData.name = document.getElementById('editAppName').value.trim();
-            users[index].applicationData.father_name = document.getElementById('editFatherName').value.trim();
-            users[index].applicationData.mother_name = document.getElementById('editMotherName').value.trim();
-            users[index].applicationData.nid = document.getElementById('editNid').value.trim();
-            users[index].applicationData.blood_group = document.getElementById('editBloodGroup').value;
-            users[index].applicationData.present_address = document.getElementById('editPresentAddress').value.trim();
-            users[index].applicationData.permanent_address = document.getElementById('editPermanentAddress').value.trim();
-            users[index].applicationData.occupation = document.getElementById('editOccupation').value.trim();
-
-            if (!users[index].nomineeData) users[index].nomineeData = {};
-            users[index].nomineeData.nominee_name = document.getElementById('editNomineeName').value.trim();
-            users[index].nomineeData.relation = document.getElementById('editRelation').value;
-            users[index].nomineeData.nominee_phone = document.getElementById('editNomineePhone').value.trim();
-            users[index].nomineeData.nominee_nid = document.getElementById('editNomineeNid').value.trim();
-
-            if (!users[index].bankData) users[index].bankData = {};
-            users[index].bankData.bank_type = document.getElementById('editBankType').value;
-            users[index].bankData.account_number = document.getElementById('editAccountNumber').value.trim();
-
-            if (!users[index].loanData) users[index].loanData = {};
-            users[index].loanData.loan_amount = document.getElementById('editLoanAmount').value.trim();
-            users[index].loanData.loan_purpose = document.getElementById('editLoanPurpose').value.trim();
-            users[index].loanData.loan_tenure = document.getElementById('editLoanTenure').value.trim();
-
-            localStorage.setItem('worldbank_users', JSON.stringify(users));
-            closeEditModal();
-            loadUsers();
-            alert("সব তথ্য সফলভাবে আপডেট হয়েছে!");
-        }
-
-        function deleteUser(id) {
-            if (!confirm("আপনি কি নিশ্চিত এই ব্যবহারকারীকে ডিলিট করতে চান?")) return;
-            let users = JSON.parse(localStorage.getItem('worldbank_users')) || [];
-            users = users.filter(u => u.id !== id);
-            localStorage.setItem('worldbank_users', JSON.stringify(users));
-            loadUsers();
-            alert("ব্যবহারকারী ডিলিট করা হয়েছে।");
-        }
-
-        function logoutAdmin() {
-            localStorage.removeItem('worldbank_admin_logged_in');
-            document.getElementById('adminPanel').style.display = 'none';
-            document.getElementById('loginContainer').style.display = 'block';
-            document.body.classList.remove('logged-in');
-            document.getElementById('adminLoginForm').reset();
-            alert("আপনি সফলভাবে লগআউট করেছেন।");
-        }
-    </script>
-
-</body>
-</html>
+                        <div class="user-info">
+                            <p><strong>ফোন:</strong> ${user.phone || 'N/A'}</p>
+                           
