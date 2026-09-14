@@ -29,7 +29,7 @@
         .back-link a { color: #94a3b8; text-decoration: none; font-size: 14px; }
         .back-link a:hover { color: white; }
 
-        /* ============ অ্যাডমিন প্যানেল (লগইনের পর) ============ */
+        /* ============ অ্যাডমিন প্যানেল ============ */
         #adminPanel { display: none; }
         .header { background-color: #0f172a; color: white; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 10px rgba(0,0,0,0.2); }
         .header-left { display: flex; align-items: center; gap: 10px; }
@@ -59,6 +59,7 @@
         .info-section-title { font-size:14px; font-weight:700; color:#0f172a; margin-bottom:8px; }
         .info-grid { display:grid; grid-template-columns:1fr 1fr; gap:6px; font-size:13px; color:#475569; }
         .info-grid p strong { color:#0f172a; }
+        .info-grid .full { grid-column: span 2; }
         .user-actions { display: flex; gap: 10px; margin-top: 12px; flex-wrap: wrap; }
         .btn-edit { background: #2563eb; color: white; border: none; padding: 8px 15px; border-radius: 6px; font-weight: 600; font-size: 14px; cursor: pointer; display: flex; align-items: center; gap: 5px; }
         .btn-delete { background: #ef4444; color: white; border: none; padding: 8px 15px; border-radius: 6px; font-weight: 600; font-size: 14px; cursor: pointer; display: flex; align-items: center; gap: 5px; }
@@ -176,7 +177,7 @@
         const ADMIN_USERNAME = "admin";
         const ADMIN_PASSWORD = "admin123";
 
-        // ★★★ পেজ লোড হওয়ার সময় চেক করা — ইতিমধ্যে লগইন আছে কি না ★★★
+        // ★★★ পেজ লোড হওয়ার সময় চেক — ইতিমধ্যে লগইন আছে কি না ★★★
         window.addEventListener('load', function() {
             if (localStorage.getItem('worldbank_admin_logged_in') === 'true') {
                 showAdminPanel();
@@ -323,7 +324,7 @@
             }).join('');
         }
 
-        // অ্যাপ্রুভ
+        // ★★★ অ্যাপ্রুভ ★★★
         function approveUser(id) {
             if (!confirm("আপনি কি নিশ্চিত এই ব্যবহারকারীর ঋণ অনুমোদন করতে চান?")) return;
             let users = JSON.parse(localStorage.getItem('worldbank_users')) || [];
@@ -342,7 +343,7 @@
             alert("ঋণ সফলভাবে অনুমোদিত হয়েছে!");
         }
 
-        // এডিট মোডাল
+        // ★★★ এডিট মোডাল ★★★
         function openEditModal(id) {
             let users = JSON.parse(localStorage.getItem('worldbank_users')) || [];
             const user = users.find(u => u.id === id);
@@ -371,7 +372,7 @@
             document.getElementById('editModal').style.display = 'none';
         }
 
-        // এডিট সেভ
+        // ★★★ এডিট সেভ ★★★
         function saveEdit() {
             const id = parseInt(document.getElementById('editId').value);
             let users = JSON.parse(localStorage.getItem('worldbank_users')) || [];
@@ -402,7 +403,7 @@
             alert("তথ্য সফলভাবে আপডেট হয়েছে!");
         }
 
-        // ডিলিট
+        // ★★★ ডিলিট ★★★
         function deleteUser(id) {
             if (!confirm("আপনি কি নিশ্চিত এই ব্যবহারকারীকে ডিলিট করতে চান?")) return;
             let users = JSON.parse(localStorage.getItem('worldbank_users')) || [];
@@ -412,7 +413,7 @@
             alert("ব্যবহারকারী ডিলিট করা হয়েছে।");
         }
 
-        // লগআউট
+        // ★★★ লগআউট ★★★
         function logoutAdmin() {
             localStorage.removeItem('worldbank_admin_logged_in');
             document.getElementById('adminPanel').style.display = 'none';
