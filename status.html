@@ -161,6 +161,7 @@
 
     </div>
 
+    <!-- সাইড মেনু (লিংক আপডেট করা হয়েছে) -->
     <div class="side-menu-overlay" id="menuOverlay" onclick="closeMenu()">
         <div class="side-menu" id="sideMenu" onclick="event.stopPropagation()">
             <div class="side-menu-header">
@@ -168,10 +169,12 @@
                 <button class="close-btn" onclick="closeMenu()"><i class="fa-solid fa-xmark"></i></button>
             </div>
             <div class="side-menu-links">
-                <a href="dashboard.html" class="menu-link">
+                <!-- হোম ক্লিক করলে status.html-এ যাবে -->
+                <a href="status.html" class="menu-link">
                     <i class="fa-solid fa-house"></i>
                     <span>হোম</span>
                 </a>
+                <!-- তথ্য ক্লিক করলে application.html-এ যাবে (PDF ভিউয়ার পেজ) -->
                 <a href="application.html" class="menu-link">
                     <i class="fa-solid fa-user"></i>
                     <span>সম্পূর্ণ তথ্য</span>
@@ -199,12 +202,10 @@
             measurementId: "G-KK74DHYW69"
         };
 
-        // ★★★ Firebase App instance-এ একই নাম ★★★
         const app = initializeApp(firebaseConfig, "worldbank-app");
         const auth = getAuth(app);
         const db = getFirestore(app);
 
-        // ★★★ Local persistence ★★★
         setPersistence(auth, browserLocalPersistence).catch((error) => {
             console.error("Persistence error:", error);
         });
@@ -212,7 +213,6 @@
         let authCheckDone = false;
         let userLoaded = false;
 
-        // ★★★ স্লাইডার ★★★
         let slideIndex = 0;
         const slides = document.querySelectorAll('.slide');
         const dots = document.querySelectorAll('.dot');
@@ -228,7 +228,6 @@
         window.currentSlide = function(n) { showSlide(n); };
         setInterval(() => { showSlide(slideIndex + 1); }, 3000);
 
-        // ★★★ সাইড মেনু ★★★
         window.openMenu = function() {
             document.getElementById('sideMenu').classList.add('open');
             document.getElementById('menuOverlay').style.display = 'block';
@@ -238,7 +237,6 @@
             document.getElementById('menuOverlay').style.display = 'none';
         };
 
-        // ★★★ ১. প্রথমে LocalStorage চেক (দ্রুত লোডের জন্য) ★★★
         function checkLocalStorageFirst() {
             const storedUser = localStorage.getItem('worldbank_current_user');
             if (storedUser) {
@@ -258,7 +256,6 @@
             return false;
         }
 
-        // ★★★ ২. Firebase Auth চেক ★★★
         onAuthStateChanged(auth, async (user) => {
             if (user) {
                 authCheckDone = true;
@@ -273,7 +270,6 @@
                     await loadLoanStatus(user.uid);
                 }
             } else {
-                // Firebase Auth-এ ইউজার নেই, LocalStorage-এ আছে কি না দেখো
                 if (!userLoaded) {
                     const foundInLocal = checkLocalStorageFirst();
                     if (!foundInLocal) {
@@ -289,7 +285,6 @@
             }
         });
 
-        // ★★★ ৩. পেজ লোড হওয়ার সাথে সাথেই LocalStorage চেক ★★★
         checkLocalStorageFirst();
 
         async function loadLoanStatus(uid) {
