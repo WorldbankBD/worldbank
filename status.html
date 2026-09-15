@@ -297,7 +297,7 @@
                 }
 
                 const userData = userDoc.data();
-                console.log("User Data:", userData); // ডিবাগের জন্য
+                console.log("User Data:", userData);
 
                 const fullname = userData.fullname || 'বন্ধু';
                 const loanData = userData.loanData || {};
@@ -305,9 +305,10 @@
 
                 document.getElementById('welcomeText').innerText = 'স্বাগতম, ' + fullname + '!';
 
-                const loanAmount = loanData.loan_amount || 0;
-                const tenure = loanData.loan_tenure || 0;
-                const loanAmountBn = parseInt(loanAmount).toLocaleString('bn-BD');
+                // সংখ্যা বাংলায় রূপান্তর
+                const loanAmount = Number(loanData.loan_amount) || 0;
+                const tenure = Number(loanData.loan_tenure) || 0;
+                const loanAmountBn = loanAmount.toLocaleString('bn-BD');
 
                 loanContainer.innerHTML = `
                     <div class="loan-info-card ${isApproved ? 'approved' : ''}">
@@ -332,7 +333,7 @@
                             <div class="loan-detail-item">
                                 <i class="fa-solid fa-calendar-check"></i>
                                 <p>মাসিক কিস্তি</p>
-                                <h4>৳ ${loanData.loan_amount ? calculateEMIAmount(parseInt(loanAmount), parseInt(tenure)) : '০'}</h4>
+                                <h4>৳ ${loanAmount ? calculateEMIAmount(loanAmount, tenure) : '০'}</h4>
                             </div>
                         </div>
                     </div>
