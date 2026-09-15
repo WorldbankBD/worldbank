@@ -258,8 +258,8 @@
                     <p>মাসিক কিস্তি</p>
                 </div>
                 <div>
-                    <h3 id="emiAmount">৳ ৪,২৬৬.৬৭</h3>
-                    <p class="emi-note">৫% সুদে সহজ পরিশোধ</p>
+                    <h3 id="emiAmount">৳ ৪,২৫০.০০</h3>
+                    <p class="emi-note" id="emiNote">২% সুদে সহজ পরিশোধ</p>
                 </div>
             </div>
 
@@ -298,12 +298,10 @@
             measurementId: "G-KK74DHYW69"
         };
 
-        // ★★★ Firebase App instance-এ একই নাম "worldbank-app" ★★★
         const app = initializeApp(firebaseConfig, "worldbank-app");
         const auth = getAuth(app);
         const db = getFirestore(app);
 
-        // ★★★ Local persistence ★★★
         setPersistence(auth, browserLocalPersistence).catch((error) => {
             console.error("Persistence error:", error);
         });
@@ -334,6 +332,39 @@
             `;
         }
 
+        // ★★★ সুদের হার নির্ধারণের ফাংশন ★★★
+        function getInterestRate(tenure) {
+            switch(parseInt(tenure)) {
+                case 12: return 0.02;  // ২%
+                case 24: return 0.03;  // ৩%
+                case 36: return 0.04;  // ৪%
+                case 48: return 0.05;  // ৫%
+                case 60: return 0.06;  // ৬%
+                default: return 0.02;  // ডিফল্ট ২%
+            }
+        }
+
+        // ★★★ EMI হিসাবের ফাংশন — সুদসহ ★★★
+        function calculateEMI() {
+            const principal = parseFloat(loanAmountSelect.value);
+            const tenure = parseInt(loanTenureSelect.value);
+            const interestRate = getInterestRate(tenure);
+            
+            // মোট সুদ = মূল ঋণ × সুদের হার
+            const totalInterest = principal * interestRate;
+            // মোট পরিশোধ = মূল ঋণ + মোট সুদ
+            const totalPayable = principal + totalInterest;
+            // মাসিক কিস্তি = মোট পরিশোধ ÷ মেয়াদ
+            const emi = totalPayable / tenure;
+            
+            const formattedEMI = emi.toLocaleString('bn-BD', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+            emiAmountDisplay.innerText = '৳ ' + formattedEMI;
+            
+            // ★★★ সুদের হার দেখানো ★★★
+            const interestPercent = (interestRate * 100).toLocaleString('bn-BD');
+            document.getElementById('emiNote').innerText = interestPercent + '% সুদে সহজ পরিশোধ';
+        }
+
         // ★★★ Firebase Auth + LocalStorage ব্যাকআপ ★★★
         onAuthStateChanged(auth, async (user) => {
             if (user) {
@@ -346,7 +377,6 @@
                     phone: user.email ? user.email.split('@')[0] : ''
                 }));
                 
-                // Firestore থেকে ইউজারের নাম আনা
                 try {
                     const userDoc = await getDoc(doc(db, "users", user.uid));
                     if (userDoc.exists()) {
@@ -354,7 +384,6 @@
                         currentUserName = data.fullname || 'বন্ধু';
                         document.getElementById('welcomeText').innerText = 'স্বাগতম, ' + currentUserName + '!';
                         
-                        // পুরাতন ঋণের তথ্য থাকলে দেখানো
                         if (data.loanData) {
                             if (data.loanData.loan_purpose) document.getElementById('loanPurpose').value = data.loanData.loan_purpose;
                             if (data.loanData.loan_amount) document.getElementById('loanAmount').value = data.loanData.loan_amount;
@@ -366,7 +395,6 @@
                     console.error("Error:", error);
                 }
             } else {
-                // Firebase Auth-এ ইউজার না থাকলে localStorage চেক
                 const storedUser = localStorage.getItem('worldbank_current_user');
                 if (storedUser) {
                     try {
@@ -431,21 +459,12 @@
         const loanTenureSelect = document.getElementById('loanTenure');
         const emiAmountDisplay = document.getElementById('emiAmount');
 
-        function calculateEMI() {
-            const principal = parseFloat(loanAmountSelect.value);
-            const tenure = parseInt(loanTenureSelect.value);
-            const emi = (principal / tenure) + 100;
-            const formattedEMI = emi.toLocaleString('bn-BD', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-            emiAmountDisplay.innerText = '৳ ' + formattedEMI;
-        }
-
         loanAmountSelect.addEventListener('change', calculateEMI);
         loanTenureSelect.addEventListener('change', calculateEMI);
         calculateEMI();
 
         // ★★★ ঋণের তথ্য Firestore-এ সেভ ★★★
         window.saveLoanAndShowPopup = async function() {
-            // ★★★ currentUserUID চেক — localStorage থেকেও ★★★
             if (!currentUserUID) {
                 const storedUser = localStorage.getItem('worldbank_current_user');
                 if (storedUser) {
@@ -467,11 +486,13 @@
             const loanPurpose = document.getElementById('loanPurpose').value;
             const loanAmount = document.getElementById('loanAmount').value;
             const loanTenure = document.getElementById('loanTenure').value;
+            const interestRate = getInterestRate(loanTenure);
 
             const loanData = {
                 loan_purpose: loanPurpose,
                 loan_amount: loanAmount,
                 loan_tenure: loanTenure,
+                interest_rate: interestRate,
                 applied_loan_at: new Date().toLocaleString('bn-BD')
             };
 
