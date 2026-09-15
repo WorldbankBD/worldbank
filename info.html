@@ -6,6 +6,8 @@
     <title>সম্পূর্ণ তথ্য - WorldBank Bangladesh</title>
     <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- html2pdf এর জন্য লাইব্রেরি -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Hind Siliguri', sans-serif; }
         html { touch-action: pan-y; -ms-touch-action: pan-y; }
@@ -20,33 +22,27 @@
 
         .main-container { max-width: 500px; margin: 0 auto; padding: 15px; }
 
-        /* টাইটেল */
         .form-title { display: flex; gap: 12px; align-items: flex-start; margin-bottom: 20px; margin-top: 10px; }
         .form-title .icon-box { width: 45px; height: 45px; background: #1565c0; color: white; border-radius: 8px; display: flex; justify-content: center; align-items: center; font-size: 22px; }
         .form-title h1 { font-size: 22px; color: #0f172a; font-weight: 700; }
         .form-title p { font-size: 14px; color: #64748b; }
 
-        /* সেকশন কার্ড */
         .section-card { background: white; border-radius: 12px; padding: 20px; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
         .section-header { display: flex; align-items: center; gap: 8px; font-size: 18px; font-weight: 700; color: #1565c0; border-bottom: 1px solid #e2e8f0; padding-bottom: 10px; margin-bottom: 15px; }
         
-        /* Read-only তথ্য দেখানোর জন্য */
         .info-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px dashed #e2e8f0; }
         .info-row:last-child { border-bottom: none; }
         .info-label { font-size: 14px; color: #64748b; font-weight: 600; }
         .info-value { font-size: 15px; color: #0f172a; font-weight: 700; text-align: right; word-break: break-all; max-width: 60%; }
 
-        /* ছবির জন্য */
         .image-grid { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 10px; }
         .image-item { text-align: center; }
         .image-item img { width: 100px; height: 75px; object-fit: cover; border-radius: 8px; border: 2px solid #e2e8f0; cursor: pointer; }
         .image-item p { font-size: 12px; color: #64748b; margin-top: 5px; font-weight: 600; }
 
-        /* লোডিং */
         .loading-text-box { text-align: center; padding: 30px 20px; color: #64748b; }
         .loading-text-box i { font-size: 40px; color: #cbd5e1; display: block; margin-bottom: 15px; }
 
-        /* মেনু */
         .side-menu-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5); z-index: 2000; }
         .side-menu { position: fixed; top: 0; left: 0; width: 80%; max-width: 320px; height: 100%; background: white; z-index: 2001; transform: translateX(-100%); transition: transform 0.3s ease; display: flex; flex-direction: column; padding: 20px; box-shadow: 5px 0 15px rgba(0,0,0,0.1); }
         .side-menu.open { transform: translateX(0); }
@@ -60,6 +56,12 @@
         .menu-link span { font-size: 15px; font-weight: 600; }
 
         .floating-menu { position: fixed; bottom: 20px; left: 20px; background: #1e88e5; color: white; width: 50px; height: 50px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 22px; box-shadow: 0 4px 10px rgba(0,0,0,0.2); cursor: pointer; z-index: 999; }
+
+        /* পিডিএফ ডাউনলোড বাটন */
+        .pdf-btn-container { text-align: center; margin: 20px 0 10px; }
+        .pdf-btn { background: #dc2626; color: white; border: none; padding: 12px 25px; border-radius: 8px; font-size: 16px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 4px 10px rgba(220, 38, 38, 0.3); transition: 0.3s; }
+        .pdf-btn:hover { background: #b91c1c; }
+        .pdf-btn i { font-size: 18px; }
     </style>
 </head>
 <body>
@@ -85,6 +87,13 @@
             </div>
         </div>
 
+        <!-- PDF ডাউনলোড বাটন (এটি পরে জাভাস্ক্রিপ্ট দিয়ে দেখানো হবে) -->
+        <div class="pdf-btn-container" id="pdfBtnContainer" style="display: none;">
+            <button class="pdf-btn" onclick="downloadPDF()">
+                <i class="fa-solid fa-file-pdf"></i> PDF ডাউনলোড করুন
+            </button>
+        </div>
+
         <div id="infoContainer">
             <div class="loading-text-box">
                 <i class="fa-solid fa-spinner fa-spin"></i>
@@ -106,7 +115,8 @@
                     <i class="fa-solid fa-house"></i>
                     <span>হোম</span>
                 </a>
-                <a href="info.html" class="menu-link">
+                <!-- ★★★ এখানে info.html-এর বদলে application.html করা হয়েছে ★★★ -->
+                <a href="application.html" class="menu-link">
                     <i class="fa-solid fa-user"></i>
                     <span>সম্পূর্ণ তথ্য</span>
                 </a>
@@ -195,6 +205,7 @@
 
         async function loadAllInfo(uid) {
             const infoContainer = document.getElementById('infoContainer');
+            const pdfBtnContainer = document.getElementById('pdfBtnContainer');
 
             try {
                 const userDoc = await getDoc(doc(db, "users", uid));
@@ -213,7 +224,7 @@
 
                 let html = '';
 
-                // ★★★ ১. অ্যাকাউন্ট তথ্য ★★★
+                // ১. অ্যাকাউন্ট তথ্য
                 html += `
                     <div class="section-card">
                         <div class="section-header"><i class="fa-solid fa-user"></i> অ্যাকাউন্ট তথ্য</div>
@@ -223,7 +234,7 @@
                     </div>
                 `;
 
-                // ★★★ ২. ঋণ আবেদনের তথ্য ★★★
+                // ২. ঋণ আবেদনের তথ্য
                 if (appData.name) {
                     html += `
                         <div class="section-card">
@@ -249,7 +260,7 @@
                     `;
                 }
 
-                // ★★★ ৩. নমিনীর তথ্য ★★★
+                // ৩. নমিনীর তথ্য
                 if (nomineeData.nominee_name) {
                     html += `
                         <div class="section-card">
@@ -270,7 +281,7 @@
                     `;
                 }
 
-                // ★★★ ৪. ব্যাংক তথ্য ★★★
+                // ৪. ব্যাংক তথ্য
                 if (bankData.bank_type) {
                     html += `
                         <div class="section-card">
@@ -282,12 +293,11 @@
                     `;
                 }
 
-                // ★★★ ৫. ঋণের তথ্য ★★★
+                // ৫. ঋণের তথ্য
                 if (loanData.loan_amount) {
                     const amountBn = parseInt(loanData.loan_amount).toLocaleString('bn-BD');
                     const interestRate = loanData.interest_rate ? (loanData.interest_rate * 100).toLocaleString('bn-BD') + '%' : 'N/A';
                     
-                    // EMI হিসাব
                     let emiText = 'N/A';
                     if (loanData.loan_amount && loanData.loan_tenure) {
                         const principal = parseFloat(loanData.loan_amount);
@@ -318,6 +328,11 @@
 
                 infoContainer.innerHTML = html;
 
+                // ডেটা লোড হলে PDF বাটন দেখাও
+                if (html && !html.includes('কোনো তথ্য পাওয়া যায়নি')) {
+                    pdfBtnContainer.style.display = 'block';
+                }
+
             } catch (error) {
                 console.error("Error:", error);
                 infoContainer.innerHTML = '<div class="loading-text-box"><i class="fa-solid fa-triangle-exclamation"></i><p>তথ্য লোড করা যায়নি।</p></div>';
@@ -331,6 +346,20 @@
             overlay.innerHTML = `<img src="${src}" style="max-width:100%;max-height:100%;border-radius:10px;">`;
             overlay.onclick = () => overlay.remove();
             document.body.appendChild(overlay);
+        };
+
+        // ★★★ PDF ডাউনলোড ফাংশন ★★★
+        window.downloadPDF = function() {
+            const element = document.getElementById('infoContainer');
+            // ডাউনলোডের আগে ছবিগুলো যাতে ঠিকভাবে আসে সেজন্য অপশন
+            const opt = {
+                margin:       10,
+                filename:     'WorldBank-Info.pdf',
+                image:        { type: 'jpeg', quality: 0.98 },
+                html2canvas:  { scale: 2, useCORS: true, logging: false },
+                jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            };
+            html2pdf().set(opt).from(element).save();
         };
     </script>
 
