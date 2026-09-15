@@ -188,7 +188,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getAuth, onAuthStateChanged, setPersistence, browserLocalPersistence } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-        import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { getFirestore, enableIndexedDbPersistence, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyD9fEvnTdI5y4AQiFIENZUD9KBtBx1Re4g",
@@ -204,8 +204,17 @@
         const auth = getAuth(app);
         const db = getFirestore(app);
 
+        // ★★★ অফলাইন পার্সিস্টেন্স চালু ★★★
+        enableIndexedDbPersistence(db).catch((err) => {
+            if (err.code === 'failed-precondition') {
+                console.warn("Persistence failed: Multiple tabs open");
+            } else if (err.code === 'unimplemented') {
+                console.warn("Persistence not supported by browser");
+            }
+        });
+
         setPersistence(auth, browserLocalPersistence).catch((error) => {
-            console.error("Persistence error:", error);
+            console.error("Auth persistence error:", error);
         });
 
         let authCheckDone = false;
@@ -235,12 +244,12 @@
             document.getElementById('menuOverlay').style.display = 'none';
         };
 
-        // ★★★ বাংলা সংখ্যায় রূপান্তরের ফাংশন ★★★
+        // বাংলা সংখ্যায় রূপান্তরের ফাংশন
         function toBanglaNumber(number) {
             if (number === null || number === undefined || isNaN(number)) return '০';
             const englishDigits = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
             const banglaDigits  = ['০', '১', '২', '৩', '৪', '৫', '৬', '৭', '৮', '৯'];
-            let str = Number(number).toLocaleString('en-IN'); // কমা বসানোর জন্য
+            let str = Number(number).toLocaleString('en-IN');
             let result = '';
             for (let ch of str) {
                 const idx = englishDigits.indexOf(ch);
@@ -322,7 +331,6 @@
                 const loanAmount = Number(loanData.loan_amount) || 0;
                 const tenure = Number(loanData.loan_tenure) || 0;
 
-                // ★★★ বাংলা সংখ্যায় রূপান্তর ★★★
                 const loanAmountBn = toBanglaNumber(loanAmount);
                 const emiBn = loanAmount ? toBanglaNumber(Math.round(calculateEMIAmount(loanAmount, tenure))) : '০';
 
@@ -338,7 +346,7 @@
                         <div class="loan-details-grid">
                             <div class="loan-detail-item">
                                 <i class="fa-solid fa-wallet"></i>
-                                <p>মোট টাকা পরিমাণ</p>
+                                <p>মোট ব্যালেন্স</p>
                                 <h4>${isApproved ? '৳ ' + loanAmountBn : '৳ ০'}</h4>
                             </div>
                             <div class="loan-detail-item">
@@ -394,7 +402,7 @@
         function calculateEMIAmount(principal, tenure) {
             if (!principal || !tenure) return 0;
             const emi = (principal / tenure) + 100;
-            return emi; // সংখ্যা রিটার্ন করি, পরে toBanglaNumber দিয়ে রূপান্তর হবে
+            return emi;
         }
     </script>
 
