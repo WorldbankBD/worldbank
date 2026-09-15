@@ -161,7 +161,7 @@
 
     </div>
 
-    <!-- সাইড মেনু (লিংক আপডেট করা হয়েছে) -->
+    <!-- সাইড মেনু -->
     <div class="side-menu-overlay" id="menuOverlay" onclick="closeMenu()">
         <div class="side-menu" id="sideMenu" onclick="event.stopPropagation()">
             <div class="side-menu-header">
@@ -169,13 +169,11 @@
                 <button class="close-btn" onclick="closeMenu()"><i class="fa-solid fa-xmark"></i></button>
             </div>
             <div class="side-menu-links">
-                <!-- হোম ক্লিক করলে status.html-এ যাবে -->
                 <a href="status.html" class="menu-link">
                     <i class="fa-solid fa-house"></i>
                     <span>হোম</span>
                 </a>
-                <!-- তথ্য ক্লিক করলে application.html-এ যাবে (PDF ভিউয়ার পেজ) -->
-                <a href="application.html" class="menu-link">
+                <a href="info.html" class="menu-link">
                     <i class="fa-solid fa-user"></i>
                     <span>সম্পূর্ণ তথ্য</span>
                 </a>
@@ -299,6 +297,8 @@
                 }
 
                 const userData = userDoc.data();
+                console.log("User Data:", userData); // ডিবাগের জন্য
+
                 const fullname = userData.fullname || 'বন্ধু';
                 const loanData = userData.loanData || {};
                 const isApproved = userData.approved === true;
@@ -370,7 +370,7 @@
 
             } catch (error) {
                 console.error("Error:", error);
-                loanContainer.innerHTML = '<p style="text-align:center; padding:20px;">ডেটা লোড করা যায়নি।</p>';
+                loanContainer.innerHTML = `<p style="text-align:center; padding:20px;">ডেটা লোড করা যায়নি: ${error.message}</p>`;
             }
         }
 
