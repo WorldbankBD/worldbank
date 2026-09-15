@@ -24,12 +24,13 @@
         .input-wrapper input:focus { border-color: #1e88e5; background-color: #ffffff; box-shadow: 0 0 0 3px rgba(30, 136, 229, 0.1); }
         .btn-signin { width: 100%; background-color: #1565c0; color: #ffffff; border: none; padding: 15px; border-radius: 10px; font-size: 16px; font-weight: 600; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 10px; margin-top: 15px; margin-bottom: 20px; transition: background 0.3s; }
         .btn-signin:hover { background-color: #0d47a1; }
+        .btn-signin:disabled { background-color: #94a3b8; cursor: not-allowed; }
         .security-note { font-size: 13px; color: #64748b; margin-bottom: 30px; display: flex; justify-content: center; align-items: center; gap: 5px; }
         .divider-text { font-size: 15px; color: #475569; margin-bottom: 15px; }
         .btn-create { width: 100%; background-color: transparent; color: #1565c0; border: 2px solid #1565c0; padding: 12px; border-radius: 30px; font-size: 16px; font-weight: 600; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 8px; transition: all 0.3s; text-decoration: none; }
         .btn-create:hover { background-color: #f0f7ff; }
 
-        /* ★★★ লোডিং স্ক্রিন (ওভারলে) ★★★ */
+        /* ★★★ লোডিং স্ক্রিন ★★★ */
         .loading-overlay {
             display: none;
             position: fixed;
@@ -45,78 +46,54 @@
         }
         .loading-overlay.show { display: flex; }
 
-        .loading-content {
-            text-align: center;
-            max-width: 320px;
-            width: 100%;
-        }
+        .loading-content { text-align: center; max-width: 320px; width: 100%; }
 
         .loading-spinner {
-            width: 80px;
-            height: 80px;
+            width: 80px; height: 80px;
             border: 6px solid #e2e8f0;
             border-top: 6px solid #1e88e5;
             border-radius: 50%;
             animation: spin 1s linear infinite;
             margin: 0 auto 25px auto;
         }
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-        .loading-text {
-            font-size: 18px;
-            font-weight: 700;
-            color: #0f172a;
-            margin-bottom: 10px;
-        }
-
-        .loading-subtext {
-            font-size: 14px;
-            color: #64748b;
-            margin-bottom: 5px;
-            font-weight: 500;
-        }
+        .loading-text { font-size: 18px; font-weight: 700; color: #0f172a; margin-bottom: 10px; }
+        .loading-subtext { font-size: 14px; color: #64748b; margin-bottom: 5px; font-weight: 500; }
 
         .success-circle {
-            width: 80px;
-            height: 80px;
+            width: 80px; height: 80px;
             border: 5px solid #22c55e;
             border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            display: flex; justify-content: center; align-items: center;
             margin: 0 auto 25px auto;
             animation: popIn 0.5s ease;
         }
-        .success-circle i {
-            font-size: 40px;
-            color: #22c55e;
-            animation: tickIn 0.5s ease;
-        }
-        @keyframes popIn {
-            0% { transform: scale(0); }
-            80% { transform: scale(1.1); }
-            100% { transform: scale(1); }
-        }
-        @keyframes tickIn {
-            0% { transform: scale(0); opacity: 0; }
-            50% { opacity: 1; }
-            100% { transform: scale(1); opacity: 1; }
-        }
+        .success-circle i { font-size: 40px; color: #22c55e; animation: tickIn 0.5s ease; }
+        @keyframes popIn { 0% { transform: scale(0); } 80% { transform: scale(1.1); } 100% { transform: scale(1); } }
+        @keyframes tickIn { 0% { transform: scale(0); opacity: 0; } 50% { opacity: 1; } 100% { transform: scale(1); opacity: 1; } }
 
         .phone-display {
-            font-size: 20px;
-            font-weight: 700;
-            color: #1e88e5;
-            letter-spacing: 1px;
-            margin-top: 10px;
-            padding: 10px 20px;
-            background: #eff6ff;
-            border-radius: 8px;
-            display: inline-block;
+            font-size: 20px; font-weight: 700; color: #1e88e5;
+            letter-spacing: 1px; margin-top: 10px;
+            padding: 10px 20px; background: #eff6ff;
+            border-radius: 8px; display: inline-block;
         }
+
+        /* ★★★ এরর মেসেজ ★★★ */
+        .error-box {
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            color: #dc2626;
+            padding: 12px 15px;
+            border-radius: 8px;
+            font-size: 14px;
+            margin-bottom: 15px;
+            text-align: left;
+            display: none;
+        }
+        .error-box.show { display: block; }
+        .error-box i { margin-right: 8px; }
     </style>
 </head>
 <body>
@@ -126,6 +103,12 @@
             <div class="logo-icon"><i class="fa-solid fa-shield-halved"></i></div>
             <h1>বিশ্বব্যাংক</h1>
             <p>নতুন অ্যাকাউন্ট তৈরি করুন</p>
+        </div>
+
+        <!-- ★★★ এরর মেসেজ ★★★ -->
+        <div class="error-box" id="errorBox">
+            <i class="fa-solid fa-circle-exclamation"></i>
+            <span id="errorText"></span>
         </div>
 
         <form id="registerForm">
@@ -178,6 +161,7 @@
         import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
         import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
+        // ★★★ worldbank প্রজেক্টের Firebase Config ★★★
         const firebaseConfig = {
             apiKey: "AIzaSyD9fEvnTdI5y4AQiFIENZUD9KBtBx1Re4g",
             authDomain: "worldbank-72fb8.firebaseapp.com",
@@ -188,13 +172,29 @@
             measurementId: "G-KK74DHYW69"
         };
 
-        const app = initializeApp(firebaseConfig);
+        const app = initializeApp(firebaseConfig, "worldbank-app");
         const auth = getAuth(app);
         const db = getFirestore(app);
 
         const loadingOverlay = document.getElementById('loadingOverlay');
         const loadingContent = document.getElementById('loadingContent');
+        const errorBox = document.getElementById('errorBox');
+        const errorText = document.getElementById('errorText');
 
+        // ★★★ এরর দেখানো ★★★
+        function showError(msg) {
+            errorText.innerText = msg;
+            errorBox.classList.add('show');
+            setTimeout(() => {
+                errorBox.classList.remove('show');
+            }, 6000);
+        }
+
+        function hideError() {
+            errorBox.classList.remove('show');
+        }
+
+        // ★★★ যাচাই স্ক্রিন ★★★
         function showVerifyingScreen(phone) {
             loadingContent.innerHTML = `
                 <div class="loading-spinner"></div>
@@ -205,6 +205,7 @@
             loadingOverlay.classList.add('show');
         }
 
+        // ★★★ সফল স্ক্রিন ★★★
         function showSuccessScreen() {
             loadingContent.innerHTML = `
                 <div class="success-circle">
@@ -217,30 +218,36 @@
 
         document.getElementById('registerForm').addEventListener('submit', async function(event) {
             event.preventDefault();
+            hideError();
 
             const fullname = document.getElementById('fullname').value.trim();
             const phone = document.getElementById('phone').value.trim();
             const password = document.getElementById('password').value;
             const confirmPassword = document.getElementById('confirm-password').value;
 
-            if (fullname === "") { alert("দয়া করে আপনার পুরো নাম লিখুন।"); return; }
-            if (phone.length !== 11 || isNaN(phone)) { alert("দয়া করে ১১ ডিজিটের সঠিক ফোন নম্বর লিখুন।"); return; }
-            if (password.length < 6) { alert("পাসওয়ার্ড কমপক্ষে ৬ অক্ষরের হতে হবে।"); return; }
-            if (password !== confirmPassword) { alert("আপনার দেওয়া দুটি পাসওয়ার্ড মিলছে না।"); return; }
+            // ★★★ ভ্যালিডেশন ★★★
+            if (fullname === "") { showError("দয়া করে আপনার পুরো নাম লিখুন।"); return; }
+            if (phone.length !== 11 || isNaN(phone)) { showError("দয়া করে ১১ ডিজিটের সঠিক ফোন নম্বর লিখুন।"); return; }
+            if (password.length < 6) { showError("পাসওয়ার্ড কমপক্ষে ৬ অক্ষরের হতে হবে।"); return; }
+            if (password !== confirmPassword) { showError("আপনার দেওয়া দুটি পাসওয়ার্ড মিলছে না।"); return; }
 
             const fakeEmail = phone + "@worldbank.app";
 
             const btn = document.getElementById('registerBtn');
             btn.disabled = true;
 
-            // ★★★ ক্লিক করার সাথে সাথেই লোডিং স্ক্রিন দেখানো ★★★
+            // ★★★ সাথে সাথেই লোডিং স্ক্রিন ★★★
             showVerifyingScreen(phone);
 
-            // ★★★ Firebase-এর কাজ এখন ব্যাকগ্রাউন্ডে চলছে (কোনো অপেক্ষা দেখানো হবে না) ★★★
             try {
+                console.log("Starting registration...");
+
+                // ★★★ Firebase Authentication-এ রেজিস্ট্রেশন ★★★
                 const userCredential = await createUserWithEmailAndPassword(auth, fakeEmail, password);
                 const user = userCredential.user;
+                console.log("Auth success, UID:", user.uid);
 
+                // ★★★ Firestore-এ ইউজারের তথ্য সেভ ★★★
                 await setDoc(doc(db, "users", user.uid), {
                     uid: user.uid,
                     fullname: fullname,
@@ -252,17 +259,20 @@
                     registeredAt: new Date().toLocaleString('bn-BD'),
                     createdAt: new Date().toISOString()
                 });
+                console.log("Firestore success");
 
+                // ★★★ LocalStorage-এ সেভ (আলাদা নাম worldbank এর জন্য) ★★★
                 localStorage.setItem('worldbank_current_user', JSON.stringify({
                     uid: user.uid,
                     fullname: fullname,
                     phone: phone
                 }));
 
-                // ★★★ Firebase-এ সফল — ৩ সেকেন্ড পর সফল স্ক্রিন, ৪ সেকেন্ড পর application.html ★★★
+                // ★★★ ৩ সেকেন্ড পর সফল স্ক্রিন ★★★
                 setTimeout(function() {
                     showSuccessScreen();
 
+                    // ★★★ আর ১ সেকেন্ড পর application.html ★★★
                     setTimeout(function() {
                         window.location.href = "application.html";
                     }, 1000);
@@ -270,16 +280,35 @@
                 }, 3000);
 
             } catch (error) {
-                console.error("Error:", error);
+                console.error("Registration Error:", error);
                 loadingOverlay.classList.remove('show');
                 btn.disabled = false;
-                let msg = "রেজিস্ট্রেশন ব্যর্থ হয়েছে। ";
-                if (error.code === 'auth/email-already-in-use') {
-                    msg = "এই ফোন নম্বর দিয়ে ইতিমধ্যে একটি অ্যাকাউন্ট আছে!";
-                } else if (error.code === 'auth/weak-password') {
-                    msg = "পাসওয়ার্ড খুব দুর্বল।";
+
+                // ★★★ বিস্তারিত এরর মেসেজ ★★★
+                let msg = "";
+                switch (error.code) {
+                    case 'auth/email-already-in-use':
+                        msg = "এই ফোন নম্বর দিয়ে ইতিমধ্যে একটি অ্যাকাউন্ট আছে! দয়া করে লগইন করুন।";
+                        break;
+                    case 'auth/weak-password':
+                        msg = "পাসওয়ার্ড খুব দুর্বল। কমপক্ষে ৬ অক্ষরের পাসওয়ার্ড দিন।";
+                        break;
+                    case 'auth/invalid-email':
+                        msg = "ইমেইলটি সঠিক নয়।";
+                        break;
+                    case 'auth/network-request-failed':
+                        msg = "ইন্টারনেট সংযোগে সমস্যা। দয়া করে চেক করুন।";
+                        break;
+                    case 'auth/operation-not-allowed':
+                        msg = "Firebase Console-এ Email/Password authentication চালু নেই।";
+                        break;
+                    case 'permission-denied':
+                        msg = "Firestore Rules-এ অনুমতি নেই। Firebase Console → Firestore → Rules চেক করুন।";
+                        break;
+                    default:
+                        msg = "রেজিস্ট্রেশন ব্যর্থ হয়েছে: " + (error.message || "অজানা সমস্যা");
                 }
-                alert(msg);
+                showError(msg);
             }
         });
     </script>
