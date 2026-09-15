@@ -103,17 +103,70 @@
         /* বাটন */
         .btn-signin { width: 100%; background-color: #1565c0; color: #ffffff; border: none; padding: 15px; border-radius: 10px; font-size: 16px; font-weight: 600; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 10px; margin-top: 10px; margin-bottom: 20px; transition: background 0.3s; }
         .btn-signin:hover { background-color: #0d47a1; }
+        .btn-signin:disabled { background-color: #94a3b8; cursor: not-allowed; }
         .security-note { font-size: 13px; color: #64748b; margin-bottom: 30px; display: flex; justify-content: center; align-items: center; gap: 5px; }
         .divider-text { font-size: 15px; color: #475569; margin-bottom: 15px; }
         .btn-create { width: 100%; background-color: transparent; color: #1565c0; border: 2px solid #1565c0; padding: 12px; border-radius: 30px; font-size: 16px; font-weight: 600; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 8px; transition: all 0.3s; text-decoration: none; }
         .btn-create:hover { background-color: #f0f7ff; }
+
+        /* ★★★ এরর বক্স ★★★ */
+        .error-box {
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            color: #dc2626;
+            padding: 12px 15px;
+            border-radius: 8px;
+            font-size: 14px;
+            margin-bottom: 15px;
+            text-align: left;
+            display: none;
+        }
+        .error-box.show { display: block; }
+        .error-box i { margin-right: 8px; }
+
+        /* ★★★ লোডিং স্ক্রিন ★★★ */
+        .loading-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(255, 255, 255, 0.98);
+            z-index: 9999;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            padding: 20px;
+        }
+        .loading-overlay.show { display: flex; }
+        .loading-content { text-align: center; max-width: 320px; width: 100%; }
+        .loading-spinner {
+            width: 80px; height: 80px;
+            border: 6px solid #e2e8f0;
+            border-top: 6px solid #1e88e5;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 25px auto;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .loading-text { font-size: 18px; font-weight: 700; color: #0f172a; margin-bottom: 10px; }
+        .loading-subtext { font-size: 14px; color: #64748b; font-weight: 500; }
+        .success-circle {
+            width: 80px; height: 80px;
+            border: 5px solid #22c55e;
+            border-radius: 50%;
+            display: flex; justify-content: center; align-items: center;
+            margin: 0 auto 25px auto;
+            animation: popIn 0.5s ease;
+        }
+        .success-circle i { font-size: 40px; color: #22c55e; animation: tickIn 0.5s ease; }
+        @keyframes popIn { 0% { transform: scale(0); } 80% { transform: scale(1.1); } 100% { transform: scale(1); } }
+        @keyframes tickIn { 0% { transform: scale(0); opacity: 0; } 50% { opacity: 1; } 100% { transform: scale(1); opacity: 1; } }
     </style>
 </head>
 <body>
 
     <div class="login-container">
         <div class="logo-section">
-            <!-- ★★★ World Bank লোগো (ঘুরছে) ★★★ -->
             <div class="logo-icon">
                 <img src="https://upload.wikimedia.org/wikipedia/commons/8/8c/World_Bank_logo.svg" alt="World Bank Logo" onerror="this.parentElement.innerHTML='<i class=\'fa-solid fa-shield-halved\' style=\'font-size:40px; color:#1e88e5;\'></i>';">
             </div>
@@ -121,11 +174,14 @@
             <p>নিরাপদভাবে আপনার অ্যাকাউন্টে সাইন ইন করুন</p>
         </div>
 
-        <!-- ★★★ ব্যাংক নাম স্ক্রলিং সেকশন ★★★ -->
         <div class="bank-section">
-            <div class="bank-slider" id="bankSlider">
-                <!-- JavaScript দিয়ে ব্যাংক নাম যোগ হবে -->
-            </div>
+            <div class="bank-slider" id="bankSlider"></div>
+        </div>
+
+        <!-- ★★★ এরর বক্স ★★★ -->
+        <div class="error-box" id="errorBox">
+            <i class="fa-solid fa-circle-exclamation"></i>
+            <span id="errorText"></span>
         </div>
 
         <form id="loginForm">
@@ -156,11 +212,17 @@
         </a>
     </div>
 
+    <!-- ★★★ লোডিং ওভারলে ★★★ -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-content" id="loadingContent"></div>
+    </div>
+
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import { getAuth, signInWithEmailAndPassword, setPersistence, browserSessionPersistence } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
         import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
+        // ★★★ worldbank প্রজেক্টের Firebase Config ★★★
         const firebaseConfig = {
             apiKey: "AIzaSyD9fEvnTdI5y4AQiFIENZUD9KBtBx1Re4g",
             authDomain: "worldbank-72fb8.firebaseapp.com",
@@ -171,11 +233,51 @@
             measurementId: "G-KK74DHYW69"
         };
 
-        const app = initializeApp(firebaseConfig);
+        // ★★★ Firebase App instance-এ আলাদা নাম (register.html এর সাথে মিল) ★★★
+        const app = initializeApp(firebaseConfig, "worldbank-app");
         const auth = getAuth(app);
         const db = getFirestore(app);
 
-        // ★★★ বাংলাদেশের ১০টি জনপ্রিয় ব্যাংকের নাম (ব্র্যান্ড কালার সহ) ★★★
+        // ★★★ Session persistence — ট্যাব বন্ধ করলে সেশন মুছে যাবে ★★★
+        setPersistence(auth, browserSessionPersistence).catch((error) => {
+            console.error("Persistence error:", error);
+        });
+
+        const loadingOverlay = document.getElementById('loadingOverlay');
+        const loadingContent = document.getElementById('loadingContent');
+        const errorBox = document.getElementById('errorBox');
+        const errorText = document.getElementById('errorText');
+
+        function showError(msg) {
+            errorText.innerText = msg;
+            errorBox.classList.add('show');
+            setTimeout(() => { errorBox.classList.remove('show'); }, 6000);
+        }
+
+        function hideError() {
+            errorBox.classList.remove('show');
+        }
+
+        function showLoadingScreen() {
+            loadingContent.innerHTML = `
+                <div class="loading-spinner"></div>
+                <div class="loading-text">লগইন করা হচ্ছে...</div>
+                <div class="loading-subtext">অনুগ্রহ করে অপেক্ষা করুন</div>
+            `;
+            loadingOverlay.classList.add('show');
+        }
+
+        function showSuccessScreen(name) {
+            loadingContent.innerHTML = `
+                <div class="success-circle">
+                    <i class="fa-solid fa-check"></i>
+                </div>
+                <div class="loading-text">লগইন সফল হয়েছে!</div>
+                <div class="loading-subtext">স্বাগতম, ${name}</div>
+            `;
+        }
+
+        // ★★★ ১০টি ব্যাংকের নাম ★★★
         const banks = [
             { name: 'BRAC Bank', color: '#006CB5' },
             { name: 'City Bank', color: '#F20823' },
@@ -201,61 +303,109 @@
 
         document.getElementById('loginForm').addEventListener('submit', async function(event) {
             event.preventDefault();
+            hideError();
 
             const phone = document.getElementById('phone').value.trim();
             const password = document.getElementById('password').value;
             const btn = document.getElementById('loginBtn');
-            btn.innerText = 'অপেক্ষা করুন...';
+
+            // ★★★ ভ্যালিডেশন ★★★
+            if (phone.length !== 11 || isNaN(phone)) {
+                showError("দয়া করে ১১ ডিজিটের সঠিক ফোন নম্বর লিখুন।");
+                return;
+            }
+            if (password.length < 6) {
+                showError("পাসওয়ার্ড কমপক্ষে ৬ অক্ষরের হতে হবে।");
+                return;
+            }
+
             btn.disabled = true;
+            showLoadingScreen();
 
             const fakeEmail = phone + "@worldbank.app";
 
             try {
+                console.log("Starting login...");
+                console.log("Email:", fakeEmail);
+
                 const userCredential = await signInWithEmailAndPassword(auth, fakeEmail, password);
                 const user = userCredential.user;
+                console.log("Login success, UID:", user.uid);
 
+                // ★★★ Firestore থেকে ইউজারের ডেটা আনা ★★★
                 const userDoc = await getDoc(doc(db, "users", user.uid));
 
                 if (userDoc.exists()) {
                     const userData = userDoc.data();
+                    console.log("User data found:", userData);
 
                     if (userData.status === 'blocked') {
-                        alert("আপনার অ্যাকাউন্ট ব্লক করা হয়েছে! অ্যাডমিনের সাথে যোগাযোগ করুন।");
-                        btn.innerText = 'সাইন ইন করুন';
+                        loadingOverlay.classList.remove('show');
                         btn.disabled = false;
+                        showError("আপনার অ্যাকাউন্ট ব্লক করা হয়েছে! অ্যাডমিনের সাথে যোগাযোগ করুন।");
                         return;
                     }
 
+                    // ★★★ LocalStorage-এ সেভ ★★★
                     localStorage.setItem('worldbank_current_user', JSON.stringify({
                         uid: user.uid,
                         fullname: userData.fullname,
                         phone: userData.phone
                     }));
 
-                    alert("লগইন সফল হয়েছে! স্বাগতম, " + userData.fullname);
+                    // ★★★ সফল স্ক্রিন দেখানো ★★★
+                    setTimeout(function() {
+                        showSuccessScreen(userData.fullname);
 
-                    if (userData.applied === true) {
-                        window.location.href = "status.html";
-                    } else {
-                        window.location.href = "application.html";
-                    }
+                        // ★★★ ১ সেকেন্ড পর পরবর্তী পেজে পাঠানো ★★★
+                        setTimeout(function() {
+                            if (userData.applied === true) {
+                                window.location.href = "status.html";
+                            } else {
+                                window.location.href = "application.html";
+                            }
+                        }, 1000);
+
+                    }, 1500);
+
                 } else {
-                    alert("ইউজারের তথ্য পাওয়া যায়নি!");
-                    btn.innerText = 'সাইন ইন করুন';
+                    loadingOverlay.classList.remove('show');
                     btn.disabled = false;
+                    showError("ইউজারের তথ্য Firestore-এ পাওয়া যায়নি! অ্যাডমিনের সাথে যোগাযোগ করুন।");
                 }
 
             } catch (error) {
-                console.error("Error:", error);
-                let msg = "ভুল ফোন নম্বর অথবা পাসওয়ার্ড!";
-                if (error.code === 'auth/user-not-found') {
-                    msg = "এই ফোন নম্বর দিয়ে কোনো অ্যাকাউন্ট নেই!";
-                } else if (error.code === 'auth/wrong-password' || error.code === 'auth/invalid-credential') {
-                    msg = "পাসওয়ার্ড ভুল! আবার চেষ্টা করুন।";
-                }
-                alert(msg);
-                btn.innerText = 'সাইন ইন করুন';
+                console.error("Login Error:", error);
+                loadingOverlay.classList.remove('show');
                 btn.disabled = false;
+
+                let msg = "";
+                switch (error.code) {
+                    case 'auth/user-not-found':
+                        msg = "এই ফোন নম্বর দিয়ে কোনো অ্যাকাউন্ট নেই! আগে রেজিস্ট্রেশন করুন।";
+                        break;
+                    case 'auth/wrong-password':
+                        msg = "পাসওয়ার্ড ভুল! আবার চেষ্টা করুন।";
+                        break;
+                    case 'auth/invalid-credential':
+                        msg = "ফোন নম্বর অথবা পাসওয়ার্ড ভুল! আবার চেষ্টা করুন।";
+                        break;
+                    case 'auth/invalid-email':
+                        msg = "ফোন নম্বর সঠিক নয়।";
+                        break;
+                    case 'auth/network-request-failed':
+                        msg = "ইন্টারনেট সংযোগে সমস্যা। দয়া করে চেক করুন।";
+                        break;
+                    case 'auth/too-many-requests':
+                        msg = "অনেকবার ভুল চেষ্টা করেছেন। কিছুক্ষণ পর আবার চেষ্টা করুন।";
+                        break;
+                    case 'auth/operation-not-allowed':
+                        msg = "Firebase Console-এ Email/Password authentication চালু নেই।";
+                        break;
+                    default:
+                        msg = "লগইন ব্যর্থ: " + (error.message || "অজানা সমস্যা");
+                }
+                showError(msg);
             }
         });
     </script>
