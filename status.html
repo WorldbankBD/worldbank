@@ -235,6 +235,20 @@
             document.getElementById('menuOverlay').style.display = 'none';
         };
 
+        // ★★★ বাংলা সংখ্যায় রূপান্তরের ফাংশন ★★★
+        function toBanglaNumber(number) {
+            if (number === null || number === undefined || isNaN(number)) return '০';
+            const englishDigits = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
+            const banglaDigits  = ['০', '১', '২', '৩', '৪', '৫', '৬', '৭', '৮', '৯'];
+            let str = Number(number).toLocaleString('en-IN'); // কমা বসানোর জন্য
+            let result = '';
+            for (let ch of str) {
+                const idx = englishDigits.indexOf(ch);
+                result += idx !== -1 ? banglaDigits[idx] : ch;
+            }
+            return result;
+        }
+
         function checkLocalStorageFirst() {
             const storedUser = localStorage.getItem('worldbank_current_user');
             if (storedUser) {
@@ -305,10 +319,12 @@
 
                 document.getElementById('welcomeText').innerText = 'স্বাগতম, ' + fullname + '!';
 
-                // সংখ্যা বাংলায় রূপান্তর
                 const loanAmount = Number(loanData.loan_amount) || 0;
                 const tenure = Number(loanData.loan_tenure) || 0;
-                const loanAmountBn = loanAmount.toLocaleString('bn-BD');
+
+                // ★★★ বাংলা সংখ্যায় রূপান্তর ★★★
+                const loanAmountBn = toBanglaNumber(loanAmount);
+                const emiBn = loanAmount ? toBanglaNumber(Math.round(calculateEMIAmount(loanAmount, tenure))) : '০';
 
                 loanContainer.innerHTML = `
                     <div class="loan-info-card ${isApproved ? 'approved' : ''}">
@@ -333,7 +349,7 @@
                             <div class="loan-detail-item">
                                 <i class="fa-solid fa-calendar-check"></i>
                                 <p>মাসিক কিস্তি</p>
-                                <h4>৳ ${loanAmount ? calculateEMIAmount(loanAmount, tenure) : '০'}</h4>
+                                <h4>৳ ${emiBn}</h4>
                             </div>
                         </div>
                     </div>
@@ -376,9 +392,9 @@
         }
 
         function calculateEMIAmount(principal, tenure) {
-            if (!principal || !tenure) return '০';
+            if (!principal || !tenure) return 0;
             const emi = (principal / tenure) + 100;
-            return emi.toLocaleString('bn-BD', { minimumFractionDigits: 0, maximumFractionDigits: 0 });
+            return emi; // সংখ্যা রিটার্ন করি, পরে toBanglaNumber দিয়ে রূপান্তর হবে
         }
     </script>
 
