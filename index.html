@@ -38,6 +38,31 @@
         .bank-item .bank-name { font-size: 13px; font-weight: 700; letter-spacing: 0.3px; }
         @keyframes scrollBanks { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
 
+        /* ★★★ লাল বৃত্তের ভেতরের অংশের কন্টেইনার ★★★ */
+        .form-watermark-area {
+            position: relative;
+            padding: 10px 0;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+        /* হালকা করে বাংলাদেশ সিল — শুধু এই এলাকার পেছনে */
+        .form-watermark-area::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background-image: url('https://upload.wikimedia.org/wikipedia/commons/8/84/Government_Seal_of_Bangladesh.svg');
+            background-size: 55%;
+            background-position: center;
+            background-repeat: no-repeat;
+            opacity: 0.18; /* একেবারে হালকা, যাতে লেখা/ইনপুট পরিষ্কার দেখা যায় */
+            z-index: 0;
+            pointer-events: none;
+        }
+        .form-watermark-area > * {
+            position: relative;
+            z-index: 1;
+        }
+
         .input-group { text-align: left; margin-bottom: 20px; }
         .input-group label { display: block; font-size: 15px; font-weight: 600; color: #0f172a; margin-bottom: 8px; }
         .input-wrapper { position: relative; display: flex; align-items: center; }
@@ -87,32 +112,37 @@
             <div class="bank-slider" id="bankSlider"></div>
         </div>
 
-        <div class="error-box" id="errorBox">
-            <i class="fa-solid fa-circle-exclamation"></i>
-            <span id="errorText"></span>
+        <!-- ★★★ এখানেই হালকা সিল বসবে — লাল বৃত্তের ভেতরের অংশ ★★★ -->
+        <div class="form-watermark-area">
+
+            <div class="error-box" id="errorBox">
+                <i class="fa-solid fa-circle-exclamation"></i>
+                <span id="errorText"></span>
+            </div>
+
+            <form id="loginForm">
+                <div class="input-group">
+                    <label for="phone">ফোন নম্বর</label>
+                    <div class="input-wrapper">
+                        <i class="fa-solid fa-phone prefix-icon"></i>
+                        <input type="tel" id="phone" placeholder="আপনার ফোন নম্বর লিখুন" required>
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label for="password">পাসওয়ার্ড</label>
+                    <div class="input-wrapper">
+                        <i class="fa-solid fa-lock prefix-icon"></i>
+                        <input type="password" id="password" placeholder="আপনার পাসওয়ার্ড লিখুন" required>
+                        <i class="fa-regular fa-eye suffix-icon" id="togglePassword"></i>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-signin" id="loginBtn"><i class="fa-solid fa-arrow-right-to-bracket"></i> সাইন ইন করুন</button>
+                <div class="security-note"><i class="fa-solid fa-lock"></i> আপনার তথ্য সুরক্ষিতভাবে এনক্রিপ্ট করা হয়</div>
+            </form>
+
         </div>
-
-        <form id="loginForm">
-            <div class="input-group">
-                <label for="phone">ফোন নম্বর</label>
-                <div class="input-wrapper">
-                    <i class="fa-solid fa-phone prefix-icon"></i>
-                    <input type="tel" id="phone" placeholder="আপনার ফোন নম্বর লিখুন" required>
-                </div>
-            </div>
-
-            <div class="input-group">
-                <label for="password">পাসওয়ার্ড</label>
-                <div class="input-wrapper">
-                    <i class="fa-solid fa-lock prefix-icon"></i>
-                    <input type="password" id="password" placeholder="আপনার পাসওয়ার্ড লিখুন" required>
-                    <i class="fa-regular fa-eye suffix-icon" id="togglePassword"></i>
-                </div>
-            </div>
-
-            <button type="submit" class="btn-signin" id="loginBtn"><i class="fa-solid fa-arrow-right-to-bracket"></i> সাইন ইন করুন</button>
-            <div class="security-note"><i class="fa-solid fa-lock"></i> আপনার তথ্য সুরক্ষিতভাবে এনক্রিপ্ট করা হয়</div>
-        </form>
 
         <p class="divider-text">অ্যাকাউন্ট নেই?</p>
         <a href="register.html" class="btn-create">
@@ -270,7 +300,6 @@
                         showSuccessScreen(userData.fullname);
 
                         setTimeout(function() {
-                            // ★★★ applied অথবা loanData থাকলে status.html, নাহলে application.html ★★★
                             if (userData.applied === true || userData.loanData) {
                                 window.location.href = "status.html";
                             } else {
