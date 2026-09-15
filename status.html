@@ -199,7 +199,7 @@
             measurementId: "G-KK74DHYW69"
         };
 
-        // ★★★ Firebase App instance-এ একই নাম "worldbank-app" ★★★
+        // ★★★ Firebase App instance-এ একই নাম ★★★
         const app = initializeApp(firebaseConfig, "worldbank-app");
         const auth = getAuth(app);
         const db = getFirestore(app);
@@ -210,6 +210,7 @@
         });
 
         let authCheckDone = false;
+        let userLoaded = false;
 
         // ★★★ স্লাইডার ★★★
         let slideIndex = 0;
@@ -237,7 +238,27 @@
             document.getElementById('menuOverlay').style.display = 'none';
         };
 
-        // ★★★ Firebase Auth + LocalStorage ব্যাকআপ ★★★
+        // ★★★ ১. প্রথমে LocalStorage চেক (দ্রুত লোডের জন্য) ★★★
+        function checkLocalStorageFirst() {
+            const storedUser = localStorage.getItem('worldbank_current_user');
+            if (storedUser) {
+                try {
+                    const parsedUser = JSON.parse(storedUser);
+                    if (parsedUser && parsedUser.uid) {
+                        console.log("✅ User found in localStorage (status):", parsedUser.uid);
+                        authCheckDone = true;
+                        userLoaded = true;
+                        loadLoanStatus(parsedUser.uid);
+                        return true;
+                    }
+                } catch (e) {
+                    console.error("LocalStorage parse error:", e);
+                }
+            }
+            return false;
+        }
+
+        // ★★★ ২. Firebase Auth চেক ★★★
         onAuthStateChanged(auth, async (user) => {
             if (user) {
                 authCheckDone = true;
@@ -247,32 +268,29 @@
                     fullname: user.displayName || '',
                     phone: user.email ? user.email.split('@')[0] : ''
                 }));
-                await loadLoanStatus(user.uid);
+                if (!userLoaded) {
+                    userLoaded = true;
+                    await loadLoanStatus(user.uid);
+                }
             } else {
-                const storedUser = localStorage.getItem('worldbank_current_user');
-                if (storedUser) {
-                    try {
-                        const parsedUser = JSON.parse(storedUser);
-                        if (parsedUser && parsedUser.uid) {
-                            authCheckDone = true;
-                            console.log("✅ User found in localStorage (status):", parsedUser.uid);
-                            await loadLoanStatus(parsedUser.uid);
-                            return;
-                        }
-                    } catch (e) {
-                        console.error("LocalStorage parse error:", e);
+                // Firebase Auth-এ ইউজার নেই, LocalStorage-এ আছে কি না দেখো
+                if (!userLoaded) {
+                    const foundInLocal = checkLocalStorageFirst();
+                    if (!foundInLocal) {
+                        setTimeout(() => {
+                            if (!authCheckDone && !userLoaded) {
+                                console.log("❌ No user found anywhere (status)!");
+                                alert("আপনি লগইন করেননি! দয়া করে লগইন করুন।");
+                                window.location.href = 'index.html';
+                            }
+                        }, 2000);
                     }
                 }
-                
-                setTimeout(() => {
-                    if (!authCheckDone) {
-                        console.log("❌ No user found anywhere (status)!");
-                        alert("আপনি লগইন করেননি! দয়া করে লগইন করুন।");
-                        window.location.href = 'index.html';
-                    }
-                }, 2000);
             }
         });
+
+        // ★★★ ৩. পেজ লোড হওয়ার সাথে সাথেই LocalStorage চেক ★★★
+        checkLocalStorageFirst();
 
         async function loadLoanStatus(uid) {
             const loanContainer = document.getElementById('loanInfoContainer');
