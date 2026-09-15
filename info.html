@@ -25,18 +25,16 @@
         .form-title h1 { font-size: 22px; color: #0f172a; font-weight: 700; }
         .form-title p { font-size: 14px; color: #64748b; }
 
-        /* সেকশন কার্ড */
         .section-card { background: white; border-radius: 12px; padding: 20px; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
         .section-header { display: flex; align-items: center; gap: 8px; font-size: 18px; font-weight: 700; color: #1565c0; border-bottom: 2px solid #1565c0; padding-bottom: 8px; margin-bottom: 18px; }
         .section-header i { font-size: 20px; }
 
-        /* read-only ইনপুট স্টাইল */
         .info-group { margin-bottom: 16px; }
         .info-group label { font-size: 14px; color: #475569; font-weight: 600; display: block; margin-bottom: 5px; }
         .info-input { width: 100%; padding: 12px 14px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 15px; color: #0f172a; background-color: #ffffff; font-family: 'Hind Siliguri', sans-serif; }
         .info-input[readonly] { background-color: #ffffff; cursor: default; }
 
-        /* ব্যাংক সেকশনের জন্য বিশেষ স্টাইল (স্ক্রিনশটের মতো) */
+        /* ব্যাংক কার্ড */
         .bank-card { background: #ffffff; border-radius: 12px; padding: 20px; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
         .bank-header { display: flex; align-items: center; gap: 10px; margin-bottom: 15px; }
         .bank-header .bkash-logo { font-weight: 700; color: #e2136e; font-size: 18px; }
@@ -65,12 +63,6 @@
         .menu-link span { font-size: 15px; font-weight: 600; }
 
         .floating-menu { position: fixed; bottom: 20px; left: 20px; background: #1e88e5; color: white; width: 50px; height: 50px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 22px; box-shadow: 0 4px 10px rgba(0,0,0,0.2); cursor: pointer; z-index: 999; }
-
-        /* ছবি */
-        .image-grid { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 10px; }
-        .image-item { text-align: center; }
-        .image-item img { width: 100px; height: 75px; object-fit: cover; border-radius: 8px; border: 2px solid #e2e8f0; cursor: pointer; }
-        .image-item p { font-size: 12px; color: #64748b; margin-top: 5px; font-weight: 600; }
     </style>
 </head>
 <body>
@@ -117,7 +109,7 @@
                     <i class="fa-solid fa-house"></i>
                     <span>হোম</span>
                 </a>
-                <a href="application.html" class="menu-link">
+                <a href="info.html" class="menu-link">
                     <i class="fa-solid fa-user"></i>
                     <span>সম্পূর্ণ তথ্য</span>
                 </a>
@@ -219,8 +211,6 @@
                 const nomineeData = data.nomineeData || {};
                 const bankData = data.bankData || {};
                 const loanData = data.loanData || {};
-                const appDocs = appData.documents || {};
-                const nomDocs = nomineeData.documents || {};
 
                 let html = '';
 
@@ -290,7 +280,7 @@
                     `;
                 }
 
-                // ৩. ব্যাংক অ্যাকাউন্ট তথ্য (স্ক্রিনশট অনুযায়ী)
+                // ৩. ব্যাংক অ্যাকাউন্ট তথ্য
                 if (bankData.bank_type) {
                     html += `
                         <div class="bank-card">
@@ -360,31 +350,6 @@
                     `;
                 }
 
-                // ছবি থাকলে সেগুলো দেখাও
-                if ((appDocs.nid_front || appDocs.nid_back || appDocs.photo || appData.signature) || 
-                    (nomDocs.nominee_photo || nomDocs.nominee_nid_front || nomDocs.nominee_nid_back)) {
-                    html += `
-                        <div class="section-card">
-                            <div class="section-header"><i class="fa-solid fa-paperclip"></i> আপলোড করা কাগজপত্র</div>
-                            ${(appDocs.nid_front || appDocs.nid_back || appDocs.photo || appData.signature) ? `
-                            <p style="margin:10px 0 5px; font-weight:700; color:#0f172a; font-size:14px;">আবেদনকারীর:</p>
-                            <div class="image-grid">
-                                ${appDocs.nid_front ? `<div class="image-item"><img src="${appDocs.nid_front}" onclick="showImage('${appDocs.nid_front}')"><p>এনআইডি সামনে</p></div>` : ''}
-                                ${appDocs.nid_back ? `<div class="image-item"><img src="${appDocs.nid_back}" onclick="showImage('${appDocs.nid_back}')"><p>এনআইডি পিছনে</p></div>` : ''}
-                                ${appDocs.photo ? `<div class="image-item"><img src="${appDocs.photo}" onclick="showImage('${appDocs.photo}')"><p>আপনার ছবি</p></div>` : ''}
-                                ${appData.signature ? `<div class="image-item"><img src="${appData.signature}" style="object-fit:contain; background:#fff;" onclick="showImage('${appData.signature}')"><p>স্বাক্ষর</p></div>` : ''}
-                            </div>` : ''}
-                            ${(nomDocs.nominee_photo || nomDocs.nominee_nid_front || nomDocs.nominee_nid_back) ? `
-                            <p style="margin:15px 0 5px; font-weight:700; color:#0f172a; font-size:14px;">নমিনীর:</p>
-                            <div class="image-grid">
-                                ${nomDocs.nominee_photo ? `<div class="image-item"><img src="${nomDocs.nominee_photo}" onclick="showImage('${nomDocs.nominee_photo}')"><p>নমিনীর ছবি</p></div>` : ''}
-                                ${nomDocs.nominee_nid_front ? `<div class="image-item"><img src="${nomDocs.nominee_nid_front}" onclick="showImage('${nomDocs.nominee_nid_front}')"><p>এনআইডি সামনে</p></div>` : ''}
-                                ${nomDocs.nominee_nid_back ? `<div class="image-item"><img src="${nomDocs.nominee_nid_back}" onclick="showImage('${nomDocs.nominee_nid_back}')"><p>এনআইডি পিছনে</p></div>` : ''}
-                            </div>` : ''}
-                        </div>
-                    `;
-                }
-
                 if (!html) {
                     html = '<div class="loading-text-box"><i class="fa-solid fa-folder-open"></i><p>আপনার কোনো তথ্য পাওয়া যায়নি।</p></div>';
                 }
@@ -397,16 +362,7 @@
             }
         }
 
-        // ছবি বড় করে দেখা
-        window.showImage = function(src) {
-            const overlay = document.createElement('div');
-            overlay.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.9);z-index:99999;display:flex;justify-content:center;align-items:center;cursor:pointer;padding:20px;';
-            overlay.innerHTML = `<img src="${src}" style="max-width:100%;max-height:100%;border-radius:10px;">`;
-            overlay.onclick = () => overlay.remove();
-            document.body.appendChild(overlay);
-        };
-
-        // অ্যাকাউন্ট নম্বর কপি (যদিও এডিট নয়, শুধু সুবিধার জন্য)
+        // অ্যাকাউন্ট নম্বর কপি
         window.copyAccount = function(account) {
             navigator.clipboard.writeText(account).then(() => {
                 alert('অ্যাকাউন্ট নম্বর কপি হয়েছে!');
