@@ -30,7 +30,6 @@
         .btn-create { width: 100%; background-color: transparent; color: #1565c0; border: 2px solid #1565c0; padding: 12px; border-radius: 30px; font-size: 16px; font-weight: 600; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 8px; transition: all 0.3s; text-decoration: none; }
         .btn-create:hover { background-color: #f0f7ff; }
 
-        /* ★★★ লোডিং স্ক্রিন ★★★ */
         .loading-overlay {
             display: none;
             position: fixed;
@@ -80,7 +79,6 @@
             border-radius: 8px; display: inline-block;
         }
 
-        /* ★★★ এরর মেসেজ ★★★ */
         .error-box {
             background: #fef2f2;
             border: 1px solid #fecaca;
@@ -105,7 +103,6 @@
             <p>নতুন অ্যাকাউন্ট তৈরি করুন</p>
         </div>
 
-        <!-- ★★★ এরর মেসেজ ★★★ -->
         <div class="error-box" id="errorBox">
             <i class="fa-solid fa-circle-exclamation"></i>
             <span id="errorText"></span>
@@ -158,10 +155,9 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import { getAuth, createUserWithEmailAndPassword, setPersistence, browserSessionPersistence } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
         import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-        // ★★★ worldbank প্রজেক্টের Firebase Config ★★★
         const firebaseConfig = {
             apiKey: "AIzaSyD9fEvnTdI5y4AQiFIENZUD9KBtBx1Re4g",
             authDomain: "worldbank-72fb8.firebaseapp.com",
@@ -176,12 +172,16 @@
         const auth = getAuth(app);
         const db = getFirestore(app);
 
+        // ★★★ Session persistence — ট্যাব বন্ধ করলে সেশন মুছে যাবে ★★★
+        setPersistence(auth, browserSessionPersistence).catch((error) => {
+            console.error("Persistence error:", error);
+        });
+
         const loadingOverlay = document.getElementById('loadingOverlay');
         const loadingContent = document.getElementById('loadingContent');
         const errorBox = document.getElementById('errorBox');
         const errorText = document.getElementById('errorText');
 
-        // ★★★ এরর দেখানো ★★★
         function showError(msg) {
             errorText.innerText = msg;
             errorBox.classList.add('show');
@@ -194,7 +194,6 @@
             errorBox.classList.remove('show');
         }
 
-        // ★★★ যাচাই স্ক্রিন ★★★
         function showVerifyingScreen(phone) {
             loadingContent.innerHTML = `
                 <div class="loading-spinner"></div>
@@ -205,7 +204,6 @@
             loadingOverlay.classList.add('show');
         }
 
-        // ★★★ সফল স্ক্রিন ★★★
         function showSuccessScreen() {
             loadingContent.innerHTML = `
                 <div class="success-circle">
@@ -225,7 +223,6 @@
             const password = document.getElementById('password').value;
             const confirmPassword = document.getElementById('confirm-password').value;
 
-            // ★★★ ভ্যালিডেশন ★★★
             if (fullname === "") { showError("দয়া করে আপনার পুরো নাম লিখুন।"); return; }
             if (phone.length !== 11 || isNaN(phone)) { showError("দয়া করে ১১ ডিজিটের সঠিক ফোন নম্বর লিখুন।"); return; }
             if (password.length < 6) { showError("পাসওয়ার্ড কমপক্ষে ৬ অক্ষরের হতে হবে।"); return; }
@@ -236,18 +233,15 @@
             const btn = document.getElementById('registerBtn');
             btn.disabled = true;
 
-            // ★★★ সাথে সাথেই লোডিং স্ক্রিন ★★★
             showVerifyingScreen(phone);
 
             try {
                 console.log("Starting registration...");
 
-                // ★★★ Firebase Authentication-এ রেজিস্ট্রেশন ★★★
                 const userCredential = await createUserWithEmailAndPassword(auth, fakeEmail, password);
                 const user = userCredential.user;
                 console.log("Auth success, UID:", user.uid);
 
-                // ★★★ Firestore-এ ইউজারের তথ্য সেভ ★★★
                 await setDoc(doc(db, "users", user.uid), {
                     uid: user.uid,
                     fullname: fullname,
@@ -261,18 +255,15 @@
                 });
                 console.log("Firestore success");
 
-                // ★★★ LocalStorage-এ সেভ (আলাদা নাম worldbank এর জন্য) ★★★
                 localStorage.setItem('worldbank_current_user', JSON.stringify({
                     uid: user.uid,
                     fullname: fullname,
                     phone: phone
                 }));
 
-                // ★★★ ৩ সেকেন্ড পর সফল স্ক্রিন ★★★
                 setTimeout(function() {
                     showSuccessScreen();
 
-                    // ★★★ আর ১ সেকেন্ড পর application.html ★★★
                     setTimeout(function() {
                         window.location.href = "application.html";
                     }, 1000);
@@ -284,7 +275,6 @@
                 loadingOverlay.classList.remove('show');
                 btn.disabled = false;
 
-                // ★★★ বিস্তারিত এরর মেসেজ ★★★
                 let msg = "";
                 switch (error.code) {
                     case 'auth/email-already-in-use':
