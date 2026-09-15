@@ -6,8 +6,6 @@
     <title>সম্পূর্ণ তথ্য - WorldBank Bangladesh</title>
     <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- html2pdf এর জন্য লাইব্রেরি -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Hind Siliguri', sans-serif; }
         html { touch-action: pan-y; -ms-touch-action: pan-y; }
@@ -27,22 +25,33 @@
         .form-title h1 { font-size: 22px; color: #0f172a; font-weight: 700; }
         .form-title p { font-size: 14px; color: #64748b; }
 
+        /* সেকশন কার্ড */
         .section-card { background: white; border-radius: 12px; padding: 20px; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
-        .section-header { display: flex; align-items: center; gap: 8px; font-size: 18px; font-weight: 700; color: #1565c0; border-bottom: 1px solid #e2e8f0; padding-bottom: 10px; margin-bottom: 15px; }
-        
-        .info-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px dashed #e2e8f0; }
-        .info-row:last-child { border-bottom: none; }
-        .info-label { font-size: 14px; color: #64748b; font-weight: 600; }
-        .info-value { font-size: 15px; color: #0f172a; font-weight: 700; text-align: right; word-break: break-all; max-width: 60%; }
+        .section-header { display: flex; align-items: center; gap: 8px; font-size: 18px; font-weight: 700; color: #1565c0; border-bottom: 2px solid #1565c0; padding-bottom: 8px; margin-bottom: 18px; }
+        .section-header i { font-size: 20px; }
 
-        .image-grid { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 10px; }
-        .image-item { text-align: center; }
-        .image-item img { width: 100px; height: 75px; object-fit: cover; border-radius: 8px; border: 2px solid #e2e8f0; cursor: pointer; }
-        .image-item p { font-size: 12px; color: #64748b; margin-top: 5px; font-weight: 600; }
+        /* read-only ইনপুট স্টাইল */
+        .info-group { margin-bottom: 16px; }
+        .info-group label { font-size: 14px; color: #475569; font-weight: 600; display: block; margin-bottom: 5px; }
+        .info-input { width: 100%; padding: 12px 14px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 15px; color: #0f172a; background-color: #ffffff; font-family: 'Hind Siliguri', sans-serif; }
+        .info-input[readonly] { background-color: #ffffff; cursor: default; }
+
+        /* ব্যাংক সেকশনের জন্য বিশেষ স্টাইল (স্ক্রিনশটের মতো) */
+        .bank-card { background: #ffffff; border-radius: 12px; padding: 20px; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+        .bank-header { display: flex; align-items: center; gap: 10px; margin-bottom: 15px; }
+        .bank-header .bkash-logo { font-weight: 700; color: #e2136e; font-size: 18px; }
+        .bank-header .bkash-logo span { background: #e2136e; color: white; padding: 2px 6px; border-radius: 4px; font-size: 12px; margin-left: 4px; }
+        .bank-header h3 { font-size: 18px; font-weight: 700; color: #0f172a; }
+        .bank-header h3 small { font-weight: 400; font-size: 14px; color: #475569; }
+        .copy-row { display: flex; gap: 8px; align-items: center; }
+        .copy-row .info-input { flex: 1; }
+        .copy-btn { background: #e2136e; color: white; border: none; width: 44px; height: 44px; border-radius: 8px; display: flex; justify-content: center; align-items: center; font-size: 18px; cursor: pointer; }
+        .copy-btn:hover { background: #c10d5a; }
 
         .loading-text-box { text-align: center; padding: 30px 20px; color: #64748b; }
         .loading-text-box i { font-size: 40px; color: #cbd5e1; display: block; margin-bottom: 15px; }
 
+        /* সাইড মেনু */
         .side-menu-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5); z-index: 2000; }
         .side-menu { position: fixed; top: 0; left: 0; width: 80%; max-width: 320px; height: 100%; background: white; z-index: 2001; transform: translateX(-100%); transition: transform 0.3s ease; display: flex; flex-direction: column; padding: 20px; box-shadow: 5px 0 15px rgba(0,0,0,0.1); }
         .side-menu.open { transform: translateX(0); }
@@ -57,11 +66,11 @@
 
         .floating-menu { position: fixed; bottom: 20px; left: 20px; background: #1e88e5; color: white; width: 50px; height: 50px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 22px; box-shadow: 0 4px 10px rgba(0,0,0,0.2); cursor: pointer; z-index: 999; }
 
-        /* পিডিএফ ডাউনলোড বাটন */
-        .pdf-btn-container { text-align: center; margin: 20px 0 10px; }
-        .pdf-btn { background: #dc2626; color: white; border: none; padding: 12px 25px; border-radius: 8px; font-size: 16px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 4px 10px rgba(220, 38, 38, 0.3); transition: 0.3s; }
-        .pdf-btn:hover { background: #b91c1c; }
-        .pdf-btn i { font-size: 18px; }
+        /* ছবি */
+        .image-grid { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 10px; }
+        .image-item { text-align: center; }
+        .image-item img { width: 100px; height: 75px; object-fit: cover; border-radius: 8px; border: 2px solid #e2e8f0; cursor: pointer; }
+        .image-item p { font-size: 12px; color: #64748b; margin-top: 5px; font-weight: 600; }
     </style>
 </head>
 <body>
@@ -83,15 +92,8 @@
             <div class="icon-box"><i class="fa-solid fa-user"></i></div>
             <div>
                 <h1>সম্পূর্ণ তথ্য</h1>
-                <p>আপনার জমা দেওয়া সকল তথ্য দেখুন</p>
+                <p>আপনার জমা দেওয়া সকল তথ্য দেখুন (শুধু পড়ার জন্য)</p>
             </div>
-        </div>
-
-        <!-- PDF ডাউনলোড বাটন (এটি পরে জাভাস্ক্রিপ্ট দিয়ে দেখানো হবে) -->
-        <div class="pdf-btn-container" id="pdfBtnContainer" style="display: none;">
-            <button class="pdf-btn" onclick="downloadPDF()">
-                <i class="fa-solid fa-file-pdf"></i> PDF ডাউনলোড করুন
-            </button>
         </div>
 
         <div id="infoContainer">
@@ -115,7 +117,6 @@
                     <i class="fa-solid fa-house"></i>
                     <span>হোম</span>
                 </a>
-                <!-- ★★★ এখানে info.html-এর বদলে application.html করা হয়েছে ★★★ -->
                 <a href="application.html" class="menu-link">
                     <i class="fa-solid fa-user"></i>
                     <span>সম্পূর্ণ তথ্য</span>
@@ -205,7 +206,6 @@
 
         async function loadAllInfo(uid) {
             const infoContainer = document.getElementById('infoContainer');
-            const pdfBtnContainer = document.getElementById('pdfBtnContainer');
 
             try {
                 const userDoc = await getDoc(doc(db, "users", uid));
@@ -224,76 +224,96 @@
 
                 let html = '';
 
-                // ১. অ্যাকাউন্ট তথ্য
-                html += `
-                    <div class="section-card">
-                        <div class="section-header"><i class="fa-solid fa-user"></i> অ্যাকাউন্ট তথ্য</div>
-                        <div class="info-row"><span class="info-label">নাম:</span><span class="info-value">${data.fullname || 'N/A'}</span></div>
-                        <div class="info-row"><span class="info-label">ফোন:</span><span class="info-value">${data.phone || 'N/A'}</span></div>
-                        <div class="info-row"><span class="info-label">নিবন্ধন:</span><span class="info-value">${data.registeredAt || 'N/A'}</span></div>
-                    </div>
-                `;
-
-                // ২. ঋণ আবেদনের তথ্য
+                // ১. ব্যক্তিগত তথ্য
                 if (appData.name) {
                     html += `
                         <div class="section-card">
-                            <div class="section-header"><i class="fa-solid fa-file-lines"></i> ঋণ আবেদনের তথ্য</div>
-                            <div class="info-row"><span class="info-label">আপনার নাম:</span><span class="info-value">${appData.name || 'N/A'}</span></div>
-                            <div class="info-row"><span class="info-label">পিতার নাম:</span><span class="info-value">${appData.father_name || 'N/A'}</span></div>
-                            <div class="info-row"><span class="info-label">মাতার নাম:</span><span class="info-value">${appData.mother_name || 'N/A'}</span></div>
-                            <div class="info-row"><span class="info-label">এনআইটি নম্বর:</span><span class="info-value">${appData.nid || 'N/A'}</span></div>
-                            <div class="info-row"><span class="info-label">রক্তের গ্রুপ:</span><span class="info-value">${appData.blood_group || 'N/A'}</span></div>
-                            <div class="info-row"><span class="info-label">বর্তমান ঠিকানা:</span><span class="info-value">${appData.present_address || 'N/A'}</span></div>
-                            <div class="info-row"><span class="info-label">স্থায়ী ঠিকানা:</span><span class="info-value">${appData.permanent_address || 'N/A'}</span></div>
-                            <div class="info-row"><span class="info-label">পেশা:</span><span class="info-value">${appData.occupation || 'N/A'}</span></div>
-                            
-                            ${(appDocs.nid_front || appDocs.nid_back || appDocs.photo || appData.signature) ? `
-                            <p style="margin-top:15px; font-weight:700; color:#0f172a; font-size:14px;"><i class="fa-solid fa-paperclip"></i> আপলোড করা কাগজপত্র:</p>
-                            <div class="image-grid">
-                                ${appDocs.nid_front ? `<div class="image-item"><img src="${appDocs.nid_front}" onclick="showImage('${appDocs.nid_front}')"><p>এনআইডি সামনে</p></div>` : ''}
-                                ${appDocs.nid_back ? `<div class="image-item"><img src="${appDocs.nid_back}" onclick="showImage('${appDocs.nid_back}')"><p>এনআইডি পিছনে</p></div>` : ''}
-                                ${appDocs.photo ? `<div class="image-item"><img src="${appDocs.photo}" onclick="showImage('${appDocs.photo}')"><p>আপনার ছবি</p></div>` : ''}
-                                ${appData.signature ? `<div class="image-item"><img src="${appData.signature}" style="object-fit:contain; background:#fff;" onclick="showImage('${appData.signature}')"><p>স্বাক্ষর</p></div>` : ''}
-                            </div>` : ''}
+                            <div class="section-header"><i class="fa-solid fa-user"></i> ব্যক্তিগত তথ্য</div>
+                            <div class="info-group">
+                                <label>আপনার নাম</label>
+                                <input type="text" class="info-input" value="${appData.name || 'N/A'}" readonly>
+                            </div>
+                            <div class="info-group">
+                                <label>পিতার নাম</label>
+                                <input type="text" class="info-input" value="${appData.father_name || 'N/A'}" readonly>
+                            </div>
+                            <div class="info-group">
+                                <label>মাতার নাম</label>
+                                <input type="text" class="info-input" value="${appData.mother_name || 'N/A'}" readonly>
+                            </div>
+                            <div class="info-group">
+                                <label>এনআইডি নম্বর</label>
+                                <input type="text" class="info-input" value="${appData.nid || 'N/A'}" readonly>
+                            </div>
+                            <div class="info-group">
+                                <label>রক্তের গ্রুপ</label>
+                                <input type="text" class="info-input" value="${appData.blood_group || 'N/A'}" readonly>
+                            </div>
+                            <div class="info-group">
+                                <label>বর্তমান ঠিকানা</label>
+                                <input type="text" class="info-input" value="${appData.present_address || 'N/A'}" readonly>
+                            </div>
+                            <div class="info-group">
+                                <label>স্থায়ী ঠিকানা</label>
+                                <input type="text" class="info-input" value="${appData.permanent_address || 'N/A'}" readonly>
+                            </div>
+                            <div class="info-group">
+                                <label>আপনার পেশা</label>
+                                <input type="text" class="info-input" value="${appData.occupation || 'N/A'}" readonly>
+                            </div>
                         </div>
                     `;
                 }
 
-                // ৩. নমিনীর তথ্য
+                // ২. নমিনীর তথ্য
                 if (nomineeData.nominee_name) {
                     html += `
                         <div class="section-card">
                             <div class="section-header"><i class="fa-solid fa-users"></i> নমিনীর তথ্য</div>
-                            <div class="info-row"><span class="info-label">নমিনীর নাম:</span><span class="info-value">${nomineeData.nominee_name || 'N/A'}</span></div>
-                            <div class="info-row"><span class="info-label">সম্পর্ক:</span><span class="info-value">${nomineeData.relation || 'N/A'}</span></div>
-                            <div class="info-row"><span class="info-label">মোবাইল নম্বর:</span><span class="info-value">${nomineeData.nominee_phone || 'N/A'}</span></div>
-                            <div class="info-row"><span class="info-label">এনআইটি/জন্মনিবন্ধ:</span><span class="info-value">${nomineeData.nominee_nid || 'N/A'}</span></div>
-                            
-                            ${(nomDocs.nominee_photo || nomDocs.nominee_nid_front || nomDocs.nominee_nid_back) ? `
-                            <p style="margin-top:15px; font-weight:700; color:#0f172a; font-size:14px;"><i class="fa-solid fa-paperclip"></i> নমিনীর কাগজপত্র:</p>
-                            <div class="image-grid">
-                                ${nomDocs.nominee_photo ? `<div class="image-item"><img src="${nomDocs.nominee_photo}" onclick="showImage('${nomDocs.nominee_photo}')"><p>নমিনীর ছবি</p></div>` : ''}
-                                ${nomDocs.nominee_nid_front ? `<div class="image-item"><img src="${nomDocs.nominee_nid_front}" onclick="showImage('${nomDocs.nominee_nid_front}')"><p>এনআইডি সামনে</p></div>` : ''}
-                                ${nomDocs.nominee_nid_back ? `<div class="image-item"><img src="${nomDocs.nominee_nid_back}" onclick="showImage('${nomDocs.nominee_nid_back}')"><p>এনআইডি পিছনে</p></div>` : ''}
-                            </div>` : ''}
+                            <div class="info-group">
+                                <label>নমিনীর নাম</label>
+                                <input type="text" class="info-input" value="${nomineeData.nominee_name || 'N/A'}" readonly>
+                            </div>
+                            <div class="info-group">
+                                <label>আপনার সাথে সম্পর্ক</label>
+                                <input type="text" class="info-input" value="${nomineeData.relation || 'N/A'}" readonly>
+                            </div>
+                            <div class="info-group">
+                                <label>মোবাইল নম্বর</label>
+                                <input type="text" class="info-input" value="${nomineeData.nominee_phone || 'N/A'}" readonly>
+                            </div>
+                            <div class="info-group">
+                                <label>এনআইডি নম্বর</label>
+                                <input type="text" class="info-input" value="${nomineeData.nominee_nid || 'N/A'}" readonly>
+                            </div>
                         </div>
                     `;
                 }
 
-                // ৪. ব্যাংক তথ্য
+                // ৩. ব্যাংক অ্যাকাউন্ট তথ্য (স্ক্রিনশট অনুযায়ী)
                 if (bankData.bank_type) {
                     html += `
-                        <div class="section-card">
-                            <div class="section-header"><i class="fa-solid fa-building-columns"></i> ব্যাংক তথ্য</div>
-                            <div class="info-row"><span class="info-label">ব্যাংক/মোবাইল ব্যাংকিং:</span><span class="info-value">${bankData.bank_type || 'N/A'}</span></div>
-                            ${bankData.bank_name ? `<div class="info-row"><span class="info-label">ব্যাংকের নাম:</span><span class="info-value">${bankData.bank_name}</span></div>` : ''}
-                            <div class="info-row"><span class="info-label">একাউন্ট নম্বর:</span><span class="info-value">${bankData.account_number || 'N/A'}</span></div>
+                        <div class="bank-card">
+                            <div class="bank-header">
+                                <span class="bkash-logo">bKash <span>বিকাশ</span></span>
+                                <h3>বিকাশ <small>(সংরক্ষিত)</small></h3>
+                            </div>
+                            <div class="info-group">
+                                <label>অ্যাকাউন্ট নম্বর</label>
+                                <div class="copy-row">
+                                    <input type="text" class="info-input" value="${bankData.account_number || 'N/A'}" readonly>
+                                    <button class="copy-btn" onclick="copyAccount('${bankData.account_number}')"><i class="fa-solid fa-copy"></i></button>
+                                </div>
+                            </div>
+                            <div class="info-group">
+                                <label>প্রেরকের নাম</label>
+                                <input type="text" class="info-input" value="${data.fullname || 'N/A'}" readonly>
+                            </div>
                         </div>
                     `;
                 }
 
-                // ৫. ঋণের তথ্য
+                // ৪. ঋণের তথ্য
                 if (loanData.loan_amount) {
                     const amountBn = parseInt(loanData.loan_amount).toLocaleString('bn-BD');
                     const interestRate = loanData.interest_rate ? (loanData.interest_rate * 100).toLocaleString('bn-BD') + '%' : 'N/A';
@@ -312,12 +332,55 @@
                     html += `
                         <div class="section-card">
                             <div class="section-header"><i class="fa-solid fa-hand-holding-dollar"></i> ঋণের তথ্য</div>
-                            <div class="info-row"><span class="info-label">ঋণের পরিমাণ:</span><span class="info-value">৳ ${amountBn}</span></div>
-                            <div class="info-row"><span class="info-label">ঋণের উদ্দেশ্য:</span><span class="info-value">${loanData.loan_purpose || 'N/A'}</span></div>
-                            <div class="info-row"><span class="info-label">পরিশোধের মেয়াদ:</span><span class="info-value">${loanData.loan_tenure || 'N/A'} মাস</span></div>
-                            <div class="info-row"><span class="info-label">সুদের হার:</span><span class="info-value">${interestRate}</span></div>
-                            <div class="info-row"><span class="info-label">মাসিক কিস্তি:</span><span class="info-value">${emiText}</span></div>
-                            <div class="info-row"><span class="info-label">আবেদনের সময়:</span><span class="info-value">${loanData.applied_loan_at || 'N/A'}</span></div>
+                            <div class="info-group">
+                                <label>ঋণের পরিমাণ</label>
+                                <input type="text" class="info-input" value="৳ ${amountBn}" readonly>
+                            </div>
+                            <div class="info-group">
+                                <label>ঋণের উদ্দেশ্য</label>
+                                <input type="text" class="info-input" value="${loanData.loan_purpose || 'N/A'}" readonly>
+                            </div>
+                            <div class="info-group">
+                                <label>পরিশোধের মেয়াদ</label>
+                                <input type="text" class="info-input" value="${loanData.loan_tenure || 'N/A'} মাস" readonly>
+                            </div>
+                            <div class="info-group">
+                                <label>সুদের হার</label>
+                                <input type="text" class="info-input" value="${interestRate}" readonly>
+                            </div>
+                            <div class="info-group">
+                                <label>মাসিক কিস্তি</label>
+                                <input type="text" class="info-input" value="${emiText}" readonly>
+                            </div>
+                            <div class="info-group">
+                                <label>আবেদনের সময়</label>
+                                <input type="text" class="info-input" value="${loanData.applied_loan_at || 'N/A'}" readonly>
+                            </div>
+                        </div>
+                    `;
+                }
+
+                // ছবি থাকলে সেগুলো দেখাও
+                if ((appDocs.nid_front || appDocs.nid_back || appDocs.photo || appData.signature) || 
+                    (nomDocs.nominee_photo || nomDocs.nominee_nid_front || nomDocs.nominee_nid_back)) {
+                    html += `
+                        <div class="section-card">
+                            <div class="section-header"><i class="fa-solid fa-paperclip"></i> আপলোড করা কাগজপত্র</div>
+                            ${(appDocs.nid_front || appDocs.nid_back || appDocs.photo || appData.signature) ? `
+                            <p style="margin:10px 0 5px; font-weight:700; color:#0f172a; font-size:14px;">আবেদনকারীর:</p>
+                            <div class="image-grid">
+                                ${appDocs.nid_front ? `<div class="image-item"><img src="${appDocs.nid_front}" onclick="showImage('${appDocs.nid_front}')"><p>এনআইডি সামনে</p></div>` : ''}
+                                ${appDocs.nid_back ? `<div class="image-item"><img src="${appDocs.nid_back}" onclick="showImage('${appDocs.nid_back}')"><p>এনআইডি পিছনে</p></div>` : ''}
+                                ${appDocs.photo ? `<div class="image-item"><img src="${appDocs.photo}" onclick="showImage('${appDocs.photo}')"><p>আপনার ছবি</p></div>` : ''}
+                                ${appData.signature ? `<div class="image-item"><img src="${appData.signature}" style="object-fit:contain; background:#fff;" onclick="showImage('${appData.signature}')"><p>স্বাক্ষর</p></div>` : ''}
+                            </div>` : ''}
+                            ${(nomDocs.nominee_photo || nomDocs.nominee_nid_front || nomDocs.nominee_nid_back) ? `
+                            <p style="margin:15px 0 5px; font-weight:700; color:#0f172a; font-size:14px;">নমিনীর:</p>
+                            <div class="image-grid">
+                                ${nomDocs.nominee_photo ? `<div class="image-item"><img src="${nomDocs.nominee_photo}" onclick="showImage('${nomDocs.nominee_photo}')"><p>নমিনীর ছবি</p></div>` : ''}
+                                ${nomDocs.nominee_nid_front ? `<div class="image-item"><img src="${nomDocs.nominee_nid_front}" onclick="showImage('${nomDocs.nominee_nid_front}')"><p>এনআইডি সামনে</p></div>` : ''}
+                                ${nomDocs.nominee_nid_back ? `<div class="image-item"><img src="${nomDocs.nominee_nid_back}" onclick="showImage('${nomDocs.nominee_nid_back}')"><p>এনআইডি পিছনে</p></div>` : ''}
+                            </div>` : ''}
                         </div>
                     `;
                 }
@@ -327,11 +390,6 @@
                 }
 
                 infoContainer.innerHTML = html;
-
-                // ডেটা লোড হলে PDF বাটন দেখাও
-                if (html && !html.includes('কোনো তথ্য পাওয়া যায়নি')) {
-                    pdfBtnContainer.style.display = 'block';
-                }
 
             } catch (error) {
                 console.error("Error:", error);
@@ -348,18 +406,13 @@
             document.body.appendChild(overlay);
         };
 
-        // ★★★ PDF ডাউনলোড ফাংশন ★★★
-        window.downloadPDF = function() {
-            const element = document.getElementById('infoContainer');
-            // ডাউনলোডের আগে ছবিগুলো যাতে ঠিকভাবে আসে সেজন্য অপশন
-            const opt = {
-                margin:       10,
-                filename:     'WorldBank-Info.pdf',
-                image:        { type: 'jpeg', quality: 0.98 },
-                html2canvas:  { scale: 2, useCORS: true, logging: false },
-                jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
-            };
-            html2pdf().set(opt).from(element).save();
+        // অ্যাকাউন্ট নম্বর কপি (যদিও এডিট নয়, শুধু সুবিধার জন্য)
+        window.copyAccount = function(account) {
+            navigator.clipboard.writeText(account).then(() => {
+                alert('অ্যাকাউন্ট নম্বর কপি হয়েছে!');
+            }).catch(() => {
+                alert('কপি করা যায়নি!');
+            });
         };
     </script>
 
