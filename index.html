@@ -106,7 +106,7 @@
                 <div class="input-wrapper">
                     <i class="fa-solid fa-lock prefix-icon"></i>
                     <input type="password" id="password" placeholder="আপনার পাসওয়ার্ড লিখুন" required>
-                    <i class="fa-regular fa-eye suffix-icon"></i>
+                    <i class="fa-regular fa-eye suffix-icon" id="togglePassword"></i>
                 </div>
             </div>
 
@@ -143,7 +143,6 @@
         const auth = getAuth(app);
         const db = getFirestore(app);
 
-        // ★★★ Local Persistence — ট্যাব বন্ধ করলেও সেশন থাকবে, এবং অন্য পেজেও সেশন থাকবে ★★★
         setPersistence(auth, browserLocalPersistence).catch((error) => {
             console.error("Persistence error:", error);
         });
@@ -181,6 +180,20 @@
                 <div class="loading-subtext">স্বাগতম, ${name}</div>
             `;
         }
+
+        // পাসওয়ার্ড শো/হাইড
+        document.getElementById('togglePassword').addEventListener('click', function() {
+            const pw = document.getElementById('password');
+            if (pw.type === 'password') {
+                pw.type = 'text';
+                this.classList.remove('fa-eye');
+                this.classList.add('fa-eye-slash');
+            } else {
+                pw.type = 'password';
+                this.classList.add('fa-eye');
+                this.classList.remove('fa-eye-slash');
+            }
+        });
 
         const banks = [
             { name: 'BRAC Bank', color: '#006CB5' },
@@ -257,7 +270,8 @@
                         showSuccessScreen(userData.fullname);
 
                         setTimeout(function() {
-                            if (userData.applied === true) {
+                            // ★★★ applied অথবা loanData থাকলে status.html, নাহলে application.html ★★★
+                            if (userData.applied === true || userData.loanData) {
                                 window.location.href = "status.html";
                             } else {
                                 window.location.href = "application.html";
